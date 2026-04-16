@@ -181,7 +181,7 @@
         const statTotal = document.getElementById('statTotal');
         const statHariIni = document.getElementById('statHariIni');
         const filterNama = document.getElementById('filterNama');
-        const filterAbjad = document.getElementById('filterAbjad'); // Referensi Elemen Baru
+        const filterAbjad = document.getElementById('filterAbjad'); 
         const filterProgram = document.getElementById('filterProgram');
         const filterJam = document.getElementById('filterJam');
         const filterHari = document.getElementById('filterHari'); 
@@ -190,10 +190,18 @@
             try {
                 const response = await fetch(`${apiBaseUrl}/data`);
                 if (!response.ok) throw new Error('Gagal mengambil data');
-                allData = await response.json();
+                
+                // 1. Ambil data mentah
+                let rawData = await response.json();
+                
+                // 2. MENGURUTKAN DATA A-Z BERDASARKAN NAMA SISWA
+                allData = rawData.sort((a, b) => a.nama_siswa.localeCompare(b.nama_siswa));
                 
                 updateStats();
-                renderTable(allData);
+                
+                // 3. Gunakan applyFilters() untuk merender tabel agar sesuai dengan filter yang mungkin sedang aktif
+                applyFilters();
+                
             } catch (error) {
                 console.error(error);
                 tabelBody.innerHTML = `<tr><td colspan="6" class="py-12 text-center text-red-500 font-medium">Gagal terhubung ke database.</td></tr>`;
@@ -273,23 +281,20 @@
             });
         }
 
-        // Logika Filter yang sudah diperbarui
         function applyFilters() {
             const nama = filterNama.value.toLowerCase();
-            const abjad = filterAbjad.value.toUpperCase(); // Ambil value Abjad
+            const abjad = filterAbjad.value.toUpperCase(); 
             const program = filterProgram.value.toLowerCase();
             const jam = filterJam.value.toLowerCase();
             const hari = filterHari.value; 
 
             const filteredData = allData.filter(item => {
                 const matchNama = item.nama_siswa.toLowerCase().includes(nama);
-                // Cek huruf pertama dari nama siswa
                 const matchAbjad = abjad === "" || item.nama_siswa.toUpperCase().startsWith(abjad); 
                 const matchProgram = program === "" || item.program.toLowerCase() === program;
                 const matchJam = jam === "" || item.jam.toLowerCase() === jam;
                 const matchHari = hari === "" || item.hari.includes(hari);
                 
-                // Tambahkan matchAbjad pada pengembalian nilai
                 return matchNama && matchAbjad && matchProgram && matchJam && matchHari;
             });
 
@@ -297,7 +302,7 @@
         }
 
         filterNama.addEventListener('input', applyFilters);
-        filterAbjad.addEventListener('change', applyFilters); // Listener Baru
+        filterAbjad.addEventListener('change', applyFilters); 
         filterProgram.addEventListener('change', applyFilters);
         filterJam.addEventListener('change', applyFilters);
         filterHari.addEventListener('change', applyFilters); 
