@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Absensi Digital Siswa - Yumenoboken</title>
+    <title>Admin Dashboard - Absensi Yumenoboken</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -26,11 +26,13 @@
                             300: '#d4d4d4',
                             400: '#a3a3a3',
                             800: '#262626',
+                            900: '#171717',
                         },
                         violet: {
+                            50: '#f5f3ff',
                             100: '#ede9fe',
-                            500: '#8b5cf6', // Warna ungu fokus
-                            600: '#7c3aed', // Warna ungu tombol hover
+                            500: '#8b5cf6', 
+                            600: '#7c3aed', 
                         }
                     }
                 }
@@ -38,185 +40,210 @@
         }
     </script>
 </head>
-<body class="bg-neutral-50 text-neutral-800 font-sans min-h-screen p-4 flex items-center justify-center">
+<body class="bg-neutral-50 text-neutral-800 font-sans min-h-screen">
 
-    <main class="w-full max-w-[460px]">
+    <nav class="bg-white border-b border-neutral-200 sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+            <h1 class="font-bricolage text-xl font-bold tracking-tight text-neutral-900">Admin<span class="text-violet-600">Panel</span></h1>
+            <div class="flex items-center space-x-3">
+                <span class="w-8 h-8 rounded-full bg-violet-100 text-violet-600 flex items-center justify-center font-bold font-bricolage text-sm border border-violet-200">A</span>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-6xl mx-auto px-6 py-8">
         
-        <div class="mb-6 text-center">
-            <h1 class="font-bricolage text-2xl font-bold tracking-tight mb-1">Absensi Siswa</h1>
-            <p class="text-xs text-neutral-400 font-medium">Lengkapi data kehadiran di bawah ini.</p>
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
+            <div>
+                <h2 class="font-bricolage text-3xl font-bold tracking-tight mb-1">Data Absensi</h2>
+                <p class="text-sm text-neutral-500 font-medium">Pantau dan kelola kehadiran siswa.</p>
+            </div>
+            
+            <div class="flex space-x-4">
+                <div class="bg-white border border-neutral-200 rounded-xl p-4 min-w-[140px]">
+                    <p class="text-xs font-semibold text-neutral-400 mb-1 uppercase tracking-wider">Total Data</p>
+                    <p id="statTotal" class="font-bricolage text-2xl font-bold text-neutral-800">0</p>
+                </div>
+                <div class="bg-white border border-neutral-200 rounded-xl p-4 min-w-[140px]">
+                    <p class="text-xs font-semibold text-neutral-400 mb-1 uppercase tracking-wider">Hari Ini</p>
+                    <p id="statHariIni" class="font-bricolage text-2xl font-bold text-violet-600">0</p>
+                </div>
+            </div>
         </div>
 
-        <form id="formAbsensi" class="space-y-4">
-            
-            <div>
-                <label for="nama_siswa" class="block text-xs font-semibold text-neutral-800 mb-1.5">Nama Lengkap</label>
-                <input type="text" id="nama_siswa" name="nama_siswa" required 
-                    class="w-full px-3 py-2 text-sm bg-transparent border border-neutral-300 rounded-lg focus:border-violet-500 focus:ring-1 focus:ring-violet-500 outline-none transition-colors placeholder-neutral-400" 
-                    placeholder="Contoh: Andi Susanto">
-            </div>
+        <div class="bg-white border border-neutral-200 rounded-xl p-5 mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                
+                <div>
+                    <label class="block text-xs font-semibold text-neutral-500 mb-1.5">Pencarian Nama</label>
+                    <input type="text" id="filterNama" 
+                        class="w-full px-3 py-2.5 text-sm bg-transparent border border-neutral-300 rounded-lg focus:border-violet-500 focus:ring-1 focus:ring-violet-500 outline-none transition-colors placeholder-neutral-400" 
+                        placeholder="Ketik nama siswa...">
+                </div>
 
-            <div>
-                <label for="program" class="block text-xs font-semibold text-neutral-800 mb-1.5">Pilih Program</label>
-                <div class="relative">
-                    <select id="program" name="program" required 
-                        class="w-full px-3 py-2 text-sm bg-transparent border border-neutral-300 rounded-lg appearance-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 outline-none transition-colors bg-white">
-                        <option value="" disabled selected>Pilih salah satu program...</option>
-                        <option value="calistung">Calistung</option>
-                        <option value="bahasa inggris">Bahasa Inggris</option>
-                        <option value="bahasa arab">Bahasa Arab</option>
-                        <option value="bimbel">Bimbel</option>
-                        <option value="komputer">Komputer</option>
-                    </select>
-                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-neutral-400">
-                        <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                <div>
+                    <label class="block text-xs font-semibold text-neutral-500 mb-1.5">Filter Program</label>
+                    <div class="relative">
+                        <select id="filterProgram" class="w-full px-3 py-2.5 text-sm bg-transparent border border-neutral-300 rounded-lg appearance-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 outline-none transition-colors">
+                            <option value="">Semua Program</option>
+                            <option value="calistung">Calistung</option>
+                            <option value="bahasa inggris">Bahasa Inggris</option>
+                            <option value="bahasa arab">Bahasa Arab</option>
+                            <option value="bimbel">Bimbel</option>
+                            <option value="komputer">Komputer</option>
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-neutral-400">
+                            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div>
-                <label for="jam" class="block text-xs font-semibold text-neutral-800 mb-1.5">Pilih Jadwal Jam</label>
-                <div class="relative">
-                    <select id="jam" name="jam" required 
-                        class="w-full px-3 py-2 text-sm bg-transparent border border-neutral-300 rounded-lg appearance-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 outline-none transition-colors bg-white">
-                        <option value="" disabled selected>Pilih jadwal jam...</option>
-                        <option value="07.30-09.00">07.30 - 09.00</option>
-                        <option value="09.00-10.30">09.00 - 10.30</option>
-                        <option value="10.30-12.00">10.30 - 12.00</option>
-                        <option value="12.00-13.30">12.00 - 13.30</option>
-                        <option value="13.30-15.00">13.30 - 15.00</option>
-                        <option value="15.00-16.30">15.00 - 16.30</option>
-                        <option value="16.30-18.00">16.30 - 18.00</option>
-                    </select>
-                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-neutral-400">
-                        <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                <div>
+                    <label class="block text-xs font-semibold text-neutral-500 mb-1.5">Filter Jam</label>
+                    <div class="relative">
+                        <select id="filterJam" class="w-full px-3 py-2.5 text-sm bg-transparent border border-neutral-300 rounded-lg appearance-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 outline-none transition-colors">
+                            <option value="">Semua Jam</option>
+                            <option value="07.30-09.00">07.30 - 09.00</option>
+                            <option value="09.00-10.30">09.00 - 10.30</option>
+                            <option value="10.30-12.00">10.30 - 12.00</option>
+                            <option value="12.00-13.30">12.00 - 13.30</option>
+                            <option value="13.30-15.00">13.30 - 15.00</option>
+                            <option value="15.00-16.30">15.00 - 16.30</option>
+                            <option value="16.30-18.00">16.30 - 18.00</option>
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-neutral-400">
+                            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div>
-                <label class="block text-xs font-semibold text-neutral-800 mb-2">Pilih Hari (Wajib 3 Hari)</label>
-                <div class="grid grid-cols-3 gap-2" id="hariContainer">
-                    <label class="flex items-center space-x-2 p-2.5 bg-transparent border border-neutral-300 rounded-lg cursor-pointer hover:border-neutral-400 transition-colors">
-                        <input type="checkbox" name="hari" value="Senin" class="form-checkbox h-4 w-4 text-violet-500 border-neutral-300 rounded focus:ring-violet-500 focus:ring-offset-0">
-                        <span class="text-sm font-medium text-neutral-800">Senin</span>
-                    </label>
-                    <label class="flex items-center space-x-2 p-2.5 bg-transparent border border-neutral-300 rounded-lg cursor-pointer hover:border-neutral-400 transition-colors">
-                        <input type="checkbox" name="hari" value="Selasa" class="form-checkbox h-4 w-4 text-violet-500 border-neutral-300 rounded focus:ring-violet-500 focus:ring-offset-0">
-                        <span class="text-sm font-medium text-neutral-800">Selasa</span>
-                    </label>
-                    <label class="flex items-center space-x-2 p-2.5 bg-transparent border border-neutral-300 rounded-lg cursor-pointer hover:border-neutral-400 transition-colors">
-                        <input type="checkbox" name="hari" value="Rabu" class="form-checkbox h-4 w-4 text-violet-500 border-neutral-300 rounded focus:ring-violet-500 focus:ring-offset-0">
-                        <span class="text-sm font-medium text-neutral-800">Rabu</span>
-                    </label>
-                    <label class="flex items-center space-x-2 p-2.5 bg-transparent border border-neutral-300 rounded-lg cursor-pointer hover:border-neutral-400 transition-colors">
-                        <input type="checkbox" name="hari" value="Kamis" class="form-checkbox h-4 w-4 text-violet-500 border-neutral-300 rounded focus:ring-violet-500 focus:ring-offset-0">
-                        <span class="text-sm font-medium text-neutral-800">Kamis</span>
-                    </label>
-                    <label class="flex items-center space-x-2 p-2.5 bg-transparent border border-neutral-300 rounded-lg cursor-pointer hover:border-neutral-400 transition-colors">
-                        <input type="checkbox" name="hari" value="Jumat" class="form-checkbox h-4 w-4 text-violet-500 border-neutral-300 rounded focus:ring-violet-500 focus:ring-offset-0">
-                        <span class="text-sm font-medium text-neutral-800">Jumat</span>
-                    </label>
-                    <label class="flex items-center space-x-2 p-2.5 bg-transparent border border-neutral-300 rounded-lg cursor-pointer hover:border-neutral-400 transition-colors">
-                        <input type="checkbox" name="hari" value="Sabtu" class="form-checkbox h-4 w-4 text-violet-500 border-neutral-300 rounded focus:ring-violet-500 focus:ring-offset-0">
-                        <span class="text-sm font-medium text-neutral-800">Sabtu</span>
-                    </label>
-                </div>
-                <p id="errorHari" class="text-red-500 text-xs mt-2.5 hidden font-medium">⚠️ Anda harus memilih tepat 3 hari.</p>
             </div>
+        </div>
 
-            <div class="pt-2">
-                <button type="submit" id="btnSubmit" 
-                    class="w-full bg-violet-600 hover:bg-violet-700 text-white font-bold py-2.5 px-6 rounded-lg transition-colors flex justify-center items-center font-bricolage tracking-wide text-sm border border-transparent shadow-sm hover:shadow">
-                    <span>Kirim Data Absensi</span>
-                </button>
-                <p id="pesanSukses" class="text-violet-600 text-xs font-bold text-center mt-4 hidden">✅ Data Anda berhasil disimpan.</p>
+        <div class="bg-white border border-neutral-200 rounded-xl overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead class="bg-neutral-50 border-b border-neutral-200">
+                        <tr>
+                            <th class="py-4 px-5 text-xs font-bold text-neutral-500 tracking-wider font-bricolage uppercase">Nama Siswa</th>
+                            <th class="py-4 px-5 text-xs font-bold text-neutral-500 tracking-wider font-bricolage uppercase">Program</th>
+                            <th class="py-4 px-5 text-xs font-bold text-neutral-500 tracking-wider font-bricolage uppercase">Jam</th>
+                            <th class="py-4 px-5 text-xs font-bold text-neutral-500 tracking-wider font-bricolage uppercase">Hari (3 Pilihan)</th>
+                            <th class="py-4 px-5 text-xs font-bold text-neutral-500 tracking-wider font-bricolage uppercase">Waktu Input</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabelAbsensi" class="divide-y divide-neutral-100 text-sm">
+                        <tr>
+                            <td colspan="5" class="py-12 text-center text-neutral-400 font-medium animate-pulse">Sedang memuat data dari server...</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
+        </div>
 
-        </form>
     </main>
 
     <script>
-        // --- SCRIPT TAMBAHAN UNTUK EFEK VISUAL CHECKBOX ---
-        const checkboxes = document.querySelectorAll('input[name="hari"]');
-        checkboxes.forEach(box => {
-            box.addEventListener('change', function() {
-                const labelElement = this.closest('label');
-                if (this.checked) {
-                    labelElement.classList.remove('border-neutral-300');
-                    labelElement.classList.add('border-violet-500', 'bg-violet-50/50');
-                } else {
-                    labelElement.classList.add('border-neutral-300');
-                    labelElement.classList.remove('border-violet-500', 'bg-violet-50/50');
-                }
-            });
-        });
+        // API URL Cloudflare Worker milikmu
+        const apiUrl = 'https://absensi-api.yumenoboken.workers.dev/api/data';
+        let allData = [];
 
-        // --- SCRIPT LOGIKA PENGIRIMAN DATA ---
-        document.getElementById('formAbsensi').addEventListener('submit', async function(e) {
-            e.preventDefault();
+        // Referensi Elemen
+        const tabelBody = document.getElementById('tabelAbsensi');
+        const statTotal = document.getElementById('statTotal');
+        const statHariIni = document.getElementById('statHariIni');
+        const filterNama = document.getElementById('filterNama');
+        const filterProgram = document.getElementById('filterProgram');
+        const filterJam = document.getElementById('filterJam');
 
-            const form = e.target;
-            const errorHari = document.getElementById('errorHari');
-            const pesanSukses = document.getElementById('pesanSukses');
-            const btnSubmit = document.getElementById('btnSubmit');
+        // Mengambil Data
+        async function fetchData() {
+            try {
+                const response = await fetch(apiUrl);
+                if (!response.ok) throw new Error('Gagal mengambil data');
+                allData = await response.json();
+                
+                updateStats();
+                renderTable(allData);
+            } catch (error) {
+                console.error(error);
+                tabelBody.innerHTML = `<tr><td colspan="5" class="py-12 text-center text-red-500 font-medium">Gagal terhubung ke database.</td></tr>`;
+            }
+        }
 
-            const formData = new FormData(form);
-            const data = Object.fromEntries(formData.entries());
-            data.hari = formData.getAll('hari');
+        // Memperbarui Statistik
+        function updateStats() {
+            statTotal.textContent = allData.length;
 
-            // Validasi HARUS TEPAT 3 HARI
-            if (data.hari.length !== 3) {
-                errorHari.classList.remove('hidden');
+            const today = new Date().toISOString().split('T')[0];
+            const absenHariIni = allData.filter(item => {
+                // Konversi tanggal dari database (UTC) ke waktu lokal
+                const itemDate = new Date(item.tanggal_input).toLocaleDateString('en-CA'); 
+                return itemDate === today;
+            }).length;
+
+            statHariIni.textContent = absenHariIni;
+        }
+
+        // Render Tabel
+        function renderTable(data) {
+            tabelBody.innerHTML = '';
+
+            if (data.length === 0) {
+                tabelBody.innerHTML = `<tr><td colspan="5" class="py-12 text-center text-neutral-400 font-medium">Tidak ada data yang cocok.</td></tr>`;
                 return;
-            } else {
-                errorHari.classList.add('hidden');
             }
 
-            const originalBtnText = btnSubmit.innerHTML;
-            btnSubmit.innerHTML = 'Mengirim...';
-            btnSubmit.disabled = true;
-            btnSubmit.classList.replace('bg-violet-600', 'bg-violet-400');
-            btnSubmit.classList.replace('hover:bg-violet-700', 'hover:bg-violet-400');
+            data.forEach(item => {
+                const row = document.createElement('tr');
+                row.className = 'hover:bg-neutral-50 transition-colors';
 
-            try {
-                // Pastikan URL di bawah ini sama dengan URL Workermu
-                const response = await fetch('https://absensi-api.yumenoboken.workers.dev/api/submit', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(data)
+                // Format Hari menjadi Badge Ungu
+                const hariArray = item.hari.split(',');
+                const hariHtml = hariArray.map(h => 
+                    `<span class="inline-block bg-violet-50 text-violet-700 border border-violet-200 text-xs font-semibold px-2 py-0.5 rounded mr-1 mb-1">${h}</span>`
+                ).join('');
+
+                // Format Tanggal (Waktu Lokal)
+                const formatTanggal = new Date(item.tanggal_input).toLocaleDateString('id-ID', {
+                    day: 'numeric', month: 'short', year: 'numeric',
+                    hour: '2-digit', minute: '2-digit'
                 });
 
-                const result = await response.json();
+                row.innerHTML = `
+                    <td class="py-4 px-5 font-semibold text-neutral-800">${item.nama_siswa}</td>
+                    <td class="py-4 px-5"><span class="bg-neutral-100 text-neutral-700 border border-neutral-200 text-xs font-semibold px-2.5 py-1 rounded capitalize">${item.program}</span></td>
+                    <td class="py-4 px-5 text-neutral-600 font-medium">${item.jam}</td>
+                    <td class="py-4 px-5">${hariHtml}</td>
+                    <td class="py-4 px-5 text-neutral-500 text-xs">${formatTanggal}</td>
+                `;
+                tabelBody.appendChild(row);
+            });
+        }
 
-                if (response.ok) {
-                    pesanSukses.classList.remove('hidden');
-                    form.reset();
-                    
-                    checkboxes.forEach(box => {
-                        const labelElement = box.closest('label');
-                        labelElement.classList.add('border-neutral-300');
-                        labelElement.classList.remove('border-violet-500', 'bg-violet-50/50');
-                    });
+        // Logika Filter
+        function applyFilters() {
+            const nama = filterNama.value.toLowerCase();
+            const program = filterProgram.value.toLowerCase();
+            const jam = filterJam.value.toLowerCase();
 
-                    setTimeout(() => {
-                        pesanSukses.classList.add('hidden');
-                    }, 4000);
-                } else {
-                    alert('Gagal menyimpan: ' + (result.error || 'Terjadi kesalahan'));
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('Gagal terhubung ke server. Periksa koneksi internet Anda.');
-            } finally {
-                btnSubmit.innerHTML = originalBtnText;
-                btnSubmit.disabled = false;
-                btnSubmit.classList.replace('bg-violet-400', 'bg-violet-600');
-                btnSubmit.classList.replace('hover:bg-violet-400', 'hover:bg-violet-700');
-            }
-        });
+            const filteredData = allData.filter(item => {
+                const matchNama = item.nama_siswa.toLowerCase().includes(nama);
+                const matchProgram = program === "" || item.program.toLowerCase() === program;
+                const matchJam = jam === "" || item.jam.toLowerCase() === jam;
+                return matchNama && matchProgram && matchJam;
+            });
+
+            renderTable(filteredData);
+        }
+
+        // Event Listener untuk Filter
+        filterNama.addEventListener('input', applyFilters);
+        filterProgram.addEventListener('change', applyFilters);
+        filterJam.addEventListener('change', applyFilters);
+
+        // Jalankan saat halaman dimuat
+        window.addEventListener('load', fetchData);
     </script>
 </body>
 </html>
