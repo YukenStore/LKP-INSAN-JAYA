@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Absensi Yumenoboken</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        bricolage: ['"Bricolage Grotesque"', 'sans-serif'],
+                    },
+                    colors: {
+                        neutral: {
+                            50: '#fafafa',
+                            100: '#f5f5f5',
+                            200: '#e5e5e5',
+                            300: '#d4d4d4',
+                            400: '#a3a3a3',
+                            800: '#262626',
+                            900: '#171717',
+                        },
+                        violet: {
+                            50: '#f5f3ff',
+                            100: '#ede9fe',
+                            500: '#8b5cf6', 
+                            600: '#7c3aed', 
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-neutral-50 text-neutral-800 font-sans min-h-screen">
+
+    <nav class="bg-white border-b border-neutral-200 sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+            <h1 class="font-bricolage text-xl font-bold tracking-tight text-neutral-900">Admin<span class="text-violet-600">Panel</span></h1>
+            <div class="flex items-center space-x-3">
+                <span class="w-8 h-8 rounded-full bg-violet-100 text-violet-600 flex items-center justify-center font-bold font-bricolage text-sm border border-violet-200">A</span>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-6xl mx-auto px-6 py-8">
+        
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
+            <div>
+                <h2 class="font-bricolage text-3xl font-bold tracking-tight mb-1">Data Absensi</h2>
+                <p class="text-sm text-neutral-500 font-medium">Pantau dan kelola kehadiran siswa.</p>
+            </div>
+            
+            <div class="flex space-x-4">
+                <div class="bg-white border border-neutral-200 rounded-xl p-4 min-w-[140px]">
+                    <p class="text-xs font-semibold text-neutral-400 mb-1 uppercase tracking-wider">Total Data</p>
+                    <p id="statTotal" class="font-bricolage text-2xl font-bold text-neutral-800">0</p>
+                </div>
+                <div class="bg-white border border-neutral-200 rounded-xl p-4 min-w-[140px]">
+                    <p class="text-xs font-semibold text-neutral-400 mb-1 uppercase tracking-wider">Hari Ini</p>
+                    <p id="statHariIni" class="font-bricolage text-2xl font-bold text-violet-600">0</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white border border-neutral-200 rounded-xl p-5 mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                
+                <div>
+                    <label class="block text-xs font-semibold text-neutral-500 mb-1.5">Pencarian Nama</label>
+                    <input type="text" id="filterNama" 
+                        class="w-full px-3 py-2.5 text-sm bg-transparent border border-neutral-300 rounded-lg focus:border-violet-500 focus:ring-1 focus:ring-violet-500 outline-none transition-colors placeholder-neutral-400" 
+                        placeholder="Ketik nama siswa...">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-neutral-500 mb-1.5">Filter Program</label>
+                    <div class="relative">
+                        <select id="filterProgram" class="w-full px-3 py-2.5 text-sm bg-transparent border border-neutral-300 rounded-lg appearance-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 outline-none transition-colors">
+                            <option value="">Semua Program</option>
+                            <option value="calistung">Calistung</option>
+                            <option value="bahasa inggris">Bahasa Inggris</option>
+                            <option value="bahasa arab">Bahasa Arab</option>
+                            <option value="bimbel">Bimbel</option>
+                            <option value="komputer">Komputer</option>
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-neutral-400">
+                            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-neutral-500 mb-1.5">Filter Jam</label>
+                    <div class="relative">
+                        <select id="filterJam" class="w-full px-3 py-2.5 text-sm bg-transparent border border-neutral-300 rounded-lg appearance-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 outline-none transition-colors">
+                            <option value="">Semua Jam</option>
+                            <option value="07.30-09.00">07.30 - 09.00</option>
+                            <option value="09.00-10.30">09.00 - 10.30</option>
+                            <option value="10.30-12.00">10.30 - 12.00</option>
+                            <option value="12.00-13.30">12.00 - 13.30</option>
+                            <option value="13.30-15.00">13.30 - 15.00</option>
+                            <option value="15.00-16.30">15.00 - 16.30</option>
+                            <option value="16.30-18.00">16.30 - 18.00</option>
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-neutral-400">
+                            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="bg-white border border-neutral-200 rounded-xl overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead class="bg-neutral-50 border-b border-neutral-200">
+                        <tr>
+                            <th class="py-4 px-5 text-xs font-bold text-neutral-500 tracking-wider font-bricolage uppercase">Nama Siswa</th>
+                            <th class="py-4 px-5 text-xs font-bold text-neutral-500 tracking-wider font-bricolage uppercase">Program</th>
+                            <th class="py-4 px-5 text-xs font-bold text-neutral-500 tracking-wider font-bricolage uppercase">Jam</th>
+                            <th class="py-4 px-5 text-xs font-bold text-neutral-500 tracking-wider font-bricolage uppercase">Hari (3 Pilihan)</th>
+                            <th class="py-4 px-5 text-xs font-bold text-neutral-500 tracking-wider font-bricolage uppercase">Waktu Input</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabelAbsensi" class="divide-y divide-neutral-100 text-sm">
+                        <tr>
+                            <td colspan="5" class="py-12 text-center text-neutral-400 font-medium animate-pulse">Sedang memuat data dari server...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        // API URL Cloudflare Worker milikmu
+        const apiUrl = 'https://absensi-api.yumenoboken.workers.dev/api/data';
+        let allData = [];
+
+        // Referensi Elemen
+        const tabelBody = document.getElementById('tabelAbsensi');
+        const statTotal = document.getElementById('statTotal');
+        const statHariIni = document.getElementById('statHariIni');
+        const filterNama = document.getElementById('filterNama');
+        const filterProgram = document.getElementById('filterProgram');
+        const filterJam = document.getElementById('filterJam');
+
+        // Mengambil Data
+        async function fetchData() {
+            try {
+                const response = await fetch(apiUrl);
+                if (!response.ok) throw new Error('Gagal mengambil data');
+                allData = await response.json();
+                
+                updateStats();
+                renderTable(allData);
+            } catch (error) {
+                console.error(error);
+                tabelBody.innerHTML = `<tr><td colspan="5" class="py-12 text-center text-red-500 font-medium">Gagal terhubung ke database.</td></tr>`;
+            }
+        }
+
+        // Memperbarui Statistik
+        function updateStats() {
+            statTotal.textContent = allData.length;
+
+            const today = new Date().toISOString().split('T')[0];
+            const absenHariIni = allData.filter(item => {
+                // Konversi tanggal dari database (UTC) ke waktu lokal
+                const itemDate = new Date(item.tanggal_input).toLocaleDateString('en-CA'); 
+                return itemDate === today;
+            }).length;
+
+            statHariIni.textContent = absenHariIni;
+        }
+
+        // Render Tabel
+        function renderTable(data) {
+            tabelBody.innerHTML = '';
+
+            if (data.length === 0) {
+                tabelBody.innerHTML = `<tr><td colspan="5" class="py-12 text-center text-neutral-400 font-medium">Tidak ada data yang cocok.</td></tr>`;
+                return;
+            }
+
+            data.forEach(item => {
+                const row = document.createElement('tr');
+                row.className = 'hover:bg-neutral-50 transition-colors';
+
+                // Format Hari menjadi Badge Ungu
+                const hariArray = item.hari.split(',');
+                const hariHtml = hariArray.map(h => 
+                    `<span class="inline-block bg-violet-50 text-violet-700 border border-violet-200 text-xs font-semibold px-2 py-0.5 rounded mr-1 mb-1">${h}</span>`
+                ).join('');
+
+                // Format Tanggal (Waktu Lokal)
+                const formatTanggal = new Date(item.tanggal_input).toLocaleDateString('id-ID', {
+                    day: 'numeric', month: 'short', year: 'numeric',
+                    hour: '2-digit', minute: '2-digit'
+                });
+
+                row.innerHTML = `
+                    <td class="py-4 px-5 font-semibold text-neutral-800">${item.nama_siswa}</td>
+                    <td class="py-4 px-5"><span class="bg-neutral-100 text-neutral-700 border border-neutral-200 text-xs font-semibold px-2.5 py-1 rounded capitalize">${item.program}</span></td>
+                    <td class="py-4 px-5 text-neutral-600 font-medium">${item.jam}</td>
+                    <td class="py-4 px-5">${hariHtml}</td>
+                    <td class="py-4 px-5 text-neutral-500 text-xs">${formatTanggal}</td>
+                `;
+                tabelBody.appendChild(row);
+            });
+        }
+
+        // Logika Filter
+        function applyFilters() {
+            const nama = filterNama.value.toLowerCase();
+            const program = filterProgram.value.toLowerCase();
+            const jam = filterJam.value.toLowerCase();
+
+            const filteredData = allData.filter(item => {
+                const matchNama = item.nama_siswa.toLowerCase().includes(nama);
+                const matchProgram = program === "" || item.program.toLowerCase() === program;
+                const matchJam = jam === "" || item.jam.toLowerCase() === jam;
+                return matchNama && matchProgram && matchJam;
+            });
+
+            renderTable(filteredData);
+        }
+
+        // Event Listener untuk Filter
+        filterNama.addEventListener('input', applyFilters);
+        filterProgram.addEventListener('change', applyFilters);
+        filterJam.addEventListener('change', applyFilters);
+
+        // Jalankan saat halaman dimuat
+        window.addEventListener('load', fetchData);
+    </script>
+</body>
+</html>
