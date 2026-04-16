@@ -46,7 +46,7 @@
         <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
             <h1 class="font-bricolage text-xl font-bold tracking-tight text-neutral-900">Admin<span class="text-violet-600">Panel</span></h1>
             <div class="flex items-center space-x-3">
-                 <a href="./input.html" class="text-sm font-semibold text-neutral-600 hover:text-neutral-900 uppercase">input</a>
+                <a href="./input.html" class="text-sm font-semibold text-neutral-600 hover:text-neutral-900 uppercase tracking-wider">Input Data</a>
             </div>
         </div>
     </nav>
@@ -72,7 +72,7 @@
         </div>
 
         <div class="bg-white border border-neutral-200 rounded-xl p-5 mb-6">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
                 
                 <div>
                     <label class="block text-xs font-semibold text-neutral-500 mb-1.5">Pencarian Nama</label>
@@ -117,6 +117,24 @@
                     </div>
                 </div>
 
+                <div>
+                    <label class="block text-xs font-semibold text-neutral-500 mb-1.5">Filter Hari</label>
+                    <div class="relative">
+                        <select id="filterHari" class="w-full px-3 py-2.5 text-sm bg-transparent border border-neutral-300 rounded-lg appearance-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 outline-none transition-colors">
+                            <option value="">Semua Hari</option>
+                            <option value="Senin">Senin</option>
+                            <option value="Selasa">Selasa</option>
+                            <option value="Rabu">Rabu</option>
+                            <option value="Kamis">Kamis</option>
+                            <option value="Jumat">Jumat</option>
+                            <option value="Sabtu">Sabtu</option>
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-neutral-400">
+                            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
 
@@ -130,11 +148,12 @@
                             <th class="py-4 px-5 text-xs font-bold text-neutral-500 tracking-wider font-bricolage uppercase">Jam</th>
                             <th class="py-4 px-5 text-xs font-bold text-neutral-500 tracking-wider font-bricolage uppercase">Hari (3 Pilihan)</th>
                             <th class="py-4 px-5 text-xs font-bold text-neutral-500 tracking-wider font-bricolage uppercase">Waktu Input</th>
+                            <th class="py-4 px-5 text-xs font-bold text-neutral-500 tracking-wider font-bricolage uppercase">Aksi</th>
                         </tr>
                     </thead>
                     <tbody id="tabelAbsensi" class="divide-y divide-neutral-100 text-sm">
                         <tr>
-                            <td colspan="5" class="py-12 text-center text-neutral-400 font-medium animate-pulse">Sedang memuat data dari server...</td>
+                            <td colspan="6" class="py-12 text-center text-neutral-400 font-medium animate-pulse">Sedang memuat data dari server...</td>
                         </tr>
                     </tbody>
                 </table>
@@ -144,8 +163,8 @@
     </main>
 
     <script>
-        // API URL Cloudflare Worker milikmu
-        const apiUrl = 'https://absensi-api.yumenoboken.workers.dev/api/data';
+        // Gunakan URL API Cloudflare Worker milikmu
+        const apiBaseUrl = 'https://absensi-api.yumenoboken.workers.dev/api';
         let allData = [];
 
         // Referensi Elemen
@@ -155,11 +174,12 @@
         const filterNama = document.getElementById('filterNama');
         const filterProgram = document.getElementById('filterProgram');
         const filterJam = document.getElementById('filterJam');
+        const filterHari = document.getElementById('filterHari'); // Elemen baru
 
-        // Mengambil Data
+        // 1. Mengambil Data
         async function fetchData() {
             try {
-                const response = await fetch(apiUrl);
+                const response = await fetch(`${apiBaseUrl}/data`);
                 if (!response.ok) throw new Error('Gagal mengambil data');
                 allData = await response.json();
                 
@@ -167,17 +187,41 @@
                 renderTable(allData);
             } catch (error) {
                 console.error(error);
-                tabelBody.innerHTML = `<tr><td colspan="5" class="py-12 text-center text-red-500 font-medium">Gagal terhubung ke database.</td></tr>`;
+                tabelBody.innerHTML = `<tr><td colspan="6" class="py-12 text-center text-red-500 font-medium">Gagal terhubung ke database.</td></tr>`;
             }
         }
 
-        // Memperbarui Statistik
+        // 2. Fungsi Menghapus Data
+        async function deleteData(id, namaSiswa) {
+            // Konfirmasi sebelum menghapus
+            const confirmDelete = confirm(`Apakah Anda yakin ingin menghapus data atas nama "${namaSiswa}"?`);
+            if (!confirmDelete) return;
+
+            try {
+                const response = await fetch(`${apiBaseUrl}/delete`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: id })
+                });
+
+                if (response.ok) {
+                    alert('Data berhasil dihapus.');
+                    fetchData(); // Refresh tabel setelah dihapus
+                } else {
+                    alert('Gagal menghapus data.');
+                }
+            } catch (error) {
+                console.error('Error deleting:', error);
+                alert('Terjadi kesalahan jaringan saat menghapus.');
+            }
+        }
+
+        // 3. Memperbarui Statistik
         function updateStats() {
             statTotal.textContent = allData.length;
 
             const today = new Date().toISOString().split('T')[0];
             const absenHariIni = allData.filter(item => {
-                // Konversi tanggal dari database (UTC) ke waktu lokal
                 const itemDate = new Date(item.tanggal_input).toLocaleDateString('en-CA'); 
                 return itemDate === today;
             }).length;
@@ -185,12 +229,12 @@
             statHariIni.textContent = absenHariIni;
         }
 
-        // Render Tabel
+        // 4. Render Tabel
         function renderTable(data) {
             tabelBody.innerHTML = '';
 
             if (data.length === 0) {
-                tabelBody.innerHTML = `<tr><td colspan="5" class="py-12 text-center text-neutral-400 font-medium">Tidak ada data yang cocok.</td></tr>`;
+                tabelBody.innerHTML = `<tr><td colspan="6" class="py-12 text-center text-neutral-400 font-medium">Tidak ada data yang cocok.</td></tr>`;
                 return;
             }
 
@@ -198,40 +242,48 @@
                 const row = document.createElement('tr');
                 row.className = 'hover:bg-neutral-50 transition-colors';
 
-                // Format Hari menjadi Badge Ungu
                 const hariArray = item.hari.split(',');
                 const hariHtml = hariArray.map(h => 
                     `<span class="inline-block bg-violet-50 text-violet-700 border border-violet-200 text-xs font-semibold px-2 py-0.5 rounded mr-1 mb-1">${h}</span>`
                 ).join('');
 
-                // Format Tanggal (Waktu Lokal)
                 const formatTanggal = new Date(item.tanggal_input).toLocaleDateString('id-ID', {
                     day: 'numeric', month: 'short', year: 'numeric',
                     hour: '2-digit', minute: '2-digit'
                 });
 
+                // Tambahan parameter untuk fungsi hapus
                 row.innerHTML = `
                     <td class="py-4 px-5 font-semibold text-neutral-800">${item.nama_siswa}</td>
                     <td class="py-4 px-5"><span class="bg-neutral-100 text-neutral-700 border border-neutral-200 text-xs font-semibold px-2.5 py-1 rounded capitalize">${item.program}</span></td>
                     <td class="py-4 px-5 text-neutral-600 font-medium">${item.jam}</td>
                     <td class="py-4 px-5">${hariHtml}</td>
                     <td class="py-4 px-5 text-neutral-500 text-xs">${formatTanggal}</td>
+                    <td class="py-4 px-5">
+                        <button onclick="deleteData(${item.id}, '${item.nama_siswa}')" class="px-3 py-1.5 bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700 rounded-lg text-xs font-bold transition-colors">
+                            Hapus
+                        </button>
+                    </td>
                 `;
                 tabelBody.appendChild(row);
             });
         }
 
-        // Logika Filter
+        // 5. Logika Filter (Termasuk Hari)
         function applyFilters() {
             const nama = filterNama.value.toLowerCase();
             const program = filterProgram.value.toLowerCase();
             const jam = filterJam.value.toLowerCase();
+            const hari = filterHari.value; // Tidak perlu toLowerCase karena exact match
 
             const filteredData = allData.filter(item => {
                 const matchNama = item.nama_siswa.toLowerCase().includes(nama);
                 const matchProgram = program === "" || item.program.toLowerCase() === program;
                 const matchJam = jam === "" || item.jam.toLowerCase() === jam;
-                return matchNama && matchProgram && matchJam;
+                // Cek apakah hari yang difilter ada di dalam string hari siswa (misal: "Senin,Rabu,Jumat")
+                const matchHari = hari === "" || item.hari.includes(hari);
+                
+                return matchNama && matchProgram && matchJam && matchHari;
             });
 
             renderTable(filteredData);
@@ -241,6 +293,7 @@
         filterNama.addEventListener('input', applyFilters);
         filterProgram.addEventListener('change', applyFilters);
         filterJam.addEventListener('change', applyFilters);
+        filterHari.addEventListener('change', applyFilters); // Listener baru
 
         // Jalankan saat halaman dimuat
         window.addEventListener('load', fetchData);
