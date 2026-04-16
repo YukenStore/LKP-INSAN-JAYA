@@ -20,19 +20,11 @@
                     },
                     colors: {
                         neutral: {
-                            50: '#fafafa',
-                            100: '#f5f5f5',
-                            200: '#e5e5e5',
-                            300: '#d4d4d4',
-                            400: '#a3a3a3',
-                            800: '#262626',
-                            900: '#171717',
+                            50: '#fafafa', 100: '#f5f5f5', 200: '#e5e5e5', 300: '#d4d4d4',
+                            400: '#a3a3a3', 800: '#262626', 900: '#171717',
                         },
                         violet: {
-                            50: '#f5f3ff',
-                            100: '#ede9fe',
-                            500: '#8b5cf6', 
-                            600: '#7c3aed', 
+                            50: '#f5f3ff', 100: '#ede9fe', 500: '#8b5cf6', 600: '#7c3aed', 
                         }
                     }
                 }
@@ -72,13 +64,32 @@
         </div>
 
         <div class="bg-white border border-neutral-200 rounded-xl p-5 mb-6">
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
                 
                 <div>
                     <label class="block text-xs font-semibold text-neutral-500 mb-1.5">Pencarian Nama</label>
                     <input type="text" id="filterNama" 
                         class="w-full px-3 py-2.5 text-sm bg-transparent border border-neutral-300 rounded-lg focus:border-violet-500 focus:ring-1 focus:ring-violet-500 outline-none transition-colors placeholder-neutral-400" 
                         placeholder="Ketik nama siswa...">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-neutral-500 mb-1.5">Filter Abjad</label>
+                    <div class="relative">
+                        <select id="filterAbjad" class="w-full px-3 py-2.5 text-sm bg-transparent border border-neutral-300 rounded-lg appearance-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 outline-none transition-colors">
+                            <option value="">Semua Abjad</option>
+                            <option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option>
+                            <option value="E">E</option><option value="F">F</option><option value="G">G</option><option value="H">H</option>
+                            <option value="I">I</option><option value="J">J</option><option value="K">K</option><option value="L">L</option>
+                            <option value="M">M</option><option value="N">N</option><option value="O">O</option><option value="P">P</option>
+                            <option value="Q">Q</option><option value="R">R</option><option value="S">S</option><option value="T">T</option>
+                            <option value="U">U</option><option value="V">V</option><option value="W">W</option><option value="X">X</option>
+                            <option value="Y">Y</option><option value="Z">Z</option>
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-neutral-400">
+                            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                        </div>
+                    </div>
                 </div>
 
                 <div>
@@ -163,20 +174,18 @@
     </main>
 
     <script>
-        // Gunakan URL API Cloudflare Worker milikmu
         const apiBaseUrl = 'https://absensi-api.yumenoboken.workers.dev/api';
         let allData = [];
 
-        // Referensi Elemen
         const tabelBody = document.getElementById('tabelAbsensi');
         const statTotal = document.getElementById('statTotal');
         const statHariIni = document.getElementById('statHariIni');
         const filterNama = document.getElementById('filterNama');
+        const filterAbjad = document.getElementById('filterAbjad'); // Referensi Elemen Baru
         const filterProgram = document.getElementById('filterProgram');
         const filterJam = document.getElementById('filterJam');
-        const filterHari = document.getElementById('filterHari'); // Elemen baru
+        const filterHari = document.getElementById('filterHari'); 
 
-        // 1. Mengambil Data
         async function fetchData() {
             try {
                 const response = await fetch(`${apiBaseUrl}/data`);
@@ -191,9 +200,7 @@
             }
         }
 
-        // 2. Fungsi Menghapus Data
         async function deleteData(id, namaSiswa) {
-            // Konfirmasi sebelum menghapus
             const confirmDelete = confirm(`Apakah Anda yakin ingin menghapus data atas nama "${namaSiswa}"?`);
             if (!confirmDelete) return;
 
@@ -206,7 +213,7 @@
 
                 if (response.ok) {
                     alert('Data berhasil dihapus.');
-                    fetchData(); // Refresh tabel setelah dihapus
+                    fetchData();
                 } else {
                     alert('Gagal menghapus data.');
                 }
@@ -216,7 +223,6 @@
             }
         }
 
-        // 3. Memperbarui Statistik
         function updateStats() {
             statTotal.textContent = allData.length;
 
@@ -229,7 +235,6 @@
             statHariIni.textContent = absenHariIni;
         }
 
-        // 4. Render Tabel
         function renderTable(data) {
             tabelBody.innerHTML = '';
 
@@ -252,7 +257,6 @@
                     hour: '2-digit', minute: '2-digit'
                 });
 
-                // Tambahan parameter untuk fungsi hapus
                 row.innerHTML = `
                     <td class="py-4 px-5 font-semibold text-neutral-800">${item.nama_siswa}</td>
                     <td class="py-4 px-5"><span class="bg-neutral-100 text-neutral-700 border border-neutral-200 text-xs font-semibold px-2.5 py-1 rounded capitalize">${item.program}</span></td>
@@ -269,33 +273,35 @@
             });
         }
 
-        // 5. Logika Filter (Termasuk Hari)
+        // Logika Filter yang sudah diperbarui
         function applyFilters() {
             const nama = filterNama.value.toLowerCase();
+            const abjad = filterAbjad.value.toUpperCase(); // Ambil value Abjad
             const program = filterProgram.value.toLowerCase();
             const jam = filterJam.value.toLowerCase();
-            const hari = filterHari.value; // Tidak perlu toLowerCase karena exact match
+            const hari = filterHari.value; 
 
             const filteredData = allData.filter(item => {
                 const matchNama = item.nama_siswa.toLowerCase().includes(nama);
+                // Cek huruf pertama dari nama siswa
+                const matchAbjad = abjad === "" || item.nama_siswa.toUpperCase().startsWith(abjad); 
                 const matchProgram = program === "" || item.program.toLowerCase() === program;
                 const matchJam = jam === "" || item.jam.toLowerCase() === jam;
-                // Cek apakah hari yang difilter ada di dalam string hari siswa (misal: "Senin,Rabu,Jumat")
                 const matchHari = hari === "" || item.hari.includes(hari);
                 
-                return matchNama && matchProgram && matchJam && matchHari;
+                // Tambahkan matchAbjad pada pengembalian nilai
+                return matchNama && matchAbjad && matchProgram && matchJam && matchHari;
             });
 
             renderTable(filteredData);
         }
 
-        // Event Listener untuk Filter
         filterNama.addEventListener('input', applyFilters);
+        filterAbjad.addEventListener('change', applyFilters); // Listener Baru
         filterProgram.addEventListener('change', applyFilters);
         filterJam.addEventListener('change', applyFilters);
-        filterHari.addEventListener('change', applyFilters); // Listener baru
+        filterHari.addEventListener('change', applyFilters); 
 
-        // Jalankan saat halaman dimuat
         window.addEventListener('load', fetchData);
     </script>
 </body>
