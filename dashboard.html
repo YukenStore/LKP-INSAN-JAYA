@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Data Siswa</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&family=Bricolage+Grotesque:wght@700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .font-bricolage { font-family: 'Bricolage Grotesque', sans-serif; }
+        .details-content { max-height: 0; opacity: 0; overflow: hidden; transition: all 0.3s ease; }
+        .details-content.open { max-height: 300px; opacity: 1; padding-top: 1rem; border-top: 1px dashed #e2e8f0; margin-top: 1rem; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 pb-24 md:pb-0">
+    <nav class="bg-white border-b border-slate-200 sticky top-0 z-50 p-4">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <h1 class="font-bricolage text-xl font-bold tracking-tight">Admin<span class="text-violet-600">Panel</span></h1>
+            <a href="pendaftaran.html" class="bg-violet-600 text-white px-4 py-2 rounded-xl text-sm font-bold shadow-lg shadow-violet-100">Input Baru</a>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto p-4 md:p-8">
+        <div class="mb-8">
+            <h2 class="font-bricolage text-2xl md:text-3xl font-bold text-slate-900">Data Siswa Aktif</h2>
+            <div class="flex gap-4 mt-4">
+                <div class="bg-white p-4 rounded-2xl border border-slate-200 flex-1 shadow-sm">
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Total Siswa</p>
+                    <p id="totalSiswa" class="text-2xl font-bold">0</p>
+                </div>
+                <div class="bg-white p-4 rounded-2xl border border-slate-200 flex-1 shadow-sm">
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Daftar Hari Ini</p>
+                    <p id="totalHariIni" class="text-2xl font-bold text-violet-600">0</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="hidden md:block bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
+            <table class="w-full text-left border-collapse">
+                <thead class="bg-slate-50 border-b border-slate-200">
+                    <tr class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+                        <th class="p-5">Nama Siswa</th>
+                        <th class="p-5">Program</th>
+                        <th class="p-5">Kelas</th>
+                        <th class="p-5">Guru</th>
+                        <th class="p-5">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="desktopTbody" class="text-sm divide-y divide-slate-100"></tbody>
+            </table>
+        </div>
+
+        <div id="mobileList" class="md:hidden space-y-4"></div>
+    </main>
+
+    <script>
+        const API = 'https://absensi-api.yumenoboken.workers.dev/api';
+        
+        async function loadData() {
+            const res = await fetch(`${API}/data`);
+            const data = await res.json();
+            
+            document.getElementById('totalSiswa').innerText = data.length;
+            const today = new Date().toLocaleDateString('en-CA');
+            document.getElementById('totalHariIni').innerText = data.filter(s => s.waktu_input.includes(today)).length;
+
+            renderDesktop(data);
+            renderMobile(data);
+        }
+
+        function renderDesktop(data) {
+            const tbody = document.getElementById('desktopTbody');
+            tbody.innerHTML = data.map(s => `
+                <tr class="hover:bg-slate-50 transition-colors">
+                    <td class="p-5 font-bold">${s.nama_siswa}</td>
+                    <td class="p-5"><span class="bg-slate-100 px-2 py-1 rounded text-xs uppercase font-bold">${s.program}</span></td>
+                    <td class="p-5 text-violet-700 font-bold">${s.kelas}</td>
+                    <td class="p-5 text-slate-500">${s.guru}</td>
+                    <td class="p-5"><button onclick="hapus(${s.id})" class="text-red-500 font-bold text-xs">Hapus</button></td>
+                </tr>
+            `).join('');
+        }
+
+        function renderMobile(data) {
+            const container = document.getElementById('mobileList');
+            container.innerHTML = data.map((s, i) => `
+                <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+                    <div class="flex justify-between items-center cursor-pointer" onclick="document.getElementById('det-${i}').classList.toggle('open')">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-violet-100 text-violet-700 rounded-full flex items-center justify-center font-bold">${s.nama_siswa[0]}</div>
+                            <span class="font-bold text-slate-800">${s.nama_siswa}</span>
+                        </div>
+                        <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" /></svg>
+                    </div>
+                    <div id="det-${i}" class="details-content">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div><p class="text-[10px] font-bold text-slate-400 uppercase">Kelas</p><p class="text-sm font-bold text-violet-600">${s.kelas}</p></div>
+                            <div><p class="text-[10px] font-bold text-slate-400 uppercase">Program</p><p class="text-sm font-bold capitalize">${s.program}</p></div>
+                            <div><p class="text-[10px] font-bold text-slate-400 uppercase">Guru</p><p class="text-sm font-bold text-slate-600">${s.guru}</p></div>
+                            <div class="flex items-end"><button onclick="hapus(${s.id})" class="text-red-500 font-bold text-xs border border-red-100 px-3 py-1 rounded-lg">Hapus Data</button></div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function hapus(id) {
+            if(!confirm("Hapus data?")) return;
+            await fetch(`${API}/delete`, { method: 'POST', body: JSON.stringify({ id }) });
+            loadData();
+        }
+
+        loadData();
+    </script>
+</body>
+</html>
