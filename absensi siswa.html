@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Absensi Siswa</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&family=Bricolage+Grotesque:wght@700&display=swap"
+        rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        .font-bricolage {
+            font-family: 'Bricolage Grotesque', sans-serif;
+        }
+
+        .details-content {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .details-content.open {
+            max-height: 300px;
+            opacity: 1;
+            padding-top: 1rem;
+            border-top: 1px dashed #e2e8f0;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+
+<body class="bg-slate-50 text-slate-800 antialiased overflow-hidden flex h-screen">
+    <aside class="hidden md:flex flex-col w-64 h-full bg-white border-r border-slate-200 z-20 flex-shrink-0">
+        <div class="h-16 flex items-center px-6 border-b border-slate-100">
+            <div class="flex items-center gap-1">
+                <div class="w-12 h-12 rounded-xl bg-white flex items-center justify-center overflow-hidden">
+                    <img src="Logo Insan Jaya.jpeg" alt="Logo Insan Jaya" class="w-full h-full object-contain" />
+                </div>
+                <span class="font-bricolage font-bold text-lg text-slate-900 tracking-tight">LKP</span>
+                <span class="font-bricolage font-bold text-lg text-violet-600">INSAN JAYA</span>
+            </div>
+        </div>
+
+        <nav class="flex-1 overflow-y-auto no-scrollbar py-4 px-3 space-y-1">
+            <a href="pendaftaran.html"
+                class="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-medium text-sm transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+                Pendaftaran Baru
+            </a>
+            <a href="absensi siswa.html"
+                class="flex items-center gap-3 px-3 py-2.5 bg-violet-50 text-violet-700 rounded-xl font-semibold text-sm transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                </svg>
+                Absensi Siswa
+            </a>
+            <a href="data kelas.html"
+                class="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-medium text-sm transition-colors">
+                <svg class=" w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                </svg>
+                Data Siswa Aktif
+            </a>
+        </nav>
+    </aside>
+
+    <main class="flex-1 flex flex-col h-full bg-slate-50 overflow-hidden">
+
+        <header
+            class="md:hidden sticky top-0 z-10 h-16 bg-white/80 backdrop-blur-md border-b border-slate-200 flex items-center justify-between px-5">
+            <span class="font-bold text-slate-800 tracking-tight">Absensi Siswa</span>
+            <a href="pendaftaran.html"
+                class="flex items-center gap-1 text-violet-600 bg-violet-50 hover:bg-violet-100 px-3 py-1.5 rounded-full font-semibold text-sm transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+                Input
+            </a>
+        </header>
+
+        <div class="flex-1 overflow-y-auto p-4 md:p-8">
+            <div class="max-w-6xl mx-auto space-y-6">
+
+                <div class="flex items-center justify-between">
+                    <h2 class="font-bricolage text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight">
+                        Absensi Siswa
+                    </h2>
+                    <a href="pendaftaran.html"
+                        class="hidden md:flex items-center gap-2 text-violet-600 bg-violet-100 hover:bg-violet-200 px-4 py-2 rounded-lg font-semibold text-sm transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4">
+                            </path>
+                        </svg>
+                        Tambah Siswa
+                    </a>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 md:p-8">
+
+                    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6">
+                        <div>
+                            <h2 id="judulKelas" class="font-bold text-xl mb-1 text-slate-800">
+                                Belum pilih kelas
+                            </h2>
+                            <div
+                                class="inline-flex items-center gap-2 bg-violet-100 border border-violet-200 text-violet-700 px-4 py-1.5 rounded-full mt-2 shadow-sm">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
+                                    </path>
+                                </svg>
+                                <select id="bulanSelect"
+                                    class="text-sm font-bold bg-transparent outline-none cursor-pointer">
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="w-full md:w-auto">
+                            <label for="kelasSelect" class="sr-only">Pilih Kelas</label>
+                            <select id="kelasSelect"
+                                class="w-full md:w-64 bg-slate-50 border border-slate-200 text-slate-700 font-medium px-4 py-2.5 rounded-xl focus:ring-4 focus:ring-violet-500/20 focus:border-violet-500 outline-none transition-all cursor-pointer hover:bg-slate-100 appearance-none">
+                                <option value="">Pilih Kelas...</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="rounded-xl border border-slate-200 overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="w-full min-w-[900px] text-center text-sm text-slate-600">
+                                <thead class="bg-slate-50 border-b border-slate-200">
+                                    <tr id="headerRow">
+                                        <th
+                                            class="px-4 py-3 text-left font-semibold text-slate-700 min-w-[200px] sticky left-0 bg-slate-50 shadow-[1px_0_0_0_#e2e8f0]">
+                                            Nama Lengkap</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody id="bodyAbsensi" class="divide-y divide-slate-100 bg-white">
+                                    <tr>
+                                        <td colspan="13" class="py-16 text-center">
+                                            <div class="flex flex-col items-center justify-center space-y-3">
+                                                <div
+                                                    class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center">
+                                                    <svg class="w-8 h-8 text-slate-300" fill="none"
+                                                        stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="1.5"
+                                                            d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
+                                                        </path>
+                                                    </svg>
+                                                </div>
+                                                <p class="text-slate-400 font-medium">Pilih kelas terlebih dahulu untuk
+                                                    mulai absensi</p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 flex justify-end border-t border-slate-100 pt-6">
+                        <button onclick="saveAll()"
+                            class="group flex items-center gap-2 bg-violet-600 hover:bg-violet-700 text-white px-6 py-2.5 rounded-xl font-medium shadow-lg shadow-violet-600/30 hover:shadow-violet-600/50 hover:-translate-y-0.5 transition-all duration-200">
+                            <svg class="w-5 h-5 group-hover:scale-110 transition-transform" fill="none"
+                                stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4">
+                                </path>
+                            </svg>
+                            Simpan Absensi
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const API_URL = 'https://absensi-api.yumenoboken.workers.dev';
+
+        let selectedBulan = new Date().toISOString().slice(0, 7);
+        let bulanList = [];
+        let dataAbsensi = {};
+        let kelasData = [];
+        let AUTO_SAVE = true;
+
+        // ================= INIT =================
+        document.addEventListener("DOMContentLoaded", () => {
+
+            const headerRow = document.getElementById('headerRow');
+            if (headerRow) {
+                for (let i = 1; i <= 12; i++) {
+                    headerRow.innerHTML += `<th class="border px-2 py-1">${i}</th>`;
+                }
+            }
+
+            loadKelas();
+
+            document.getElementById('kelasSelect').addEventListener('change', (e) => {
+                const kelas = e.target.value;
+                if (!kelas) return;
+
+                document.getElementById('judulKelas').innerText = `Kelas: ${kelas}`;
+
+                generateBulan(kelas);
+                loadSiswa(kelas);
+            });
+        });
+
+
+        // ================= LOAD KELAS =================
+        async function loadKelas() {
+            const res = await fetch(`${API_URL}/api/kelas`);
+            const kelas = await res.json();
+
+            kelasData = kelas;
+
+            const select = document.getElementById('kelasSelect');
+            select.innerHTML = '<option value="">Pilih Kelas</option>';
+
+            kelas.forEach(k => {
+                select.innerHTML += `<option value="${k.nama_kelas}">${k.nama_kelas}</option>`;
+            });
+        }
+
+
+        // ================= GENERATE BULAN =================
+        function generateBulan(namaKelas) {
+            const kelas = kelasData.find(k => k.nama_kelas === namaKelas);
+
+            const start = kelas?.tanggal_mulai
+                ? new Date(kelas.tanggal_mulai)
+                : new Date();
+
+            const now = new Date();
+
+            bulanList = [];
+            const bulanSelect = document.getElementById('bulanSelect');
+            bulanSelect.innerHTML = '';
+
+            let current = new Date(start);
+
+            while (current <= now) {
+                const value = current.toISOString().slice(0, 7);
+                const label = current.toLocaleString('id-ID', { month: 'long', year: 'numeric' });
+
+                bulanList.push(value);
+                bulanSelect.innerHTML += `<option value="${value}">${label}</option>`;
+
+                current.setMonth(current.getMonth() + 1);
+            }
+
+            selectedBulan = bulanList[bulanList.length - 1];
+            bulanSelect.value = selectedBulan;
+
+            bulanSelect.onchange = () => {
+                selectedBulan = bulanSelect.value;
+                const kelasNow = document.getElementById('kelasSelect').value;
+                if (kelasNow) loadAbsensi(kelasNow);
+            };
+        }
+
+
+        // ================= LOAD SISWA =================
+        async function loadSiswa(kelas) {
+            const res = await fetch(`${API_URL}/api/siswa-by-kelas?kelas=${encodeURIComponent(kelas)}`);
+            const siswa = await res.json();
+
+            const body = document.getElementById('bodyAbsensi');
+            body.innerHTML = '';
+            dataAbsensi = {};
+
+            if (!siswa.length) {
+                body.innerHTML = `<tr><td colspan="13">Tidak ada siswa</td></tr>`;
+                return;
+            }
+
+            siswa.forEach(s => {
+                let row = `<tr>
+            <td class="border px-2 py-1 text-left">${s.nama_siswa}</td>`;
+
+                for (let i = 1; i <= 12; i++) {
+                    row += `
+            <td class="border cursor-pointer"
+                data-siswa="${s.id}"
+                data-pertemuan="${i}"
+                data-status=""
+                onclick="toggle(this)">
+            </td>`;
+                }
+
+                row += `</tr>`;
+                body.innerHTML += row;
+            });
+
+            loadAbsensi(kelas);
+        }
+
+
+        // ================= LOAD ABSENSI =================
+        async function loadAbsensi(kelas) {
+            const res = await fetch(
+                `${API_URL}/api/absensi-by-kelas?kelas=${encodeURIComponent(kelas)}&bulan=${selectedBulan}`
+            );
+
+            const data = await res.json();
+
+            // reset dulu semua cell
+            document.querySelectorAll('#bodyAbsensi td[data-siswa]').forEach(cell => {
+                cell.innerText = '';
+                cell.style.background = '';
+                cell.dataset.status = '';
+            });
+
+            data.forEach(item => {
+                const cell = document.querySelector(
+                    `[data-siswa="${item.siswa_id}"][data-pertemuan="${item.pertemuan_ke}"]`
+                );
+
+                if (!cell) return;
+
+                applyUI(cell, item.status);
+            });
+        }
+
+
+        // ================= APPLY UI =================
+        function applyUI(el, status) {
+            el.dataset.status = status;
+
+            el.innerText =
+                status === 'hadir' ? 'H' :
+                    status === 'izin' ? 'I' :
+                        status === 'alpha' ? 'A' : '';
+
+            el.style.background =
+                status === 'hadir' ? '#86efac' :
+                    status === 'izin' ? '#fde68a' :
+                        status === 'alpha' ? '#fca5a5' : '';
+        }
+
+
+        // ================= TOGGLE =================
+        async function toggle(el) {
+            const siswaId = parseInt(el.dataset.siswa);
+            const pertemuan = parseInt(el.dataset.pertemuan);
+
+            const current = el.dataset.status;
+
+            let next = '';
+            if (current === '') next = 'hadir';
+            else if (current === 'hadir') next = 'izin';
+            else if (current === 'izin') next = 'alpha';
+            else next = '';
+
+            applyUI(el, next);
+
+            dataAbsensi[`${siswaId}-${pertemuan}`] = next;
+
+            if (!siswaId || !pertemuan) {
+                console.error("ID ERROR:", siswaId, pertemuan);
+                return;
+            }
+
+            console.log("KIRIM:", {
+                siswa_id: siswaId,
+                pertemuan_ke: pertemuan,
+                status: next,
+                bulan: selectedBulan
+            });
+
+            if (AUTO_SAVE) {
+                try {
+                    const res = await fetch(`${API_URL}/api/absensi-bulk`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify([{
+                            siswa_id: siswaId,
+                            pertemuan_ke: pertemuan,
+                            status: next,
+                            bulan: selectedBulan
+                        }])
+                    });
+
+                    const json = await res.json();
+                    console.log("SAVE:", json);
+
+                } catch (err) {
+                    console.error("Auto save gagal", err);
+                }
+            }
+        }
+
+
+        // ================= MANUAL SAVE =================
+        async function saveAll() {
+            const payload = [];
+
+            for (let key in dataAbsensi) {
+                const [siswa_id, pertemuan_ke] = key.split('-');
+
+                payload.push({
+                    siswa_id,
+                    pertemuan_ke,
+                    status: dataAbsensi[key],
+                    bulan: selectedBulan
+                });
+            }
+
+            if (!payload.length) {
+                alert("Tidak ada perubahan!");
+                return;
+            }
+
+            await fetch(`${API_URL}/api/absensi-bulk`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            alert("Backup tersimpan!");
+        }
+    </script>
+</body>
+
+</html>
