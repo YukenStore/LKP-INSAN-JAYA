@@ -40,7 +40,8 @@
         <div class="h-16 flex items-center px-6 border-b border-slate-100">
             <div class="flex items-center gap-1">
                 <div class="w-12 h-12 rounded-xl bg-white flex items-center justify-center overflow-hidden">
-                    <img src="Logo Insan Jaya.jpeg" alt="Logo Insan Jaya" class="w-full h-full object-contain" />
+                    <img src="Logo Insan Jaya.jpeg" alt="Logo Insan Jaya" class="w-full h-full object-contain"
+                        onerror="this.src='https://via.placeholder.com/150'" />
                 </div>
                 <span class="font-bricolage font-bold text-lg text-slate-900 tracking-tight">LKP</span>
                 <span class="font-bricolage font-bold text-lg text-violet-600">INSAN JAYA</span>
@@ -64,7 +65,7 @@
                 </svg>
                 Absensi Siswa
             </a>
-            <a href="index.html"
+            <a href="data kelas.html"
                 class="flex items-center gap-3 px-3 py-2.5 bg-violet-50 text-violet-700 rounded-xl font-semibold text-sm transition-colors">
                 <svg class=" w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -75,71 +76,108 @@
         </nav>
     </aside>
 
-    <main class="flex-1 flex flex-col h-full overflow-hidden">
-        <!-- header mobile -->
-        <header class="md:hidden h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4">
-            <span class="font-bold">Data Kelas</span>
-            <a href="pendaftaran.html" class="text-violet-600 font-bold text-sm">+ Input</a>
+    <main class="flex-1 flex flex-col h-full overflow-hidden relative">
+       <header class="md:hidden h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 z-10">
+            <div class="flex items-center gap-2">
+                <div class="flex items-center gap-2">
+                    <div class="w-9 h-9 rounded-xl bg-white flex items-center justify-center overflow-hidden border">
+                        <img src="Logo Insan Jaya.jpeg" class="w-full h-full object-contain">
+                    </div>
+                    <span class="font-bricolage font-bold text-base text-slate-900">LKP</span>
+                    <span class="font-bricolage font-bold text-base text-violet-600">INSAN JAYA</span>
+                </div>
+            </div>
         </header>
 
-        <div class="flex-1 overflow-y-auto p-4 md:p-6">
+        <div class="flex-1 overflow-y-auto p-4 pb-24 md:p-6 md:pb-6">
 
-            <div class="max-w-5xl mx-auto space-y-6">
+            <div class="max-w-6xl mx-auto">
+                <div class="mb-8">
+                    <h1 class="font-bricolage text-2xl md:text-3xl font-bold text-slate-900 tracking-tight">Data Siswa Aktif</h1>
+                    <p class="text-sm text-slate-500 mt-1">Berikut adalah daftar siswa yang sedang aktif dalam program les.</p>
+                </div>
 
-                <!-- Judul -->
-                <h2 class="font-bricolage text-2xl md:text-3xl font-bold text-slate-900">
-                    Data Siswa Aktif
-                </h2>
-
-                <!-- Statistik -->
                 <div class="flex gap-4">
-                    <div class="bg-white p-3 rounded-xl border border-slate-200 flex-1 shadow-sm">
-                        <p class="text-[10px] font-bold text-slate-400 uppercase">Total Siswa</p>
-                        <p id="totalSiswa" class="text-xl font-bold">0</p>
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 flex-1 shadow-sm">
+                        <p class="text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-wider">Total Siswa
+                        </p>
+                        <p id="totalSiswa" class="text-2xl font-bricolage font-bold text-slate-800 mt-1">0</p>
                     </div>
-                    <div class="bg-white p-3 rounded-xl border border-slate-200 flex-1 shadow-sm">
-                        <p class="text-[10px] font-bold text-slate-400 uppercase">Daftar Hari Ini</p>
-                        <p id="totalHariIni" class="text-xl font-bold text-violet-600">0</p>
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 flex-1 shadow-sm">
+                        <p class="text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-wider">Daftar Hari
+                            Ini</p>
+                        <p id="totalHariIni" class="text-2xl font-bricolage font-bold text-violet-600 mt-1">0</p>
                     </div>
                 </div>
 
-                <div class="grid md:grid-cols-5 gap-3 mb-4">
-                    <input id="searchNama" placeholder="Cari nama..." class="px-3 py-2 border rounded-xl text-sm">
+                <div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-4 mt-6">
+                    <input id="searchNama" placeholder="Cari nama..."
+                        class="col-span-2 md:col-span-1 px-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-violet-500">
 
-                    <select id="filterProgram" class="px-3 py-2 border rounded-xl text-sm">
+                    <select id="filterProgram"
+                        class="px-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 bg-white">
                         <option value="">Semua Program</option>
                     </select>
 
-                    <select id="filterKelas" class="px-3 py-2 border rounded-xl text-sm">
+                    <select id="filterKelas"
+                        class="px-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 bg-white">
                         <option value="">Semua Kelas</option>
                     </select>
 
-                    <input id="filterGuru" placeholder="Cari guru..." class="px-3 py-2 border rounded-xl text-sm">
+                    <input id="filterGuru" placeholder="Cari guru..."
+                        class="px-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-violet-500">
 
-                    <input id="filterJadwal" placeholder="Cari jadwal..." class="px-3 py-2 border rounded-xl text-sm">
+                    <input id="filterJadwal" placeholder="Cari jadwal..."
+                        class="px-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-violet-500">
                 </div>
 
-                <!-- Table -->
                 <div class="hidden md:block bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
                     <table class="w-full text-left border-collapse">
                         <thead class="bg-slate-50 border-b border-slate-200">
                             <tr class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
-                                <th class="p-3">Nama Siswa</th>
-                                <th class="p-3">Program</th>
-                                <th class="p-3">Kelas</th>
-                                <th class="p-3">Guru</th>
-                                <th class="p-3">Jadwal</th> <!-- TAMBAH -->
-                                <th class="p-3">Aksi</th>
+                                <th class="p-4">Nama Siswa</th>
+                                <th class="p-4">Program</th>
+                                <th class="p-4">Kelas</th>
+                                <th class="p-4">Guru</th>
+                                <th class="p-4">Jadwal</th>
+                                <th class="p-4 text-center">Aksi</th>
                             </tr>
                         </thead>
                         <tbody id="desktopTbody" class="text-sm divide-y divide-slate-100"></tbody>
                     </table>
                 </div>
 
+                <div id="mobileList" class="md:hidden space-y-3"></div>
+
             </div>
         </div>
 
-        <div id="mobileList" class="md:hidden space-y-4"></div>
+        <nav
+            class="md:hidden absolute bottom-0 w-full bg-white border-t border-slate-200 flex justify-around items-center h-16 z-50 px-2 pb-safe">
+            <a href="pendaftaran.html"
+                class="flex flex-col items-center justify-center w-full h-full text-slate-500 hover:text-violet-600 transition-colors">
+                <svg class="w-5 h-5 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+                <span class="text-[10px] font-semibold">Daftar</span>
+            </a>
+            <a href="absensi siswa.html"
+                class="flex flex-col items-center justify-center w-full h-full text-slate-500 hover:text-violet-600 transition-colors">
+                <svg class="w-5 h-5 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                </svg>
+                <span class="text-[10px] font-semibold">Absensi</span>
+            </a>
+            <a href="data kelas.html" class="flex flex-col items-center justify-center w-full h-full text-violet-600">
+                <svg class="w-5 h-5 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                </svg>
+                <span class="text-[10px] font-semibold">Data Kelas</span>
+            </a>
+        </nav>
 
     </main>
 
@@ -148,61 +186,94 @@
         const API = 'https://absensi-api.yumenoboken.workers.dev/api';
 
         async function loadData() {
-            const res = await fetch(`${API}/data`);
-            const data = await res.json();
+            try {
+                const res = await fetch(`${API}/data`);
+                const data = await res.json();
 
-            allData = data;
+                allData = data;
 
-            document.getElementById('totalSiswa').innerText = data.length;
+                document.getElementById('totalSiswa').innerText = data.length;
 
-            const today = new Date().toLocaleDateString('en-CA');
-            document.getElementById('totalHariIni').innerText =
-                data.filter(s => s.waktu_input.includes(today)).length;
+                const today = new Date().toLocaleDateString('en-CA');
+                document.getElementById('totalHariIni').innerText =
+                    data.filter(s => s.waktu_input.includes(today)).length;
 
-            initFilterOptions(data); // 🔥 TAMBAH INI
-            applyFilter();
+                initFilterOptions(data);
+                applyFilter();
+            } catch (error) {
+                console.error("Gagal memuat data", error);
+            }
         }
 
         function renderDesktop(data) {
             const tbody = document.getElementById('desktopTbody');
+            if (data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-slate-400">Tidak ada data ditemukan</td></tr>`;
+                return;
+            }
             tbody.innerHTML = data.map(s => `
                 <tr class="hover:bg-slate-50 transition-colors">
-                    <td class="p-5 font-bold">${s.nama_siswa}</td>
-                    <td class="p-5"><span class="bg-slate-100 px-2 py-1 rounded text-xs uppercase font-bold">${s.program}</span></td>
-                    <td class="p-5 text-violet-700 font-bold">${s.kelas}</td>
-                    <td class="p-3 text-slate-500">${s.guru}</td>
-                    <td class="p-3 text-slate-500">
-                        <span class="bg-amber-100 text-amber-700 px-2 py-1 rounded text-xs font-bold">
+                    <td class="p-4 font-bold text-slate-800">${formatNama(s.nama_siswa)}</td>
+                    <td class="p-4"><span class="bg-slate-100 text-slate-600 px-2.5 py-1 rounded-md text-xs uppercase font-bold">${s.program}</span></td>
+                    <td class="p-4 text-violet-700 font-bold">${s.kelas}</td>
+                    <td class="p-4 text-slate-600 font-medium">${s.guru}</td>
+                    <td class="p-4">
+                        <span class="bg-amber-50 text-amber-600 border border-amber-100 px-2.5 py-1 rounded-md text-xs font-bold">
                         ${s.jadwal || '-'}
                         </span>
                     </td>
-                    <td class="p-3"><button onclick="hapus(${s.id})" class="text-red-500 font-bold text-xs">Hapus</button></td>
+                    <td class="p-4 text-center">
+                        <button onclick="hapus(${s.id})" class="text-red-500 hover:text-red-700 font-bold text-xs bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-lg transition-colors">Hapus</button>
+                    </td>
                 </tr>
             `).join('');
         }
 
         function renderMobile(data) {
             const container = document.getElementById('mobileList');
-            container.innerHTML = data.map((s, i) => `
+            if (data.length === 0) {
+                container.innerHTML = `<div class="p-6 text-center text-slate-400 bg-white rounded-2xl border border-slate-200">Tidak ada data ditemukan</div>`;
+                return;
+            }
+            container.innerHTML = data.map((s, i) => {
+                // Ambil 1 huruf pertama saja untuk inisial avatar
+                const inisial = s.nama_siswa ? s.nama_siswa.charAt(0).toUpperCase() : '?';
+                const namaFormat = formatNama(s.nama_siswa);
+
+                return `
                 <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-                    <div class="flex justify-between items-center cursor-pointer" onclick="document.getElementById('det-${i}').classList.toggle('open')">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 bg-violet-100 text-violet-700 rounded-full flex items-center justify-center font-bold">${s.nama_siswa[0]}</div>
-                            <span class="font-bold text-slate-800">${s.nama_siswa}</span>
+                    <div class="flex justify-between items-center cursor-pointer gap-2" onclick="toggleDetails('det-${i}', 'icon-${i}')">
+                        <div class="flex items-center gap-3 overflow-hidden">
+                            <div class="w-10 h-10 flex-shrink-0 bg-violet-100 text-violet-700 rounded-full flex items-center justify-center font-bold text-lg">
+                                ${inisial}
+                            </div>
+                            <div class="overflow-hidden">
+                                <span class="font-bold text-slate-800 block truncate">${namaFormat}</span>
+                                <span class="text-xs text-slate-500 font-medium block truncate">${s.kelas}</span>
+                            </div>
                         </div>
-                        <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" /></svg>
+                        <svg id="icon-${i}" class="w-5 h-5 text-slate-400 flex-shrink-0 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
                     </div>
                     <div id="det-${i}" class="details-content">
                         <div class="grid grid-cols-2 gap-4">
-                            <div><p class="text-[10px] font-bold text-slate-400 uppercase">Kelas</p><p class="text-sm font-bold text-violet-600">${s.kelas}</p></div>
-                            <div><p class="text-[10px] font-bold text-slate-400 uppercase">Program</p><p class="text-sm font-bold capitalize">${s.program}</p></div>
-                            <div><p class="text-[10px] font-bold text-slate-400 uppercase">Guru</p><p class="text-sm font-bold text-slate-600">${s.guru}</p></div>
-                            <div><p class="text-[10px] font-bold text-slate-400 uppercase">Jadwal</p><p class="text-sm font-bold text-amber-600">${s.jadwal || '-'}</p></div>
-                            <div class="flex items-end"><button onclick="hapus(${s.id})" class="text-red-500 font-bold text-xs border border-red-100 px-3 py-1 rounded-lg">Hapus Data</button></div>
+                            <div class="bg-slate-50 p-2 rounded-lg"><p class="text-[10px] font-bold text-slate-400 uppercase mb-0.5">Program</p><p class="text-sm font-bold text-slate-700 capitalize">${s.program}</p></div>
+                            <div class="bg-slate-50 p-2 rounded-lg"><p class="text-[10px] font-bold text-slate-400 uppercase mb-0.5">Guru</p><p class="text-sm font-bold text-slate-700">${s.guru}</p></div>
+                            <div class="col-span-2 bg-amber-50 border border-amber-100 p-2 rounded-lg"><p class="text-[10px] font-bold text-amber-500 uppercase mb-0.5">Jadwal</p><p class="text-sm font-bold text-amber-700">${s.jadwal || '-'}</p></div>
+                            <div class="col-span-2 mt-1">
+                                <button onclick="hapus(${s.id})" class="w-full flex justify-center items-center gap-2 text-red-600 font-bold text-sm bg-red-50 hover:bg-red-100 py-2.5 rounded-xl transition-colors">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                                    Hapus Siswa
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
-            `).join('');
+            `}).join('');
+        }
+
+        function toggleDetails(id, iconId) {
+            document.getElementById(id).classList.toggle('open');
+            document.getElementById(iconId).classList.toggle('rotate-180');
         }
 
         function applyFilter() {
@@ -220,36 +291,57 @@
                 (s.jadwal || '').toLowerCase().includes(jadwal)
             );
 
+            filtered.sort((a, b) =>
+                a.nama_siswa.localeCompare(b.nama_siswa, 'id', { sensitivity: 'base' })
+            );
+
             renderDesktop(filtered);
             renderMobile(filtered);
         }
 
         function initFilterOptions(data) {
-            const programSet = [...new Set(data.map(d => d.program))];
-            const kelasSet = [...new Set(data.map(d => d.kelas))];
+            const programSet = [...new Set(data.map(d => d.program))]
+                .sort((a, b) => a.localeCompare(b, 'id', { sensitivity: 'base' }));
+
+            const kelasSet = [...new Set(data.map(d => d.kelas))]
+                .sort((a, b) => a.localeCompare(b, 'id', { sensitivity: 'base' }));
 
             const progEl = document.getElementById('filterProgram');
             const kelasEl = document.getElementById('filterKelas');
 
-            // reset isi
             progEl.innerHTML = '<option value="">Semua Program</option>';
             kelasEl.innerHTML = '<option value="">Semua Kelas</option>';
 
-            // isi program
             programSet.forEach(p => {
                 progEl.innerHTML += `<option value="${p}">${p}</option>`;
             });
 
-            // isi kelas
             kelasSet.forEach(k => {
                 kelasEl.innerHTML += `<option value="${k}">${k}</option>`;
             });
         }
 
+        function formatNama(nama) {
+            return nama
+                .toLowerCase()
+                .replace(/\./g, '')
+                .replace(/\s+/g, ' ')
+                .trim()
+                .split(' ')
+                .map(kata =>
+                    kata.charAt(0).toUpperCase() + kata.slice(1)
+                )
+                .join(' ');
+        }
+
         async function hapus(id) {
             if (!confirm("Hapus data?")) return;
-            await fetch(`${API}/delete`, { method: 'POST', body: JSON.stringify({ id }) });
-            loadData();
+            try {
+                await fetch(`${API}/delete`, { method: 'POST', body: JSON.stringify({ id }) });
+                loadData();
+            } catch (error) {
+                alert("Gagal menghapus data");
+            }
         }
 
         ['searchNama', 'filterProgram', 'filterKelas', 'filterGuru', 'filterJadwal']
