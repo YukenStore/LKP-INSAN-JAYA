@@ -18,22 +18,20 @@
             font-family: 'Bricolage Grotesque', sans-serif;
         }
 
-        .details-content {
-            max-height: 0;
-            opacity: 0;
-            overflow: hidden;
-            transition: all 0.3s ease;
+        /* Custom scrollbar tipis untuk tabel di mobile */
+        .custom-scrollbar::-webkit-scrollbar {
+            height: 6px;
         }
 
-        .details-content.open {
-            max-height: 300px;
-            opacity: 1;
-            padding-top: 1rem;
-            border-top: 1px dashed #e2e8f0;
-            margin-top: 1rem;
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
         }
 
-        /* Menghilangkan panah default bawaan select agar lebih rapi di tabel */
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+
         .select-absen {
             -webkit-appearance: none;
             -moz-appearance: none;
@@ -43,12 +41,14 @@
     </style>
 </head>
 
-<body class="bg-slate-50 text-slate-800 antialiased overflow-hidden flex h-screen">
+<body class="bg-slate-50 text-slate-800 antialiased overflow-hidden flex h-screen relative">
+
     <aside class="hidden md:flex flex-col w-64 h-full bg-white border-r border-slate-200 z-20 flex-shrink-0">
         <div class="h-16 flex items-center px-6 border-b border-slate-100">
             <div class="flex items-center gap-1">
                 <div class="w-12 h-12 rounded-xl bg-white flex items-center justify-center overflow-hidden">
-                    <img src="Logo Insan Jaya.jpeg" alt="Logo Insan Jaya" class="w-full h-full object-contain" />
+                    <img src="Logo Insan Jaya.jpeg" alt="Logo Insan Jaya" class="w-full h-full object-contain"
+                        onerror="this.src='https://via.placeholder.com/150'" />
                 </div>
                 <span class="font-bricolage font-bold text-lg text-slate-900 tracking-tight">LKP</span>
                 <span class="font-bricolage font-bold text-lg text-violet-600">INSAN JAYA</span>
@@ -65,7 +65,7 @@
                 Pendaftaran Baru
             </a>
             <a href="absensi siswa.html"
-                class="flex items-center gap-3 px-3 py-2.5 bg-violet-50 text-violet-700 rounded-xl font-semibold text-sm transition-colors">
+                class="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-medium text-sm transition-colors">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
@@ -73,7 +73,7 @@
                 Absensi Siswa
             </a>
             <a href="index.html"
-                class="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-medium text-sm transition-colors">
+                class="flex items-center gap-3 px-3 py-2.5 bg-violet-50 text-violet-700 rounded-xl font-semibold text-sm transition-colors">
                 <svg class=" w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
@@ -85,72 +85,85 @@
 
     <main class="flex-1 flex flex-col h-full bg-slate-50 overflow-hidden">
 
-        <header
-            class="md:hidden sticky top-0 z-10 h-16 bg-white/80 backdrop-blur-md border-b border-slate-200 flex items-center justify-between px-5">
-            <span class="font-bold text-slate-800 tracking-tight">Absensi Siswa</span>
-            <a href="pendaftaran.html"
-                class="flex items-center gap-1 text-violet-600 bg-violet-50 hover:bg-violet-100 px-3 py-1.5 rounded-full font-semibold text-sm transition-colors">
-            </a>
+        <header class="md:hidden h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 z-10">
+            <div class="flex items-center gap-2">
+                <div class="flex items-center gap-2">
+                    <div class="w-9 h-9 rounded-xl bg-white flex items-center justify-center overflow-hidden border">
+                        <img src="Logo Insan Jaya.jpeg" class="w-full h-full object-contain">
+                    </div>
+                    <span class="font-bricolage font-bold text-base text-slate-900">LKP</span>
+                    <span class="font-bricolage font-bold text-base text-violet-600">INSAN JAYA</span>
+                </div>
+            </div>
         </header>
 
-        <div class="flex-1 overflow-y-auto p-4 md:p-8">
-            <div class="max-w-6xl mx-auto space-y-6">
+        <div class="flex-1 overflow-y-auto p-4 md:p-8 pb-24 md:pb-8">
+            <div class="max-w-6xl mx-auto space-y-4 md:space-y-6">
 
-                <div class="flex items-center justify-between">
-                    <h2 class="font-bricolage text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight">
-                        Absensi Siswa
-                    </h2>
+                <div class="mb-8">
+                    <h1 class="font-bricolage text-2xl md:text-3xl font-bold text-slate-900 tracking-tight">Absensi
+                        Siswa</h1>
+                    <p class="text-sm text-slate-500 mt-1">Berikut adalah absensi siswa selama 12 pertemuan terakhir.
+                    </p>
                 </div>
 
-                <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 md:p-8">
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-4 md:p-8">
 
-                    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6">
-                        <div>
-                            <h2 id="judulKelas" class="font-bold text-xl mb-1 text-slate-800">
-                                Belum pilih kelas
-                            </h2>
-                            <div
-                                class="inline-flex items-center gap-2 bg-violet-100 border border-violet-200 text-violet-700 px-4 py-1.5 rounded-full mt-2 shadow-sm">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
-                                    </path>
-                                </svg>
-                                <div class="flex gap-2">
-                                    <select id="bulanSelect"
-                                        class="text-sm font-bold bg-transparent outline-none cursor-pointer">
-                                    </select>
-
-                                    <select id="tahunSelect"
-                                        class="text-sm font-bold bg-transparent outline-none cursor-pointer">
-                                    </select>
+                    <div class="flex flex-col gap-4 mb-6 lg:flex-row lg:items-end lg:justify-between">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                            <div>
+                                <h2 id="judulGuru" class="font-bold text-lg md:text-xl text-slate-800">
+                                    Belum pilih guru
+                                </h2>
+                                <div
+                                    class="inline-flex items-center gap-2 bg-violet-100 border border-violet-200 text-violet-700 px-3 py-1.5 rounded-full mt-2 shadow-sm">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
+                                        </path>
+                                    </svg>
+                                    <div class="flex gap-1 text-xs md:text-sm">
+                                        <select id="bulanSelect"
+                                            class="font-bold bg-transparent outline-none cursor-pointer"></select>
+                                        <select id="tahunSelect"
+                                            class="font-bold bg-transparent outline-none cursor-pointer"></select>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="w-full md:w-auto">
-                            <label for="kelasSelect" class="sr-only">Pilih Kelas</label>
-                            <select id="kelasSelect"
-                                class="w-full md:w-64 bg-slate-50 border border-slate-200 text-slate-700 font-medium px-4 py-2.5 rounded-xl focus:ring-4 focus:ring-violet-500/20 focus:border-violet-500 outline-none transition-all cursor-pointer hover:bg-slate-100 appearance-none">
-                                <option value="">Pilih Kelas...</option>
-                            </select>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full lg:w-auto">
+                            <div>
+                                <label for="guruSelect" class="sr-only">Pilih Guru</label>
+                                <select id="guruSelect"
+                                    class="w-full lg:w-56 bg-slate-50 border border-slate-200 text-slate-700 font-medium px-4 py-2.5 rounded-xl focus:ring-4 focus:ring-violet-500/20 focus:border-violet-500 outline-none transition-all cursor-pointer hover:bg-slate-100 appearance-none text-sm">
+                                    <option value="">Pilih Guru...</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="jadwalSelect" class="sr-only">Pilih Jadwal</label>
+                                <select id="jadwalSelect"
+                                    class="w-full lg:w-64 bg-slate-50 border border-slate-200 text-slate-700 font-medium px-4 py-2.5 rounded-xl focus:ring-4 focus:ring-violet-500/20 focus:border-violet-500 outline-none transition-all cursor-pointer hover:bg-slate-100 appearance-none text-sm">
+                                    <option value="">Pilih Jadwal...</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
 
                     <div class="rounded-xl border border-slate-200 overflow-hidden">
-                        <div class="overflow-x-auto">
-                            <table class="w-full min-w-[900px] text-center text-sm text-slate-600">
+                        <div class="overflow-x-auto custom-scrollbar">
+                            <table
+                                class="w-full min-w-[800px] text-center text-xs md:text-sm text-slate-600 table-fixed">
                                 <thead class="bg-slate-50 border-b border-slate-200">
                                     <tr id="headerRow">
-                                        <th class="border-b px-4 py-2 text-left sticky left-0 font-bold capitalize transition-all duration-300
-           bg-violet-50 text-violet-900 hover:bg-violet-100 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">
+                                        <th
+                                            class="w-40 border-b px-4 py-3 text-left sticky left-0 z-10 font-bold capitalize bg-violet-50 text-violet-900 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">
                                             Nama Lengkap
                                         </th>
                                     </tr>
-
                                     <tr id="tanggalRow" class="bg-slate-50">
-                                        <th class="border-b px-4 py-2 text-left sticky left-0 font-bold capitalize transition-all duration-300
-           bg-violet-50 text-violet-900 hover:bg-violet-100 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">
+                                        <th
+                                            class="w-40 border-b px-4 py-2 text-left sticky left-0 z-10 font-bold capitalize bg-violet-50 text-violet-900 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">
                                             Tanggal
                                         </th>
                                     </tr>
@@ -158,11 +171,11 @@
 
                                 <tbody id="bodyAbsensi" class="divide-y divide-slate-100 bg-white">
                                     <tr>
-                                        <td colspan="13" class="py-16 text-center">
+                                        <td colspan="13" class="py-12 text-center">
                                             <div class="flex flex-col items-center justify-center space-y-3">
                                                 <div
-                                                    class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center">
-                                                    <svg class="w-8 h-8 text-slate-300" fill="none"
+                                                    class="w-12 h-12 bg-slate-50 rounded-full flex items-center justify-center">
+                                                    <svg class="w-6 h-6 text-slate-300" fill="none"
                                                         stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round"
                                                             stroke-width="1.5"
@@ -170,8 +183,8 @@
                                                         </path>
                                                     </svg>
                                                 </div>
-                                                <p class="text-slate-400 font-medium">Pilih kelas terlebih dahulu untuk
-                                                    mulai absensi</p>
+                                                <p class="text-slate-400 font-medium text-sm">Pilih kelas terlebih
+                                                    dahulu untuk mulai absensi</p>
                                             </div>
                                         </td>
                                     </tr>
@@ -180,10 +193,10 @@
                         </div>
                     </div>
 
-                    <div class="mt-6 flex justify-end border-t border-slate-100 pt-6">
+                    <div class="mt-4 border-t border-slate-100 pt-4 flex justify-end">
                         <button onclick="saveAll()"
-                            class="group flex items-center gap-2 bg-violet-600 hover:bg-violet-700 text-white px-6 py-2.5 rounded-xl font-medium shadow-lg shadow-violet-600/30 hover:shadow-violet-600/50 hover:-translate-y-0.5 transition-all duration-200">
-                            <svg class="w-5 h-5 group-hover:scale-110 transition-transform" fill="none"
+                            class="group w-full sm:w-auto flex items-center justify-center gap-2 bg-violet-600 hover:bg-violet-700 text-white px-6 py-2.5 rounded-xl font-medium shadow-lg shadow-violet-600/30 transition-all duration-200 text-sm">
+                            <svg class="w-4 h-4 group-hover:scale-110 transition-transform" fill="none"
                                 stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4">
@@ -196,6 +209,33 @@
                 </div>
             </div>
         </div>
+        <nav
+            class="md:hidden absolute bottom-0 w-full bg-white border-t border-slate-200 flex justify-around items-center h-16 z-50 px-2 pb-safe">
+            <a href="pendaftaran.html"
+                class="flex flex-col items-center justify-center w-full h-full text-slate-500 hover:text-violet-600 transition-colors">
+                <svg class="w-5 h-5 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+                <span class="text-[10px] font-semibold">Daftar</span>
+            </a>
+            <a href="absensi siswa.html"
+                class="flex flex-col items-center justify-center w-full h-full text-violet-600">
+                <svg class="w-5 h-5 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                </svg>
+                <span class="text-[10px] font-semibold">Absensi</span>
+            </a>
+            <a href="index.html"
+                class="flex flex-col items-center justify-center w-full h-full text-slate-500 hover:text-violet-600 transition-colors">
+                <svg class="w-5 h-5 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+                <span class="text-[10px] font-semibold">Data Kelas</span>
+            </a>
+        </nav>
     </main>
 
     <script>
@@ -207,320 +247,26 @@
         let AUTO_SAVE = true;
         let dataTanggal = {};
 
-        function handleStatusChange(el, studentId, pertemuanId) {
-            const status = el.value;
+        // --- LOGIKA MOBILE MENU DRAWER ---
+        const menuBtn = document.getElementById('menuBtn');
+        const closeMenuBtn = document.getElementById('closeMenuBtn');
+        const sidebar = document.getElementById('sidebar');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
 
-            // Reset style dasar
-            el.style.color = 'white';
-
-            // Mapping warna berdasarkan status
-            const colors = {
-                'hadir': '#22c55e', // Green-500
-                'izin': '#f59e0b', // Amber-500
-                'alpha': '#ef4444', // Red-500
-                '': '#f3f4f6'  // Gray-100 (Default)
-            };
-
-            const textColors = {
-                '': '#6b7280' // Gray-500 untuk default
-            };
-
-            // Apply warna ke element
-            el.style.backgroundColor = colors[status] || colors[''];
-            el.style.color = status ? 'white' : textColors[''];
-
-            // Lanjutkan logika simpan data kamu di sini...
-            console.log(`Siswa ${studentId} di pertemuan ${pertemuanId} statusnya: ${status}`);
+        function toggleSidebar() {
+            sidebar.classList.toggle('-translate-x-full');
+            sidebarOverlay.classList.toggle('hidden');
         }
 
-        function applyStatusColor(el) {
-            const status = el.value.toLowerCase();
-
-            // Mapping Warna (BG dan Text)
-            const styles = {
-                'hadir': { bg: '#10b981', text: '#ffffff' }, // Hijau Emerald
-                'izin': { bg: '#f59e0b', text: '#ffffff' }, // Amber/Kuning
-                'alpha': { bg: '#ef4444', text: '#ffffff' }, // Merah
-                'default': { bg: '#f3f4f6', text: '#6b7280' } // Abu-abu
-            };
-
-            const style = styles[status] || styles['default'];
-
-            el.style.backgroundColor = style.bg;
-            el.style.color = style.text;
-        }
-
-        // Tambahkan ini supaya pas halaman baru buka, warna langsung muncul
-        document.querySelectorAll('.status-select').forEach(select => {
-            applyStatusColor(select);
-        });
+        if (menuBtn) menuBtn.addEventListener('click', toggleSidebar);
+        if (closeMenuBtn) closeMenuBtn.addEventListener('click', toggleSidebar);
+        if (sidebarOverlay) sidebarOverlay.addEventListener('click', toggleSidebar);
 
 
-        function handleStatusStyle(el, cellId) {
-            const status = el.value;
-            const cell = document.getElementById(`cell-${cellId}`);
-
-            // Reset classes
-            cell.classList.remove('bg-emerald-500', 'bg-amber-400', 'bg-rose-500', 'text-white');
-            el.style.color = 'inherit';
-
-            if (status === 'hadir') {
-                cell.classList.add('bg-emerald-500', 'text-white');
-                el.style.color = 'white';
-            } else if (status === 'izin') {
-                cell.classList.add('bg-amber-400', 'text-white');
-                el.style.color = 'white';
-            } else if (status === 'alpha') {
-                cell.classList.add('bg-rose-500', 'text-white');
-                el.style.color = 'white';
-            } else {
-                el.style.color = '#94a3b8'; // Gray-400 jika kosong
-            }
-        }
-
-        // ================= INIT =================
-        document.addEventListener("DOMContentLoaded", () => {
-
-            const headerRow = document.getElementById('headerRow');
-            if (headerRow) {
-                for (let i = 1; i <= 12; i++) {
-                    headerRow.innerHTML += `<th class="border px-2 py-1">${i}</th>`;
-                }
-            }
-
-            loadKelas();
-
-            document.getElementById('kelasSelect').addEventListener('change', (e) => {
-                const kelas = e.target.value;
-                if (!kelas) return;
-
-                document.getElementById('judulKelas').innerText = `Kelas: ${kelas}`;
-
-                generateBulan();
-                loadSiswa(kelas);
-            });
-        });
-
-        // ================= LOAD KELAS =================
-        async function loadKelas() {
-            const res = await fetch(`${API_URL}/api/kelas`);
-            const kelas = await res.json();
-
-            kelasData = kelas;
-
-            const select = document.getElementById('kelasSelect');
-            select.innerHTML = '<option value="">Pilih Kelas</option>';
-
-            kelas.forEach(k => {
-                select.innerHTML += `<option value="${k.nama_kelas}">${k.nama_kelas}</option>`;
-            });
-        }
-
-        // ================= BULAN =================
-        function generateBulan() {
-            const now = new Date();
-
-            const bulanSelect = document.getElementById('bulanSelect');
-            const tahunSelect = document.getElementById('tahunSelect');
-
-            bulanSelect.innerHTML = '';
-            tahunSelect.innerHTML = '';
-
-            const namaBulan = [
-                "Januari", "Februari", "Maret", "April", "Mei", "Juni",
-                "Juli", "Agustus", "September", "Oktober", "November", "Desember"
-            ];
-
-            namaBulan.forEach((b, i) => {
-                bulanSelect.innerHTML += `<option value="${String(i + 1).padStart(2, '0')}">${b}</option>`;
-            });
-
-            const startYear = now.getFullYear();
-            const endYear = now.getFullYear() + 10;
-
-            for (let y = startYear; y <= endYear; y++) {
-                tahunSelect.innerHTML += `<option value="${y}">${y}</option>`;
-            }
-
-            bulanSelect.value = String(now.getMonth() + 1).padStart(2, '0');
-            tahunSelect.value = now.getFullYear();
-
-            updateSelectedBulan();
-
-            bulanSelect.onchange = updateSelectedBulan;
-            tahunSelect.onchange = updateSelectedBulan;
-        }
-
-        function updateSelectedBulan() {
-            const bulan = document.getElementById('bulanSelect').value;
-            const tahun = document.getElementById('tahunSelect').value;
-
-            selectedBulan = `${tahun}-${bulan}`;
-
-            generateTanggalRow();
-
-            const kelasNow = document.getElementById('kelasSelect').value;
-            if (kelasNow) {
-                loadAbsensi(kelasNow);
-                loadTanggal();
-            }
-        }
-
-        // ================= TANGGAL =================
-        function generateTanggalRow() {
-            const tanggalRow = document.getElementById('tanggalRow');
-
-            tanggalRow.innerHTML = `
-        <th class="border-b px-4 py-2 text-left sticky left-0 font-bold capitalize transition-all duration-300
-           bg-violet-50 text-violet-900 hover:bg-violet-100 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">
-            Tanggal
-        </th>
-    `;
-
-            const bulan = document.getElementById('bulanSelect').value;
-            const tahun = document.getElementById('tahunSelect').value;
-
-            const jumlahHari = new Date(tahun, bulan, 0).getDate();
-
-            for (let i = 1; i <= 12; i++) {
-                let options = `<option value="">-</option>`;
-
-                for (let d = 1; d <= jumlahHari; d++) {
-                    options += `<option value="${d}">${d}</option>`;
-                }
-
-                tanggalRow.innerHTML += `
-            <th class="border px-1 py-1">
-            <select 
-                style="
-                width: 100%;
-                height: 28px;
-                font-size: 12px;
-                text-align: center;
-                text-align-last: center;
-                border-radius: 8px;
-                border: 1px solid #e2e8f0;
-                background-color: white;
-                outline: none;
-                transition: all 0.2s;
-                appearance: none;
-                -webkit-appearance: none;
-                -moz-appearance: none;
-                background-image: none;
-                line-height: 28px;
-                padding: 0 8px;
-                "
-                data-pertemuan="${i}"
-                onchange="handleTanggalChange(this, ${i})"
-            >
-                ${options}
-            </select>
-            </th>
-        `;
-            }
-        }
-
-        function handleTanggalChange(selectEl, pertemuan) {
-            dataTanggal[pertemuan] = selectEl.value;
-        }
-
-        // ================= SAVE TANGGAL =================
-        async function saveTanggal() {
-            const kelas = document.getElementById('kelasSelect').value;
-            if (!kelas) return;
-
-            const payload = [];
-
-            for (let p in dataTanggal) {
-                payload.push({
-                    kelas,
-                    bulan: selectedBulan,
-                    pertemuan_ke: parseInt(p),
-                    tanggal: parseInt(dataTanggal[p])
-                });
-            }
-
-            if (!payload.length) return;
-
-            await fetch(`${API_URL}/api/tanggal-pertemuan`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-        }
-
-        // ================= LOAD SISWA =================
-        async function loadSiswa(kelas) {
-            const res = await fetch(`${API_URL}/api/siswa-by-kelas?kelas=${encodeURIComponent(kelas)}`);
-            const siswa = await res.json();
-
-            const body = document.getElementById('bodyAbsensi');
-            body.innerHTML = '';
-            dataAbsensi = {};
-
-            siswa.forEach(s => {
-                let row = `<tr>
-            <td class="border-b px-4 py-2 text-left sticky left-0 font-bold capitalize transition-all duration-300
-           bg-violet-50 text-violet-900 hover:bg-violet-100 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">
-    ${s.nama_siswa.toLowerCase()}
-</td>`;
-
-                for (let i = 1; i <= 12; i++) {
-                    row += `
-               <td class="border p-1" data-siswa="${s.id}" data-pertemuan="${i}">
-                <select 
-                    class="status-select w-full h-7 text-[11px] font-bold uppercase rounded-md text-center cursor-pointer transition-all duration-200 border-none outline-none appearance-none"
-                    style="background-color: #f3f4f6; color: #6b7280;" 
-                    onchange="handleStatusChange(this, ${s.id}, ${i})"
-                >
-                    <option value="" class="bg-white text-gray-500">- PILIH -</option>
-                    <option value="hadir" class="bg-green-100 text-green-700">Hadir</option>
-                    <option value="izin" class="bg-amber-100 text-amber-700">Izin</option>
-                    <option value="alpha" class="bg-red-100 text-red-700">Alfa</option>
-                </select>
-                </td>
-            `;
-                }
-
-                row += `</tr>`;
-                body.innerHTML += row;
-            });
-
-            loadAbsensi(kelas);
-        }
-
-        // ================= LOAD ABSENSI =================
-        async function loadAbsensi(kelas) {
-            const res = await fetch(`${API_URL}/api/absensi-by-kelas?kelas=${encodeURIComponent(kelas)}&bulan=${selectedBulan}`);
-            const data = await res.json();
-
-            data.forEach(item => {
-                const td = document.querySelector(`[data-siswa="${item.siswa_id}"][data-pertemuan="${item.pertemuan_ke}"]`);
-                if (!td) return;
-
-                const select = td.querySelector('select');
-                select.value = item.status;
-            });
-        }
-
-        // ================= LOAD TANGGAL =================
-        async function loadTanggal() {
-            const kelas = document.getElementById('kelasSelect').value;
-            if (!kelas) return;
-
-            const res = await fetch(`${API_URL}/api/tanggal-pertemuan?kelas=${kelas}&bulan=${selectedBulan}`);
-            const data = await res.json();
-
-            data.forEach(item => {
-                const select = document.querySelector(`select[data-pertemuan="${item.pertemuan_ke}"]`);
-                if (select) select.value = item.tanggal;
-            });
-        }
-
-        // ================= STATUS CHANGE =================
-        async function handleStatusChange(selectEl, siswaId, pertemuan) {
-            const val = selectEl.value;
-
+        // --- LOGIKA KODE UTAMA ---
+        async function handleStatusChange(el, siswaId, pertemuan) {
+            const val = el.value;
+            applyStatusColor(el);
             dataAbsensi[`${siswaId}-${pertemuan}`] = val;
 
             if (AUTO_SAVE) {
@@ -537,13 +283,229 @@
             }
         }
 
-        // ================= SAVE ALL =================
+        function applyStatusColor(el) {
+            const status = el.value.toLowerCase();
+            const styles = {
+                'hadir': { bg: '#10b981', text: '#ffffff' },
+                'izin': { bg: '#f59e0b', text: '#ffffff' },
+                'alpha': { bg: '#ef4444', text: '#ffffff' },
+                'default': { bg: '#f3f4f6', text: '#6b7280' }
+            };
+            const style = styles[status] || styles['default'];
+            el.style.backgroundColor = style.bg;
+            el.style.color = style.text;
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const headerRow = document.getElementById('headerRow');
+            if (headerRow) {
+                for (let i = 1; i <= 12; i++) {
+                    headerRow.innerHTML += `<th class="border px-2 py-2 w-16 text-center font-semibold text-xs md:text-sm">${i}</th>`;
+                }
+            }
+            loadGuru();
+
+            document.getElementById('guruSelect').addEventListener('change', (e) => {
+                const guru = e.target.value;
+                if (!guru) return;
+                document.getElementById('judulGuru').innerText = `Guru: ${guru}`;
+                generateBulan();
+                loadJadwal(guru);
+            });
+        });
+
+        async function loadGuru() {
+            const res = await fetch(`${API_URL}/api/guru`);
+            const guruList = await res.json();
+            const select = document.getElementById('guruSelect');
+            select.innerHTML = '<option value="">Pilih Guru...</option>';
+            guruList.forEach(g => {
+                select.innerHTML += `<option value="${g.guru}">${g.guru}</option>`;
+            });
+        }
+
+        async function loadJadwal(guru) {
+            const res = await fetch(`${API_URL}/api/jadwal-by-guru?guru=${encodeURIComponent(guru)}`);
+            const data = await res.json();
+            const select = document.getElementById('jadwalSelect');
+            select.innerHTML = '<option value="">Pilih Jadwal...</option>';
+            data.forEach(item => {
+                select.innerHTML += `<option value="${item.jadwal}">${item.jadwal}</option>`;
+            });
+        }
+
+        function generateBulan() {
+            const now = new Date();
+            const bulanSelect = document.getElementById('bulanSelect');
+            const tahunSelect = document.getElementById('tahunSelect');
+
+            bulanSelect.innerHTML = '';
+            tahunSelect.innerHTML = '';
+
+            const namaBulan = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+            namaBulan.forEach((b, i) => {
+                bulanSelect.innerHTML += `<option value="${String(i + 1).padStart(2, '0')}">${b}</option>`;
+            });
+
+            const startYear = now.getFullYear();
+            const endYear = now.getFullYear() + 10;
+            for (let y = startYear; y <= endYear; y++) {
+                tahunSelect.innerHTML += `<option value="${y}">${y}</option>`;
+            }
+
+            bulanSelect.value = String(now.getMonth() + 1).padStart(2, '0');
+            tahunSelect.value = now.getFullYear();
+
+            updateSelectedBulan();
+            bulanSelect.onchange = updateSelectedBulan;
+            tahunSelect.onchange = updateSelectedBulan;
+        }
+
+        function updateSelectedBulan() {
+            const bulan = document.getElementById('bulanSelect').value;
+            const tahun = document.getElementById('tahunSelect').value;
+            selectedBulan = `${tahun}-${bulan}`;
+
+            generateTanggalRow();
+
+            const guruNow = document.getElementById('guruSelect').value;
+            if (guruNow) {
+                loadAbsensiByGuru(guruNow);
+            }
+        }
+
+        function generateTanggalRow() {
+            const tanggalRow = document.getElementById('tanggalRow');
+            tanggalRow.innerHTML = `
+                <th class="w-40 border-b px-4 py-2 text-left sticky left-0 z-10 font-bold capitalize bg-violet-50 text-violet-900 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">
+                    Tanggal
+                </th>
+            `;
+
+            const bulan = document.getElementById('bulanSelect').value;
+            const tahun = document.getElementById('tahunSelect').value;
+            const jumlahHari = new Date(tahun, bulan, 0).getDate();
+
+            for (let i = 1; i <= 12; i++) {
+                let options = `<option value="">-</option>`;
+                for (let d = 1; d <= jumlahHari; d++) {
+                    options += `<option value="${d}">${d}</option>`;
+                }
+
+                tanggalRow.innerHTML += `
+                    <th class="border p-1 w-16">
+                        <select class="w-full text-[11px] text-center rounded-md border border-slate-200 bg-white outline-none py-1 appearance-none select-absen" data-pertemuan="${i}" onchange="handleTanggalChange(this, ${i})">
+                            ${options}
+                        </select>
+                    </th>
+                `;
+            }
+        }
+
+        function handleTanggalChange(selectEl, pertemuan) {
+            dataTanggal[pertemuan] = selectEl.value;
+        }
+
+        async function saveTanggal() {
+            const guru = document.getElementById('guruSelect').value;
+            const jadwal = document.getElementById('jadwalSelect').value;
+            if (!guru || !jadwal) return;
+
+            const payload = [];
+            for (let p in dataTanggal) {
+                payload.push({
+                    guru,
+                    jadwal,
+                    bulan: selectedBulan,
+                    pertemuan_ke: parseInt(p),
+                    tanggal: parseInt(dataTanggal[p])
+                });
+            }
+
+            await fetch(`${API_URL}/api/tanggal-pertemuan`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+        }
+
+        async function loadSiswaByJadwal(guru, jadwal) {
+            const res = await fetch(`${API_URL}/api/siswa-by-jadwal?guru=${encodeURIComponent(guru)}&jadwal=${encodeURIComponent(jadwal)}`);
+            const siswa = await res.json();
+
+            const body = document.getElementById('bodyAbsensi');
+            body.innerHTML = '';
+            dataAbsensi = {};
+
+            siswa.forEach(s => {
+                let row = `<tr>
+                    <td class="w-40 border-b px-4 py-2.5 text-left sticky left-0 z-10 font-bold capitalize bg-violet-50 text-violet-900 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)] truncate">
+                        ${s.nama_siswa.toLowerCase()}
+                    </td>`;
+
+                for (let i = 1; i <= 12; i++) {
+                    row += `
+                        <td class="border p-1 w-16" data-siswa="${s.id}" data-pertemuan="${i}">
+                            <select class="status-select w-full h-7 text-[10px] md:text-[11px] font-bold uppercase rounded-md text-center cursor-pointer transition-all duration-200 border-none outline-none appearance-none select-absen" style="background-color: #f3f4f6; color: #6b7280;" onchange="handleStatusChange(this, ${s.id}, ${i})">
+                                <option value="" class="bg-white text-gray-500">-</option>
+                                <option value="hadir" class="bg-green-100 text-green-700">H</option>
+                                <option value="izin" class="bg-amber-100 text-amber-700">I</option>
+                                <option value="alpha" class="bg-red-100 text-red-700">A</option>
+                            </select>
+                        </td>
+                    `;
+                }
+                row += `</tr>`;
+                body.innerHTML += row;
+            });
+
+            loadAbsensiByGuru(guru);
+            loadTanggal();
+        }
+
+        async function loadAbsensiByGuru(guru) {
+            const res = await fetch(`${API_URL}/api/absensi-by-guru?guru=${encodeURIComponent(guru)}&bulan=${selectedBulan}`);
+            const data = await res.json();
+
+            data.forEach(item => {
+                const td = document.querySelector(`[data-siswa="${item.siswa_id}"][data-pertemuan="${item.pertemuan_ke}"]`);
+                if (!td) return;
+                const select = td.querySelector('select');
+                select.value = item.status;
+                applyStatusColor(select);
+            });
+        }
+
+        async function loadTanggal() {
+            const guru = document.getElementById('guruSelect').value;
+            const jadwal = document.getElementById('jadwalSelect').value;
+            if (!guru || !jadwal) return;
+
+            document.querySelectorAll('#tanggalRow select').forEach(s => s.value = '');
+
+            const res = await fetch(`${API_URL}/api/tanggal-pertemuan?guru=${encodeURIComponent(guru)}&jadwal=${encodeURIComponent(jadwal)}&bulan=${selectedBulan}`);
+            const data = await res.json();
+
+            data.forEach(item => {
+                const select = document.querySelector(`select[data-pertemuan="${item.pertemuan_ke}"]`);
+                if (select) {
+                    select.value = item.tanggal;
+                }
+            });
+        }
+
+        document.getElementById('jadwalSelect').addEventListener('change', async (e) => {
+            const guru = document.getElementById('guruSelect').value;
+            const jadwal = e.target.value;
+            if (!guru || !jadwal) return;
+
+            await loadSiswaByJadwal(guru, jadwal);
+        });
+
         async function saveAll() {
             const payload = [];
-
             for (let key in dataAbsensi) {
                 const [siswa_id, pertemuan_ke] = key.split('-');
-
                 payload.push({
                     siswa_id,
                     pertemuan_ke,
@@ -561,7 +523,6 @@
             }
 
             await saveTanggal();
-
             alert("Semua data tersimpan");
         }
     </script>
