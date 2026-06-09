@@ -65,7 +65,7 @@
                 </svg>
                 Absensi Siswa
             </a>
-            <a href="data kelas.html"
+            <a href="index.html"
                 class="flex items-center gap-3 px-3 py-2.5 bg-violet-50 text-violet-700 rounded-xl font-semibold text-sm transition-colors">
                 <svg class=" w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -77,7 +77,7 @@
     </aside>
 
     <main class="flex-1 flex flex-col h-full overflow-hidden relative">
-       <header class="md:hidden h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 z-10">
+        <header class="md:hidden h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 z-10">
             <div class="flex items-center gap-2">
                 <div class="flex items-center gap-2">
                     <div class="w-9 h-9 rounded-xl bg-white flex items-center justify-center overflow-hidden border">
@@ -93,8 +93,10 @@
 
             <div class="max-w-6xl mx-auto">
                 <div class="mb-8">
-                    <h1 class="font-bricolage text-2xl md:text-3xl font-bold text-slate-900 tracking-tight">Data Siswa Aktif</h1>
-                    <p class="text-sm text-slate-500 mt-1">Berikut adalah daftar siswa yang sedang aktif dalam program les.</p>
+                    <h1 class="font-bricolage text-2xl md:text-3xl font-bold text-slate-900 tracking-tight">Data Siswa
+                        Aktif</h1>
+                    <p class="text-sm text-slate-500 mt-1">Berikut adalah daftar siswa yang sedang aktif dalam program
+                        les.</p>
                 </div>
 
                 <div class="flex gap-4">
@@ -170,7 +172,7 @@
                 </svg>
                 <span class="text-[10px] font-semibold">Absensi</span>
             </a>
-            <a href="data kelas.html" class="flex flex-col items-center justify-center w-full h-full text-violet-600">
+            <a href="index.html" class="flex flex-col items-center justify-center w-full h-full text-violet-600">
                 <svg class="w-5 h-5 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
@@ -223,10 +225,178 @@
                         </span>
                     </td>
                     <td class="p-4 text-center">
-                        <button onclick="hapus(${s.id})" class="text-red-500 hover:text-red-700 font-bold text-xs bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-lg transition-colors">Hapus</button>
+                        <button
+                            onclick="toggleMenu(${s.id}, event)"
+                            class="w-8 h-8 rounded-lg hover:bg-slate-100 flex items-center justify-center mx-auto">
+                            ⋮
+                        </button>
+
+                        <div
+                            id="menu-${s.id}"
+                            class="hidden fixed bg-white border border-slate-200 rounded-xl shadow-xl z-[9999] min-w-[150px]">
+
+                            <button
+                                onclick="editSiswa(${s.id})"
+                                class="w-full text-left px-4 py-2 hover:bg-slate-50 text-slate-700">
+                                ✏️ Edit
+                            </button>
+
+                            <button
+                                onclick="hapus(${s.id})"
+                                class="w-full text-left px-4 py-2 hover:bg-red-50 text-red-600">
+                                🗑️ Hapus
+                            </button>
+
+                        </div>
                     </td>
                 </tr>
             `).join('');
+        }
+
+        function toggleMenu(id, event) {
+
+            document.querySelectorAll('[id^="menu-"]').forEach(menu => {
+
+                if (menu.id !== `menu-${id}`) {
+                    menu.classList.add('hidden');
+                }
+
+            });
+
+            const menu =
+                document.getElementById(`menu-${id}`);
+
+            const rect =
+                event.currentTarget.getBoundingClientRect();
+
+            menu.style.top =
+                `${rect.bottom + 5}px`;
+
+            menu.style.left =
+                `${rect.left - 110}px`;
+
+            menu.classList.toggle('hidden');
+        }
+
+        document.addEventListener('click', (e) => {
+
+            if (
+                !e.target.closest('[onclick*="toggleMenu"]') &&
+                !e.target.closest('[id^="menu-"]')
+            ) {
+
+                document
+                    .querySelectorAll('[id^="menu-"]')
+                    .forEach(menu =>
+                        menu.classList.add('hidden')
+                    );
+            }
+        });
+
+        document.addEventListener('click', (e) => {
+
+            if (!e.target.closest('[onclick^="toggleMenu"]') &&
+                !e.target.closest('[id^="menu-"]')) {
+
+                document
+                    .querySelectorAll('[id^="menu-"]')
+                    .forEach(menu => menu.classList.add('hidden'));
+            }
+        });
+
+        function editSiswa(id) {
+
+            const siswa =
+                allData.find(s => s.id == id);
+
+            if (!siswa) return;
+
+            document.getElementById('editId').value =
+                siswa.id;
+
+            document.getElementById('editNama').value =
+                siswa.nama_siswa || '';
+
+            document.getElementById('editProgram').value =
+                siswa.program || '';
+
+            document.getElementById('editKelas').value =
+                siswa.kelas || '';
+
+            document.getElementById('editGuru').value =
+                siswa.guru || '';
+
+            document.getElementById('editJadwal').value =
+                siswa.jadwal || '';
+
+            document
+                .getElementById('modalEdit')
+                .classList
+                .remove('hidden');
+        }
+
+        function tutupModalEdit() {
+
+            document
+                .getElementById('modalEdit')
+                .classList
+                .add('hidden');
+        }
+
+        async function simpanEdit() {
+
+            const data = {
+
+                id:
+                    Number(
+                        document.getElementById('editId').value
+                    ),
+
+                nama_siswa:
+                    document.getElementById('editNama').value,
+
+                program:
+                    document.getElementById('editProgram').value,
+
+                kelas:
+                    document.getElementById('editKelas').value,
+
+                guru:
+                    document.getElementById('editGuru').value,
+
+                jadwal:
+                    document.getElementById('editJadwal').value
+            };
+
+            try {
+
+                const res =
+                    await fetch(
+                        `${API}/edit`,
+                        {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type':
+                                    'application/json'
+                            },
+                            body:
+                                JSON.stringify(data)
+                        }
+                    );
+
+                if (!res.ok)
+                    throw new Error();
+
+                tutupModalEdit();
+
+                loadData();
+
+            } catch {
+
+                alert(
+                    'Gagal menyimpan perubahan'
+                );
+            }
         }
 
         function renderMobile(data) {
@@ -259,10 +429,16 @@
                             <div class="bg-slate-50 p-2 rounded-lg"><p class="text-[10px] font-bold text-slate-400 uppercase mb-0.5">Program</p><p class="text-sm font-bold text-slate-700 capitalize">${s.program}</p></div>
                             <div class="bg-slate-50 p-2 rounded-lg"><p class="text-[10px] font-bold text-slate-400 uppercase mb-0.5">Guru</p><p class="text-sm font-bold text-slate-700">${s.guru}</p></div>
                             <div class="col-span-2 bg-amber-50 border border-amber-100 p-2 rounded-lg"><p class="text-[10px] font-bold text-amber-500 uppercase mb-0.5">Jadwal</p><p class="text-sm font-bold text-amber-700">${s.jadwal || '-'}</p></div>
-                            <div class="col-span-2 mt-1">
-                                <button onclick="hapus(${s.id})" class="w-full flex justify-center items-center gap-2 text-red-600 font-bold text-sm bg-red-50 hover:bg-red-100 py-2.5 rounded-xl transition-colors">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-                                    Hapus Siswa
+                            <div class="col-span-2 mt-1 flex gap-2">
+                                <button
+                                    onclick="editSiswa(${s.id})"
+                                    class="flex-1 flex justify-center items-center gap-2 text-slate-700 font-bold text-sm bg-slate-100 hover:bg-slate-200 py-2.5 rounded-xl transition-colors">
+                                    ✏️ Edit
+                                </button>
+                                <button
+                                    onclick="hapus(${s.id})"
+                                    class="flex-1 flex justify-center items-center gap-2 text-red-600 font-bold text-sm bg-red-50 hover:bg-red-100 py-2.5 rounded-xl transition-colors">
+                                    🗑️ Hapus
                                 </button>
                             </div>
                         </div>
@@ -355,6 +531,82 @@
 
         loadData();
     </script>
+    <!-- MODAL EDIT SISWA -->
+    <div id="modalEdit" class="hidden fixed inset-0 bg-black/50 z-[9999] flex items-center justify-center p-4">
+
+        <div class="bg-white rounded-2xl w-full max-w-lg p-6">
+
+            <div class="flex justify-between items-center mb-5">
+                <h2 class="text-xl font-bold text-slate-800">
+                    Edit Siswa
+                </h2>
+
+                <button onclick="tutupModalEdit()" class="text-slate-500 hover:text-slate-700 text-xl">
+                    ✕
+                </button>
+            </div>
+
+            <input type="hidden" id="editId">
+
+            <div class="space-y-4">
+
+                <div>
+                    <label class="block text-sm font-semibold mb-1">
+                        Nama Siswa
+                    </label>
+
+                    <input id="editNama" class="w-full border border-slate-300 rounded-xl px-4 py-3">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold mb-1">
+                        Program
+                    </label>
+
+                    <input id="editProgram" class="w-full border border-slate-300 rounded-xl px-4 py-3">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold mb-1">
+                        Kelas
+                    </label>
+
+                    <input id="editKelas" class="w-full border border-slate-300 rounded-xl px-4 py-3">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold mb-1">
+                        Guru
+                    </label>
+
+                    <input id="editGuru" class="w-full border border-slate-300 rounded-xl px-4 py-3">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold mb-1">
+                        Jadwal
+                    </label>
+
+                    <textarea id="editJadwal" rows="3"
+                        class="w-full border border-slate-300 rounded-xl px-4 py-3"></textarea>
+                </div>
+
+            </div>
+
+            <div class="flex justify-end gap-3 mt-6">
+
+                <button onclick="tutupModalEdit()" class="px-4 py-2 rounded-xl bg-slate-100">
+                    Batal
+                </button>
+
+                <button onclick="simpanEdit()" class="px-4 py-2 rounded-xl bg-violet-600 text-white">
+                    Simpan
+                </button>
+
+            </div>
+
+        </div>
+    </div>
 </body>
 
 </html>
