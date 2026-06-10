@@ -41,7 +41,7 @@
     </style>
 </head>
 
-<body class="bg-slate-50 text-slate-800 antialiased overflow-hidden flex h-screen relative">
+<body class="bg-slate-50 text-slate-800 antialiased overflow-hidden flex h-[100dvh] relative">
 
     <aside class="hidden md:flex flex-col w-64 h-full bg-white border-r border-slate-200 z-20 flex-shrink-0">
         <div class="h-16 flex items-center px-6 border-b border-slate-100">
@@ -65,7 +65,7 @@
                 Pendaftaran Baru
             </a>
             <a href="absensi siswa.html"
-                class="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-medium text-sm transition-colors">
+                class="flex items-center gap-3 px-3 py-2.5 bg-violet-50 text-violet-700 rounded-xl font-semibold text-sm transition-colors">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
@@ -73,7 +73,7 @@
                 Absensi Siswa
             </a>
             <a href="index.html"
-                class="flex items-center gap-3 px-3 py-2.5 bg-violet-50 text-violet-700 rounded-xl font-semibold text-sm transition-colors">
+                class="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-medium text-sm transition-colors">
                 <svg class=" w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
@@ -209,8 +209,9 @@
                 </div>
             </div>
         </div>
+
         <nav
-            class="md:hidden absolute bottom-0 w-full bg-white border-t border-slate-200 flex justify-around items-center h-16 z-50 px-2 pb-safe">
+            class="md:hidden fixed bottom-0 left-0 w-full bg-white border-t border-slate-200 flex justify-around items-center h-16 z-50 px-2 pb-safe shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
             <a href="pendaftaran.html"
                 class="flex flex-col items-center justify-center w-full h-full text-slate-500 hover:text-violet-600 transition-colors">
                 <svg class="w-5 h-5 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -220,10 +221,10 @@
                 <span class="text-[10px] font-semibold">Daftar</span>
             </a>
             <a href="absensi siswa.html"
-                class="flex flex-col items-center justify-center w-full h-full text-violet-600">
+                class="flex flex-col items-center justify-center w-full h-full text-violet-600 transition-colors">
                 <svg class="w-5 h-5 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
                 </svg>
                 <span class="text-[10px] font-semibold">Absensi</span>
             </a>
@@ -231,7 +232,7 @@
                 class="flex flex-col items-center justify-center w-full h-full text-slate-500 hover:text-violet-600 transition-colors">
                 <svg class="w-5 h-5 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                        d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                 </svg>
                 <span class="text-[10px] font-semibold">Data Kelas</span>
             </a>
@@ -247,21 +248,7 @@
         let AUTO_SAVE = true;
         let dataTanggal = {};
 
-        // --- LOGIKA MOBILE MENU DRAWER ---
-        const menuBtn = document.getElementById('menuBtn');
-        const closeMenuBtn = document.getElementById('closeMenuBtn');
-        const sidebar = document.getElementById('sidebar');
-        const sidebarOverlay = document.getElementById('sidebarOverlay');
-
-        function toggleSidebar() {
-            sidebar.classList.toggle('-translate-x-full');
-            sidebarOverlay.classList.toggle('hidden');
-        }
-
-        if (menuBtn) menuBtn.addEventListener('click', toggleSidebar);
-        if (closeMenuBtn) closeMenuBtn.addEventListener('click', toggleSidebar);
-        if (sidebarOverlay) sidebarOverlay.addEventListener('click', toggleSidebar);
-
+        // PERBAIKAN: Kode mati (ghost) untuk sidebar menu drawer telah dihapus agar memori lebih ringan.
 
         // --- LOGIKA KODE UTAMA ---
         async function handleStatusChange(el, siswaId, pertemuan) {
@@ -270,16 +257,20 @@
             dataAbsensi[`${siswaId}-${pertemuan}`] = val;
 
             if (AUTO_SAVE) {
-                await fetch(`${API_URL}/api/absensi-bulk`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify([{
-                        siswa_id: siswaId,
-                        pertemuan_ke: pertemuan,
-                        status: val,
-                        bulan: selectedBulan
-                    }])
-                });
+                try {
+                    await fetch(`${API_URL}/api/absensi-bulk`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify([{
+                            siswa_id: siswaId,
+                            pertemuan_ke: pertemuan,
+                            status: val,
+                            bulan: selectedBulan
+                        }])
+                    });
+                } catch (e) {
+                    console.error("Auto-save gagal:", e);
+                }
             }
         }
 
@@ -315,23 +306,31 @@
         });
 
         async function loadGuru() {
-            const res = await fetch(`${API_URL}/api/guru`);
-            const guruList = await res.json();
-            const select = document.getElementById('guruSelect');
-            select.innerHTML = '<option value="">Pilih Guru...</option>';
-            guruList.forEach(g => {
-                select.innerHTML += `<option value="${g.guru}">${g.guru}</option>`;
-            });
+            try {
+                const res = await fetch(`${API_URL}/api/guru`);
+                const guruList = await res.json();
+                const select = document.getElementById('guruSelect');
+                select.innerHTML = '<option value="">Pilih Guru...</option>';
+                guruList.forEach(g => {
+                    select.innerHTML += `<option value="${g.guru}">${g.guru}</option>`;
+                });
+            } catch (e) {
+                console.error("Gagal load guru:", e);
+            }
         }
 
         async function loadJadwal(guru) {
-            const res = await fetch(`${API_URL}/api/jadwal-by-guru?guru=${encodeURIComponent(guru)}`);
-            const data = await res.json();
-            const select = document.getElementById('jadwalSelect');
-            select.innerHTML = '<option value="">Pilih Jadwal...</option>';
-            data.forEach(item => {
-                select.innerHTML += `<option value="${item.jadwal}">${item.jadwal}</option>`;
-            });
+            try {
+                const res = await fetch(`${API_URL}/api/jadwal-by-guru?guru=${encodeURIComponent(guru)}`);
+                const data = await res.json();
+                const select = document.getElementById('jadwalSelect');
+                select.innerHTML = '<option value="">Pilih Jadwal...</option>';
+                data.forEach(item => {
+                    select.innerHTML += `<option value="${item.jadwal}">${item.jadwal}</option>`;
+                });
+            } catch (e) {
+                console.error("Gagal load jadwal:", e);
+            }
         }
 
         function generateBulan() {
@@ -422,58 +421,73 @@
                 });
             }
 
-            await fetch(`${API_URL}/api/tanggal-pertemuan`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
+            if (payload.length > 0) {
+                await fetch(`${API_URL}/api/tanggal-pertemuan`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+            }
         }
 
         async function loadSiswaByJadwal(guru, jadwal) {
-            const res = await fetch(`${API_URL}/api/siswa-by-jadwal?guru=${encodeURIComponent(guru)}&jadwal=${encodeURIComponent(jadwal)}`);
-            const siswa = await res.json();
+            try {
+                const res = await fetch(`${API_URL}/api/siswa-by-jadwal?guru=${encodeURIComponent(guru)}&jadwal=${encodeURIComponent(jadwal)}`);
+                const siswa = await res.json();
 
-            const body = document.getElementById('bodyAbsensi');
-            body.innerHTML = '';
-            dataAbsensi = {};
+                const body = document.getElementById('bodyAbsensi');
+                body.innerHTML = '';
+                dataAbsensi = {};
 
-            siswa.forEach(s => {
-                let row = `<tr>
-                    <td class="w-40 border-b px-4 py-2.5 text-left sticky left-0 z-10 font-bold capitalize bg-violet-50 text-violet-900 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)] truncate">
-                        ${s.nama_siswa.toLowerCase()}
-                    </td>`;
-
-                for (let i = 1; i <= 12; i++) {
-                    row += `
-                        <td class="border p-1 w-16" data-siswa="${s.id}" data-pertemuan="${i}">
-                            <select class="status-select w-full h-7 text-[10px] md:text-[11px] font-bold uppercase rounded-md text-center cursor-pointer transition-all duration-200 border-none outline-none appearance-none select-absen" style="background-color: #f3f4f6; color: #6b7280;" onchange="handleStatusChange(this, ${s.id}, ${i})">
-                                <option value="" class="bg-white text-gray-500">-</option>
-                                <option value="hadir" class="bg-green-100 text-green-700">H</option>
-                                <option value="izin" class="bg-amber-100 text-amber-700">I</option>
-                                <option value="alpha" class="bg-red-100 text-red-700">A</option>
-                            </select>
-                        </td>
-                    `;
+                if (siswa.length === 0) {
+                    body.innerHTML = `<tr><td colspan="13" class="py-12 text-center text-slate-400">Tidak ada siswa di jadwal ini.</td></tr>`;
+                    return;
                 }
-                row += `</tr>`;
-                body.innerHTML += row;
-            });
 
-            loadAbsensiByGuru(guru);
-            loadTanggal();
+                siswa.forEach(s => {
+                    let row = `<tr>
+                        <td class="w-40 border-b px-4 py-2.5 text-left sticky left-0 z-10 font-bold capitalize bg-violet-50 text-violet-900 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)] truncate">
+                            ${s.nama_siswa.toLowerCase()}
+                        </td>`;
+
+                    for (let i = 1; i <= 12; i++) {
+                        row += `
+                            <td class="border p-1 w-16" data-siswa="${s.id}" data-pertemuan="${i}">
+                                <select class="status-select w-full h-7 text-[10px] md:text-[11px] font-bold uppercase rounded-md text-center cursor-pointer transition-all duration-200 border-none outline-none appearance-none select-absen" style="background-color: #f3f4f6; color: #6b7280;" onchange="handleStatusChange(this, ${s.id}, ${i})">
+                                    <option value="" class="bg-white text-gray-500">-</option>
+                                    <option value="hadir" class="bg-green-100 text-green-700">H</option>
+                                    <option value="izin" class="bg-amber-100 text-amber-700">I</option>
+                                    <option value="alpha" class="bg-red-100 text-red-700">A</option>
+                                </select>
+                            </td>
+                        `;
+                    }
+                    row += `</tr>`;
+                    body.innerHTML += row;
+                });
+
+                loadAbsensiByGuru(guru);
+                loadTanggal();
+            } catch (e) {
+                console.error("Gagal meload siswa:", e);
+            }
         }
 
         async function loadAbsensiByGuru(guru) {
-            const res = await fetch(`${API_URL}/api/absensi-by-guru?guru=${encodeURIComponent(guru)}&bulan=${selectedBulan}`);
-            const data = await res.json();
+            try {
+                const res = await fetch(`${API_URL}/api/absensi-by-guru?guru=${encodeURIComponent(guru)}&bulan=${selectedBulan}`);
+                const data = await res.json();
 
-            data.forEach(item => {
-                const td = document.querySelector(`[data-siswa="${item.siswa_id}"][data-pertemuan="${item.pertemuan_ke}"]`);
-                if (!td) return;
-                const select = td.querySelector('select');
-                select.value = item.status;
-                applyStatusColor(select);
-            });
+                data.forEach(item => {
+                    const td = document.querySelector(`[data-siswa="${item.siswa_id}"][data-pertemuan="${item.pertemuan_ke}"]`);
+                    if (!td) return;
+                    const select = td.querySelector('select');
+                    select.value = item.status;
+                    applyStatusColor(select);
+                });
+            } catch (e) {
+                console.error("Gagal meload absensi:", e);
+            }
         }
 
         async function loadTanggal() {
@@ -483,15 +497,19 @@
 
             document.querySelectorAll('#tanggalRow select').forEach(s => s.value = '');
 
-            const res = await fetch(`${API_URL}/api/tanggal-pertemuan?guru=${encodeURIComponent(guru)}&jadwal=${encodeURIComponent(jadwal)}&bulan=${selectedBulan}`);
-            const data = await res.json();
+            try {
+                const res = await fetch(`${API_URL}/api/tanggal-pertemuan?guru=${encodeURIComponent(guru)}&jadwal=${encodeURIComponent(jadwal)}&bulan=${selectedBulan}`);
+                const data = await res.json();
 
-            data.forEach(item => {
-                const select = document.querySelector(`select[data-pertemuan="${item.pertemuan_ke}"]`);
-                if (select) {
-                    select.value = item.tanggal;
-                }
-            });
+                data.forEach(item => {
+                    const select = document.querySelector(`select[data-pertemuan="${item.pertemuan_ke}"]`);
+                    if (select) {
+                        select.value = item.tanggal;
+                    }
+                });
+            } catch (e) {
+                console.error("Gagal meload data tanggal:", e);
+            }
         }
 
         document.getElementById('jadwalSelect').addEventListener('change', async (e) => {
@@ -514,16 +532,29 @@
                 });
             }
 
-            if (payload.length) {
-                await fetch(`${API_URL}/api/absensi-bulk`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-            }
+            const btnSimpan = document.querySelector('button[onclick="saveAll()"]');
+            const originalText = btnSimpan.innerHTML;
+            btnSimpan.disabled = true;
+            btnSimpan.innerHTML = "Memproses...";
 
-            await saveTanggal();
-            alert("Semua data tersimpan");
+            try {
+                if (payload.length) {
+                    await fetch(`${API_URL}/api/absensi-bulk`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                }
+
+                await saveTanggal();
+                alert("✅ Semua data berhasil tersimpan!");
+            } catch (e) {
+                console.error("Gagal menyimpan:", e);
+                alert("❌ Gagal menyimpan data absensi.");
+            } finally {
+                btnSimpan.disabled = false;
+                btnSimpan.innerHTML = originalText;
+            }
         }
     </script>
 </body>
