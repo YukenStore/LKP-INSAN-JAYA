@@ -489,23 +489,27 @@
                 }
             });
 
-            // ================= FORMAT JAM =================
-
+            // ================= FORMAT JAM (FIXED) =================
             function autoFormatJam(input) {
-
                 input.addEventListener('input', () => {
+                    let value = input.value.replace(/\D/g, '').slice(0, 4);
 
-                    let value =
-                        input.value
-                            .replace(/\D/g, '')
-                            .slice(0, 4);
+                    // Kunci digit pertama jam (nggak boleh lebih dari 2)
+                    if (value.length >= 1 && parseInt(value[0]) > 2) {
+                        value = '0' + value[0];
+                    }
+                    // Kunci maksimal jam 23
+                    if (value.length >= 2 && parseInt(value.slice(0, 2)) > 23) {
+                        value = '23' + value.slice(2);
+                    }
+                    // Kunci digit pertama menit (nggak boleh lebih dari 5)
+                    if (value.length >= 3 && parseInt(value[2]) > 5) {
+                        value = value.slice(0, 2) + '0' + value.slice(2);
+                    }
 
+                    // Tambahin titik dua (:) otomatis
                     if (value.length >= 3) {
-
-                        value =
-                            value.slice(0, 2) +
-                            ':' +
-                            value.slice(2);
+                        value = value.slice(0, 2) + ':' + value.slice(2);
                     }
 
                     input.value = value;
@@ -609,7 +613,7 @@
 
                     // ================= CUSTOM SCHEDULE =================
 
-                    if (data.jam === 'CUSTOM_SCHEDULE') {
+                    if ((data.jam || '').trim().toUpperCase() === 'CUSTOM_SCHEDULE') {
 
                         const jadwal = [];
 
@@ -636,16 +640,16 @@
                             });
 
                         if (jadwal.length === 0) {
-
                             alert('Pilih minimal 1 jadwal!');
                             return;
                         }
 
-                        jadwalFinal =
-                            jadwal.join(', ');
+                        jadwalFinal = jadwal.join(', ');
 
-                        data.jadwal =
-                            jadwalFinal;
+                        data.jadwal = jadwalFinal;
+
+                        // 👇 TAMBAHIN BARIS INI: Tumpuk/hancurkan nilai asli 'CUSTOM_SCHEDULE' 
+                        data.jam = jadwalFinal;
                     }
 
                     btn.disabled = true;
