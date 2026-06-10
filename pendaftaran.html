@@ -29,7 +29,7 @@
     </style>
 </head>
 
-<body class="bg-slate-50 text-slate-800 antialiased overflow-hidden flex h-screen">
+<body class="bg-slate-50 text-slate-800 antialiased overflow-hidden flex h-[100dvh]">
 
     <aside class="hidden md:flex flex-col w-64 h-full bg-white border-r border-slate-200 z-20 flex-shrink-0">
         <div class="h-16 flex items-center px-6 border-b border-slate-100">
@@ -125,26 +125,19 @@
                             </div>
                         </div>
 
-                        <!-- GURU -->
                         <div>
-                            <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-2">
-                                Guru Pengajar
-                            </label>
-
+                            <label
+                                class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-2">Guru
+                                Pengajar</label>
                             <select id="guru" name="guru" required
                                 class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-violet-500">
-
                                 <option value="" disabled selected>Pilih program dulu...</option>
-
                             </select>
                         </div>
 
-                        <!-- HARI BELAJAR -->
                         <div id="hariBelajarContainer">
-                            <label class="text-[11px] font-bold text-slate-500 uppercase mb-2 block">
-                                Hari Belajar (Maks 3)
-                            </label>
-
+                            <label class="text-[11px] font-bold text-slate-500 uppercase mb-2 block">Hari Belajar (Maks
+                                3)</label>
                             <div class="grid grid-cols-2 md:grid-cols-3 gap-2 text-sm">
                                 <label><input type="checkbox" name="hari" value="Senin"> Senin</label>
                                 <label><input type="checkbox" name="hari" value="Selasa"> Selasa</label>
@@ -155,17 +148,12 @@
                             </div>
                         </div>
 
-                        <!-- JAM BELAJAR -->
                         <div>
-                            <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-2">
-                                Jam Belajar
-                            </label>
-
+                            <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-2">Jam
+                                Belajar</label>
                             <select id="jam" name="jam" required
                                 class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-violet-500">
-
                                 <option value="" disabled selected>Pilih jam...</option>
-
                                 <option value="07.30-09.00">07.30 - 09.00</option>
                                 <option value="09.00-10.30">09.00 - 10.30</option>
                                 <option value="10.30-12.00">10.30 - 12.00</option>
@@ -174,39 +162,26 @@
                                 <option value="15.00-16.30">15.00 - 16.30</option>
                                 <option value="16.30-18.00">16.30 - 18.00</option>
                                 <option value="CUSTOM">Pilih jam sendiri...</option>
-                                <option value="CUSTOM_SCHEDULE">
-                                    Pilih Jadwal Sendiri
-                                </option>
-
+                                <option value="CUSTOM_SCHEDULE">Pilih Jadwal Sendiri</option>
                             </select>
 
                             <div id="customJamContainer" class="hidden mt-4">
-
                                 <label
-                                    class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-3">
-                                    Custom Jam
-                                </label>
-
+                                    class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-3">Custom
+                                    Jam</label>
                                 <div class="grid grid-cols-2 gap-4">
-
                                     <div>
-                                        <label class="text-xs text-slate-500 mb-1 block">
-                                            Jam Masuk
-                                        </label>
-
-                                        <input type="text" id="jamMasuk" maxlength="5" placeholder="15:30"
+                                        <label class="text-xs text-slate-500 mb-1 block">Jam Masuk</label>
+                                        <input type="text" id="jamMasuk" maxlength="5" inputmode="numeric"
+                                            placeholder="15:30"
                                             class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-violet-500">
                                     </div>
-
                                     <div>
-                                        <label class="text-xs text-slate-500 mb-1 block">
-                                            Jam Keluar
-                                        </label>
-
-                                        <input type="text" id="jamKeluar" maxlength="5" placeholder="17:00"
+                                        <label class="text-xs text-slate-500 mb-1 block">Jam Keluar</label>
+                                        <input type="text" id="jamKeluar" maxlength="5" inputmode="numeric"
+                                            placeholder="17:00"
                                             class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-violet-500">
                                     </div>
-
                                 </div>
                             </div>
                             <div id="jadwalCustomContainer" class="hidden"></div>
@@ -218,7 +193,8 @@
                         </button>
                         <div id="notif"
                             class="hidden text-center text-xs font-bold text-emerald-600 bg-emerald-50 py-3 rounded-xl border border-emerald-100">
-                            ✅ Berhasil Terkirim!</div>
+                            ✅ Berhasil Terkirim!
+                        </div>
                     </form>
                 </div>
             </div>
@@ -226,27 +202,30 @@
     </main>
 
     <nav
-        class="md:hidden fixed bottom-0 w-full bg-white border-t border-slate-200 flex justify-around p-2 pb-safe z-20 shadow-lg">
-        <a href="pendaftaran.html" class="flex flex-col items-center p-2 text-violet-600">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        class="md:hidden fixed bottom-0 left-0 w-full bg-white border-t border-slate-200 flex justify-around items-center h-16 z-50 px-2 pb-safe shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+        <a href="pendaftaran.html"
+            class="flex flex-col items-center justify-center w-full h-full text-violet-600 transition-colors">
+            <svg class="w-5 h-5 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
             </svg>
-            <span class="text-[10px] font-bold">Input</span>
+            <span class="text-[10px] font-semibold">Daftar</span>
         </a>
-        <a href="absensi siswa.html" class="flex flex-col items-center p-2 text-slate-400">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <a href="absensi siswa.html"
+            class="flex flex-col items-center justify-center w-full h-full text-slate-500 hover:text-violet-600 transition-colors">
+            <svg class="w-5 h-5 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
             </svg>
-            <span class="text-[10px] font-bold">Absensi</span>
+            <span class="text-[10px] font-semibold">Absensi</span>
         </a>
-        <a href="index.html" class="flex flex-col items-center p-2 text-slate-400">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <a href="index.html"
+            class="flex flex-col items-center justify-center w-full h-full text-slate-500 hover:text-violet-600 transition-colors">
+            <svg class="w-5 h-5 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                    d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
             </svg>
-            <span class="text-[10px] font-bold">Data Siswa</span>
+            <span class="text-[10px] font-semibold">Data Kelas</span>
         </a>
     </nav>
 
@@ -254,60 +233,19 @@
         const API_URL = 'https://absensi-api.yumenoboken.workers.dev';
 
         const kelasByProgram = {
-            "bimbel": [
-                "Kelas 1",
-                "Kelas 2",
-                "Kelas 3",
-                "Kelas 4",
-                "Kelas 5",
-                "Kelas 6"
-            ],
-
-            "bahasa inggris": [
-                "Beginner",
-                "Elementary",
-                "Intermediate"
-            ],
-
-            "bahasa arab": [
-                "Easy",
-                "Medium",
-                "Hard"
-            ],
-
-            "komputer": [
-                "Easy",
-                "Medium",
-                "Hard"
-            ],
-
-            "calistung": [
-                "Baca + Tulis + Hitung"
-            ]
+            "bimbel": ["Kelas 1", "Kelas 2", "Kelas 3", "Kelas 4", "Kelas 5", "Kelas 6"],
+            "bahasa inggris": ["Beginner", "Elementary", "Intermediate"],
+            "bahasa arab": ["Easy", "Medium", "Hard"],
+            "komputer": ["Easy", "Medium", "Hard"],
+            "calistung": ["Baca + Tulis + Hitung"]
         };
 
         const guruByProgram = {
-            "bimbel": [
-                "Muhammad Khalid",
-                "Shinta"
-            ],
-
-            "bahasa inggris": [
-                "Ranti",
-                "Tri Azzahra"
-            ],
-
-            "calistung": [
-                "Usniatun Hasanah"
-            ],
-
-            "bahasa arab": [
-                "Ayu"
-            ],
-
-            "komputer": [
-                "Normas Sari"
-            ]
+            "bimbel": ["Muhammad Khalid", "Shinta"],
+            "bahasa inggris": ["Ranti", "Tri Azzahra"],
+            "calistung": ["Usniatun Hasanah"],
+            "bahasa arab": ["Ayu"],
+            "komputer": ["Normas Sari"]
         };
 
         function formatNama(nama) {
@@ -317,12 +255,8 @@
                 .trim()
                 .split(' ')
                 .map(word =>
-                    word
-                        .split('-')
-                        .map(part =>
-                            part.charAt(0).toUpperCase() +
-                            part.slice(1)
-                        )
+                    word.split('-')
+                        .map(part => part.charAt(0).toUpperCase() + part.slice(1))
                         .join('-')
                 )
                 .join(' ');
@@ -331,161 +265,78 @@
         document.addEventListener("DOMContentLoaded", () => {
 
             // ================= BUAT JADWAL CUSTOM =================
-
-            const jadwalContainer =
-                document.getElementById('jadwalCustomContainer');
+            const jadwalContainer = document.getElementById('jadwalCustomContainer');
 
             jadwalContainer.innerHTML = `
-        <div class="mt-4 space-y-3">
-
-            <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest">
-                Jadwal Per Hari
-            </label>
-
-            ${["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"]
+                <div class="mt-4 space-y-3">
+                    <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest">
+                        Jadwal Per Hari
+                    </label>
+                    ${["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"]
                     .map(hari => `
-                <div class="jadwal-row flex items-center gap-3">
-
-                    <input
-                        type="checkbox"
-                        value="${hari}"
-                        class="jadwal-check">
-
-                    <span class="w-20 text-sm">
-                        ${hari}
-                    </span>
-
-                    <input
-                        type="text"
-                        placeholder="15:30"
-                        maxlength="5"
-                        class="jam-masuk jadwal-custom-jam flex-1 px-3 py-2 border border-slate-200 rounded-lg">
-
-                    <input
-                        type="text"
-                        placeholder="17:00"
-                        maxlength="5"
-                        class="jam-keluar jadwal-custom-jam flex-1 px-3 py-2 border border-slate-200 rounded-lg">
-
+                        <div class="jadwal-row flex items-center gap-3">
+                            <input type="checkbox" value="${hari}" class="jadwal-check">
+                            <span class="w-20 text-sm">${hari}</span>
+                            <input type="text" placeholder="15:30" maxlength="5" inputmode="numeric"
+                                class="jam-masuk jadwal-custom-jam flex-1 px-3 py-2 border border-slate-200 rounded-lg">
+                            <input type="text" placeholder="17:00" maxlength="5" inputmode="numeric"
+                                class="jam-keluar jadwal-custom-jam flex-1 px-3 py-2 border border-slate-200 rounded-lg">
+                        </div>
+                    `).join("")}
                 </div>
-            `).join("")}
-
-        </div>
-    `;
+            `;
 
             // ================= LIMIT HARI =================
-
-            const checkboxes =
-                document.querySelectorAll('input[name="hari"]');
-
+            const checkboxes = document.querySelectorAll('input[name="hari"]');
             checkboxes.forEach(cb => {
-
                 cb.addEventListener('change', () => {
-
-                    const checked =
-                        document.querySelectorAll(
-                            'input[name="hari"]:checked'
-                        );
-
+                    const checked = document.querySelectorAll('input[name="hari"]:checked');
                     if (checked.length > 3) {
-
                         cb.checked = false;
-
-                        alert(
-                            'Maksimal pilih 3 hari!'
-                        );
+                        alert('Maksimal pilih 3 hari!');
                     }
                 });
             });
 
             // ================= PROGRAM =================
+            document.getElementById('program').addEventListener('change', (e) => {
+                const prog = e.target.value;
+                const kelasSelect = document.getElementById('kelas');
+                const guruSelect = document.getElementById('guru');
 
-            document
-                .getElementById('program')
-                .addEventListener('change', (e) => {
+                kelasSelect.innerHTML = '<option value="" disabled selected>Pilih kelas...</option>';
+                if (kelasByProgram[prog]) {
+                    kelasByProgram[prog].forEach(kelas => {
+                        kelasSelect.innerHTML += `<option value="${kelas}">${kelas}</option>`;
+                    });
+                }
 
-                    const prog = e.target.value;
-
-                    const kelasSelect =
-                        document.getElementById('kelas');
-
-                    const guruSelect =
-                        document.getElementById('guru');
-
-                    kelasSelect.innerHTML =
-                        '<option value="" disabled selected>Pilih kelas...</option>';
-
-                    if (kelasByProgram[prog]) {
-
-                        kelasByProgram[prog].forEach(kelas => {
-
-                            kelasSelect.innerHTML += `
-                        <option value="${kelas}">
-                            ${kelas}
-                        </option>
-                    `;
-                        });
-                    }
-
-                    guruSelect.innerHTML =
-                        '<option value="" disabled selected>Pilih guru...</option>';
-
-                    if (guruByProgram[prog]) {
-
-                        guruByProgram[prog].forEach(guru => {
-
-                            guruSelect.innerHTML += `
-                        <option value="${guru}">
-                            ${guru}
-                        </option>
-                    `;
-                        });
-                    }
-                });
+                guruSelect.innerHTML = '<option value="" disabled selected>Pilih guru...</option>';
+                if (guruByProgram[prog]) {
+                    guruByProgram[prog].forEach(guru => {
+                        guruSelect.innerHTML += `<option value="${guru}">${guru}</option>`;
+                    });
+                }
+            });
 
             // ================= CUSTOM JAM =================
-
-            const jamSelect =
-                document.getElementById('jam');
-
-            const customContainer =
-                document.getElementById('customJamContainer');
-
-            const hariBelajarContainer =
-                document.getElementById('hariBelajarContainer');
+            const jamSelect = document.getElementById('jam');
+            const customContainer = document.getElementById('customJamContainer');
+            const hariBelajarContainer = document.getElementById('hariBelajarContainer');
 
             jamSelect.addEventListener('change', () => {
-
                 if (jamSelect.value === 'CUSTOM') {
-
                     customContainer.classList.remove('hidden');
-
                     jadwalContainer.classList.add('hidden');
-
-                    if (hariBelajarContainer)
-                        hariBelajarContainer.classList.remove('hidden');
-                }
-
-                else if (
-                    jamSelect.value === 'CUSTOM_SCHEDULE'
-                ) {
-
+                    if (hariBelajarContainer) hariBelajarContainer.classList.remove('hidden');
+                } else if (jamSelect.value === 'CUSTOM_SCHEDULE') {
                     customContainer.classList.add('hidden');
-
                     jadwalContainer.classList.remove('hidden');
-
-                    if (hariBelajarContainer)
-                        hariBelajarContainer.classList.add('hidden');
-                }
-
-                else {
-
+                    if (hariBelajarContainer) hariBelajarContainer.classList.add('hidden');
+                } else {
                     customContainer.classList.add('hidden');
-
                     jadwalContainer.classList.add('hidden');
-
-                    if (hariBelajarContainer)
-                        hariBelajarContainer.classList.remove('hidden');
+                    if (hariBelajarContainer) hariBelajarContainer.classList.remove('hidden');
                 }
             });
 
@@ -494,227 +345,129 @@
                 input.addEventListener('input', () => {
                     let value = input.value.replace(/\D/g, '').slice(0, 4);
 
-                    // Kunci digit pertama jam (nggak boleh lebih dari 2)
-                    if (value.length >= 1 && parseInt(value[0]) > 2) {
-                        value = '0' + value[0];
-                    }
-                    // Kunci maksimal jam 23
-                    if (value.length >= 2 && parseInt(value.slice(0, 2)) > 23) {
-                        value = '23' + value.slice(2);
-                    }
-                    // Kunci digit pertama menit (nggak boleh lebih dari 5)
-                    if (value.length >= 3 && parseInt(value[2]) > 5) {
-                        value = value.slice(0, 2) + '0' + value.slice(2);
-                    }
-
-                    // Tambahin titik dua (:) otomatis
-                    if (value.length >= 3) {
-                        value = value.slice(0, 2) + ':' + value.slice(2);
-                    }
+                    if (value.length >= 1 && parseInt(value[0]) > 2) value = '0' + value[0];
+                    if (value.length >= 2 && parseInt(value.slice(0, 2)) > 23) value = '23' + value.slice(2);
+                    if (value.length >= 3 && parseInt(value[2]) > 5) value = value.slice(0, 2) + '0' + value.slice(2);
+                    if (value.length >= 3) value = value.slice(0, 2) + ':' + value.slice(2);
 
                     input.value = value;
                 });
             }
 
-            autoFormatJam(
-                document.getElementById('jamMasuk')
-            );
-
-            autoFormatJam(
-                document.getElementById('jamKeluar')
-            );
-
-            document
-                .querySelectorAll('.jadwal-custom-jam')
-                .forEach(autoFormatJam);
+            autoFormatJam(document.getElementById('jamMasuk'));
+            autoFormatJam(document.getElementById('jamKeluar'));
+            document.querySelectorAll('.jadwal-custom-jam').forEach(autoFormatJam);
 
             // ================= FORMAT NAMA =================
-
-            document
-                .querySelector('[name="nama_siswa"]')
-                .addEventListener('blur', (e) => {
-
-                    e.target.value =
-                        formatNama(e.target.value);
-                });
+            document.querySelector('[name="nama_siswa"]').addEventListener('blur', (e) => {
+                e.target.value = formatNama(e.target.value);
+            });
 
             // ================= SUBMIT =================
+            document.getElementById('formAbsensi').addEventListener('submit', async (e) => {
+                e.preventDefault();
 
-            document
-                .getElementById('formAbsensi')
-                .addEventListener('submit', async (e) => {
+                const btn = document.getElementById('btnSubmit');
+                let jadwalFinal = "";
+                const data = Object.fromEntries(new FormData(e.target).entries());
 
-                    e.preventDefault();
+                data.nama_siswa = formatNama(data.nama_siswa);
 
-                    const btn =
-                        document.getElementById('btnSubmit');
+                // ================= JADWAL NORMAL =================
+                if (data.jam !== 'CUSTOM_SCHEDULE') {
+                    const hariChecked = Array.from(
+                        document.querySelectorAll('input[name="hari"]:checked')
+                    ).map(el => el.value);
 
-                    let jadwalFinal = "";
+                    if (hariChecked.length === 0) {
+                        alert('Pilih minimal 1 hari!');
+                        return;
+                    }
+                    data.hari = hariChecked.join(', ');
+                }
 
-                    const data =
-                        Object.fromEntries(
-                            new FormData(e.target).entries()
-                        );
+                // ================= CUSTOM JAM =================
+                if (data.jam === 'CUSTOM') {
+                    const masuk = document.getElementById('jamMasuk').value;
+                    const keluar = document.getElementById('jamKeluar').value;
 
-                    data.nama_siswa =
-                        formatNama(data.nama_siswa);
+                    if (!masuk || !keluar) {
+                        alert('Isi jam masuk dan jam keluar!');
+                        return;
+                    }
+                    data.jam = `${masuk}-${keluar}`;
+                }
 
-                    // ================= JADWAL NORMAL =================
+                // ================= JADWAL BIASA =================
+                if (data.jam !== 'CUSTOM_SCHEDULE') {
+                    jadwalFinal = `${data.hari} (${data.jam})`;
+                    data.jadwal = jadwalFinal;
+                }
 
-                    if (data.jam !== 'CUSTOM_SCHEDULE') {
+                // ================= CUSTOM SCHEDULE =================
+                if ((data.jam || '').trim().toUpperCase() === 'CUSTOM_SCHEDULE') {
+                    const jadwal = [];
+                    document.querySelectorAll('.jadwal-row').forEach(row => {
+                        const check = row.querySelector('.jadwal-check');
+                        if (!check.checked) return;
 
-                        const hariChecked =
-                            Array.from(
-                                document.querySelectorAll(
-                                    'input[name="hari"]:checked'
-                                )
-                            ).map(el => el.value);
+                        const masuk = row.querySelector('.jam-masuk').value;
+                        const keluar = row.querySelector('.jam-keluar').value;
 
-                        if (hariChecked.length === 0) {
+                        if (!masuk || !keluar) return;
+                        jadwal.push(`${check.value} (${masuk}-${keluar})`);
+                    });
 
-                            alert('Pilih minimal 1 hari!');
-                            return;
-                        }
-
-                        data.hari =
-                            hariChecked.join(', ');
+                    if (jadwal.length === 0) {
+                        alert('Pilih minimal 1 jadwal!');
+                        return;
                     }
 
-                    // ================= CUSTOM JAM =================
+                    jadwalFinal = jadwal.join(', ');
+                    data.jadwal = jadwalFinal;
 
-                    if (data.jam === 'CUSTOM') {
+                    // 👇 INI YANG MEMPERBAIKI BUG CUSTOM_SCHEDULE
+                    data.jam = jadwalFinal;
+                }
 
-                        const masuk =
-                            document.getElementById('jamMasuk').value;
+                btn.disabled = true;
+                btn.innerText = 'Memproses...';
 
-                        const keluar =
-                            document.getElementById('jamKeluar').value;
+                try {
+                    // ================= SIMPAN / UPDATE KELAS =================
+                    await fetch(`${API_URL}/api/kelas`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            program: data.program,
+                            nama_kelas: data.kelas,
+                            guru: data.guru,
+                            jadwal: jadwalFinal
+                        })
+                    });
 
-                        if (!masuk || !keluar) {
+                    // ================= SIMPAN SISWA =================
+                    const res = await fetch(`${API_URL}/api/submit`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data)
+                    });
 
-                            alert('Isi jam masuk dan jam keluar!');
-                            return;
-                        }
+                    if (!res.ok) throw new Error('Gagal menyimpan data');
 
-                        data.jam =
-                            `${masuk}-${keluar}`;
-                    }
+                    document.getElementById('notif').classList.remove('hidden');
+                    e.target.reset();
 
-                    // ================= JADWAL BIASA =================
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1500);
 
-                    if (data.jam !== 'CUSTOM_SCHEDULE') {
-
-                        jadwalFinal =
-                            `${data.hari} (${data.jam})`;
-
-                        data.jadwal =
-                            jadwalFinal;
-                    }
-
-                    // ================= CUSTOM SCHEDULE =================
-
-                    if ((data.jam || '').trim().toUpperCase() === 'CUSTOM_SCHEDULE') {
-
-                        const jadwal = [];
-
-                        document
-                            .querySelectorAll('.jadwal-row')
-                            .forEach(row => {
-
-                                const check =
-                                    row.querySelector('.jadwal-check');
-
-                                if (!check.checked) return;
-
-                                const masuk =
-                                    row.querySelector('.jam-masuk').value;
-
-                                const keluar =
-                                    row.querySelector('.jam-keluar').value;
-
-                                if (!masuk || !keluar) return;
-
-                                jadwal.push(
-                                    `${check.value} (${masuk}-${keluar})`
-                                );
-                            });
-
-                        if (jadwal.length === 0) {
-                            alert('Pilih minimal 1 jadwal!');
-                            return;
-                        }
-
-                        jadwalFinal = jadwal.join(', ');
-
-                        data.jadwal = jadwalFinal;
-
-                        // 👇 TAMBAHIN BARIS INI: Tumpuk/hancurkan nilai asli 'CUSTOM_SCHEDULE' 
-                        data.jam = jadwalFinal;
-                    }
-
-                    btn.disabled = true;
-                    btn.innerText = 'Memproses...';
-
-                    try {
-
-                        // ================= SIMPAN / UPDATE KELAS =================
-
-                        await fetch(`${API_URL}/api/kelas`, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify({
-                                program: data.program,
-                                nama_kelas: data.kelas,
-                                guru: data.guru,
-                                jadwal: jadwalFinal
-                            })
-                        });
-
-                        // ================= SIMPAN SISWA =================
-
-                        const res =
-                            await fetch(
-                                `${API_URL}/api/submit`,
-                                {
-                                    method: 'POST',
-                                    headers: {
-                                        'Content-Type':
-                                            'application/json'
-                                    },
-                                    body:
-                                        JSON.stringify(data)
-                                }
-                            );
-
-                        if (!res.ok)
-                            throw new Error(
-                                'Gagal menyimpan data'
-                            );
-
-                        document
-                            .getElementById('notif')
-                            .classList.remove('hidden');
-
-                        e.target.reset();
-
-                        setTimeout(() => {
-
-                            location.reload();
-
-                        }, 1500);
-
-                    } catch (err) {
-
-                        alert(err.message);
-
-                        btn.disabled = false;
-
-                        btn.innerText =
-                            'Simpan Pendaftaran';
-                    }
-                });
+                } catch (err) {
+                    alert(err.message);
+                    btn.disabled = false;
+                    btn.innerText = 'Simpan Pendaftaran';
+                }
+            });
         });
     </script>
 </body>
