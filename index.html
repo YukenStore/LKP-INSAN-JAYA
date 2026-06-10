@@ -213,40 +213,57 @@
                 tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-slate-400">Tidak ada data ditemukan</td></tr>`;
                 return;
             }
+            
             tbody.innerHTML = data.map(s => `
-                <tr class="hover:bg-slate-50 transition-colors">
-                    <td class="p-4 font-bold text-slate-800">${formatNama(s.nama_siswa)}</td>
-                    <td class="p-4"><span class="bg-slate-100 text-slate-600 px-2.5 py-1 rounded-md text-xs uppercase font-bold">${s.program}</span></td>
-                    <td class="p-4 text-violet-700 font-bold">${s.kelas}</td>
-                    <td class="p-4 text-slate-600 font-medium">${s.guru}</td>
-                    <td class="p-4">
-                        <span class="bg-amber-50 text-amber-600 border border-amber-100 px-2.5 py-1 rounded-md text-xs font-bold">
-                        ${s.jadwal || '-'}
+                <tr class="hover:bg-slate-50 transition-colors border-b border-slate-100 last:border-0">
+                    
+                    <!-- 1. Tambah align-top agar teks rata atas -->
+                    <td class="p-4 align-top font-bold text-slate-800 leading-snug max-w-[200px]">
+                        ${formatNama(s.nama_siswa)}
+                    </td>
+                    
+                    <td class="p-4 align-top">
+                        <!-- 2. Tambah inline-block dan whitespace-nowrap agar pill tidak terbelah -->
+                        <span class="inline-block whitespace-nowrap bg-slate-100 text-slate-600 px-2.5 py-1 rounded-md text-xs uppercase font-bold">
+                            ${s.program}
                         </span>
                     </td>
-                    <td class="p-4 text-center">
+                    
+                    <td class="p-4 align-top text-violet-700 font-bold whitespace-nowrap">
+                        ${s.kelas}
+                    </td>
+                    
+                    <td class="p-4 align-top text-slate-600 font-medium min-w-[120px]">
+                        ${s.guru}
+                    </td>
+                    
+                    <td class="p-4 align-top">
+                        <!-- 3. Tambah inline-block, leading-relaxed, dan batas lebar agar jadwal rapi walau panjang -->
+                        <span class="inline-block bg-amber-50 text-amber-600 border border-amber-100 px-3 py-1.5 rounded-lg text-xs font-bold leading-relaxed max-w-[280px] break-words">
+                            ${s.jadwal || '-'}
+                        </span>
+                    </td>
+                    
+                    <td class="p-4 align-top text-center relative">
                         <button
                             onclick="toggleMenu(${s.id}, event)"
-                            class="w-8 h-8 rounded-lg hover:bg-slate-100 flex items-center justify-center mx-auto">
+                            class="w-8 h-8 rounded-lg hover:bg-slate-200 flex items-center justify-center mx-auto transition-colors">
                             ⋮
                         </button>
 
                         <div
                             id="menu-${s.id}"
-                            class="hidden fixed bg-white border border-slate-200 rounded-xl shadow-xl z-[9999] min-w-[150px]">
-
+                            class="hidden fixed bg-white border border-slate-200 rounded-xl shadow-xl z-[9999] min-w-[150px] overflow-hidden text-left">
                             <button
                                 onclick="editSiswa(${s.id})"
-                                class="w-full text-left px-4 py-2 hover:bg-slate-50 text-slate-700">
+                                class="w-full text-left px-4 py-2.5 hover:bg-slate-50 text-slate-700 font-medium text-sm border-b border-slate-100">
                                 ✏️ Edit
                             </button>
-
                             <button
                                 onclick="hapus(${s.id})"
-                                class="w-full text-left px-4 py-2 hover:bg-red-50 text-red-600">
+                                class="w-full text-left px-4 py-2.5 hover:bg-red-50 text-red-600 font-medium text-sm">
                                 🗑️ Hapus
                             </button>
-
                         </div>
                     </td>
                 </tr>
