@@ -280,21 +280,6 @@
 
         document.addEventListener('click', (e) => {
 
-            if (
-                !e.target.closest('[onclick*="toggleMenu"]') &&
-                !e.target.closest('[id^="menu-"]')
-            ) {
-
-                document
-                    .querySelectorAll('[id^="menu-"]')
-                    .forEach(menu =>
-                        menu.classList.add('hidden')
-                    );
-            }
-        });
-
-        document.addEventListener('click', (e) => {
-
             if (!e.target.closest('[onclick^="toggleMenu"]') &&
                 !e.target.closest('[id^="menu-"]')) {
 
@@ -305,34 +290,20 @@
         });
 
         function editSiswa(id) {
-
-            const siswa =
-                allData.find(s => s.id == id);
-
+            const siswa = allData.find(s => s.id == id);
             if (!siswa) return;
 
-            document.getElementById('editId').value =
-                siswa.id;
+            document.getElementById('editId').value = siswa.id;
+            document.getElementById('editNama').value = siswa.nama_siswa || '';
+            document.getElementById('editProgram').value = siswa.program || '';
+            document.getElementById('editKelas').value = siswa.kelas || '';
+            document.getElementById('editGuru').value = siswa.guru || '';
 
-            document.getElementById('editNama').value =
-                siswa.nama_siswa || '';
-
-            document.getElementById('editProgram').value =
-                siswa.program || '';
-
-            document.getElementById('editKelas').value =
-                siswa.kelas || '';
-
-            document.getElementById('editGuru').value =
-                siswa.guru || '';
-
+            // PERBAIKAN: Jika nilainya CUSTOM_SCHEDULE, kosongkan form-nya
             document.getElementById('editJadwal').value =
-                siswa.jadwal || '';
+                (siswa.jadwal === 'CUSTOM_SCHEDULE') ? '' : (siswa.jadwal || '');
 
-            document
-                .getElementById('modalEdit')
-                .classList
-                .remove('hidden');
+            document.getElementById('modalEdit').classList.remove('hidden');
         }
 
         function tutupModalEdit() {
@@ -344,58 +315,28 @@
         }
 
         async function simpanEdit() {
-
             const data = {
-
-                id:
-                    Number(
-                        document.getElementById('editId').value
-                    ),
-
-                nama_siswa:
-                    document.getElementById('editNama').value,
-
-                program:
-                    document.getElementById('editProgram').value,
-
-                kelas:
-                    document.getElementById('editKelas').value,
-
-                guru:
-                    document.getElementById('editGuru').value,
-
-                jadwal:
-                    document.getElementById('editJadwal').value
+                id: Number(document.getElementById('editId').value),
+                nama_siswa: document.getElementById('editNama').value,
+                program: document.getElementById('editProgram').value,
+                kelas: document.getElementById('editKelas').value,
+                guru: document.getElementById('editGuru').value,
+                jadwal: document.getElementById('editJadwal').value // PERBAIKAN DI SINI
             };
 
             try {
+                const res = await fetch(`${API}/edit`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
 
-                const res =
-                    await fetch(
-                        `${API}/edit`,
-                        {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type':
-                                    'application/json'
-                            },
-                            body:
-                                JSON.stringify(data)
-                        }
-                    );
-
-                if (!res.ok)
-                    throw new Error();
+                if (!res.ok) throw new Error();
 
                 tutupModalEdit();
-
                 loadData();
-
             } catch {
-
-                alert(
-                    'Gagal menyimpan perubahan'
-                );
+                alert('Gagal menyimpan perubahan');
             }
         }
 
