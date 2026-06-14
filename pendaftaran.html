@@ -5,7 +5,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pendaftaran Siswa</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com">
+        // Cek apakah user sudah login. Kalau belum, tendang balik ke halaman login!
+        if (!localStorage.getItem('lkp_user_email')) {
+            window.location.href = 'index.html';
+        }
+        // Cek apakah user sudah punya sesi login. Kalau sudah, langsung arahkan ke dashboard!
+        if (localStorage.getItem('lkp_user_email')) {
+            window.location.href = 'dashboard.html';
+        }
+    </script>
     <link
         href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Bricolage+Grotesque:opsz,wght@12..96,700&display=swap"
         rel="stylesheet">
@@ -83,7 +92,7 @@
                 </svg>
                 Absensi Siswa
             </a>
-            <a href="index.html"
+            <a href="dashboard.html"
                 class="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-medium text-sm transition-colors">
                 <svg class=" w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -102,15 +111,27 @@
                 Latihan Soal
             </a>
         </nav>
+        <!-- ================= BAGIAN PROFIL & LOGOUT ================= -->
         <div class="p-4 border-t border-slate-100 mt-auto bg-white">
-            <a href="login.html" onclick="return confirm('Apakah Anda yakin ingin keluar?');" 
-               class="flex items-center justify-center gap-2 w-full px-4 py-2.5 text-red-600 bg-red-50 hover:bg-red-100 rounded-xl font-bold text-sm transition-colors border border-red-100">
+            <!-- Info User -->
+            <div class="flex items-center gap-3 mb-4 px-2">
+                <div class="w-10 h-10 rounded-full bg-violet-100 overflow-hidden flex-shrink-0 border border-violet-200">
+                    <img id="userProfilePic" src="https://ui-avatars.com/api/?name=User&background=c7d2fe&color=4f46e5" alt="Profile" class="w-full h-full object-cover">
+                </div>
+                <div class="overflow-hidden">
+                    <p id="userNameDisplay" class="text-sm font-bold text-slate-800 truncate">Memuat...</p>
+                    <p id="userEmailDisplay" class="text-[10px] font-medium text-slate-500 truncate">Memuat email...</p>
+                </div>
+            </div>
+            <!-- Tombol Keluar -->
+            <a href="index.html" id="btnLogout" class="flex items-center justify-center gap-2 w-full px-4 py-2.5 text-red-600 bg-red-50 hover:bg-red-100 rounded-xl font-bold text-sm transition-colors border border-red-100">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                 </svg>
                 Keluar
             </a>
         </div>
+        <!-- ======================================================== -->
     </aside>
 
     <main class="flex-1 flex flex-col h-full relative overflow-hidden">
@@ -237,6 +258,36 @@
     </main>
 
     <script>
+        // ================= FITUR TAMPILAN PROFIL USER =================
+        document.addEventListener('DOMContentLoaded', () => {
+            // Ambil data dari LocalStorage
+            const userName = localStorage.getItem('lkp_user_name') || 'Admin LKP';
+            const userEmail = localStorage.getItem('lkp_user_email') || 'admin@lkpinsanjaya.com';
+            const userPic = localStorage.getItem('lkp_user_picture');
+
+            // Tampilkan ke layar
+            document.getElementById('userNameDisplay').textContent = userName;
+            document.getElementById('userEmailDisplay').textContent = userEmail;
+            
+            // Pasang foto profil Google (kalau ga ada, pakai inisial nama)
+            if (userPic) {
+                document.getElementById('userProfilePic').src = userPic;
+            } else {
+                document.getElementById('userProfilePic').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=c7d2fe&color=4f46e5`;
+            }
+
+            // Fitur Logout (Hapus data memori pas keluar)
+            document.getElementById('btnLogout').addEventListener('click', (e) => {
+                if(!confirm('Apakah Anda yakin ingin keluar?')) {
+                    e.preventDefault();
+                } else {
+                    localStorage.removeItem('lkp_user_name');
+                    localStorage.removeItem('lkp_user_email');
+                    localStorage.removeItem('lkp_user_picture');
+                }
+            });
+        });
+        // ==============================================================
         // ================= MOBILE SIDEBAR MENU LOGIC =================
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('sidebarOverlay');
