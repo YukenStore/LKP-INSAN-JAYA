@@ -4,24 +4,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Panggil file manifest -->
+    <title>Dashboard Data Siswa</title>
+
+    <!-- 1. Panggil file manifest & Warna Tema -->
     <link rel="manifest" href="manifest.json">
-    <!-- Warna tema atas HP -->
     <meta name="theme-color" content="#7c3aed">
-    <title>Absensi Siswa</title>
-    <script src="https://cdn.tailwindcss.com">
+
+    <!-- 2. Tailwind CSS (HARUS SENDIRIAN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- 3. Satpam Halaman Dalam -->
+    <script>
         // Cek apakah user sudah login. Kalau belum, tendang balik ke halaman login!
         if (!localStorage.getItem('lkp_user_email')) {
             window.location.href = 'index.html';
         }
-        // Cek apakah user sudah punya sesi login. Kalau sudah, langsung arahkan ke dashboard!
-        if (localStorage.getItem('lkp_user_email')) {
-            window.location.href = 'dashboard.html';
+    </script>
+
+    <!-- 4. Pendaftar Mesin Aplikasi (Service Worker) -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js')
+            .then(() => console.log('Service Worker Registered'))
+            .catch((err) => console.log('Service Worker Failed', err));
         }
     </script>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&family=Bricolage+Grotesque:wght@700&display=swap"
-        rel="stylesheet">
     <style>
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
