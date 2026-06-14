@@ -11,8 +11,8 @@
         rel="stylesheet">
 
     <!-- Satpam Halaman Login -->
-    <script>
-        // Kalau user buka web tapi ternyata dia udah login, langsung tendang ke dalem!
+    <script src="https://accounts.google.com/gsi/client" async defer>
+    // Kalau user buka web tapi ternyata dia udah login, langsung tendang ke dalem!
         if (localStorage.getItem('lkp_user_email')) {
             window.location.href = 'dashboard.html';
         }
