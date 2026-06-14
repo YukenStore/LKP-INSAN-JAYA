@@ -1,0 +1,21 @@
+{
+  "name": "LKP Insan Jaya",
+  "short_name": "Insan Jaya",
+  "description": "Sistem Akademik LKP Insan Jaya",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#7c3aed",
+  "icons": [
+    {
+      "src": "Logo Insan Jaya.jpeg",
+      "sizes": "192x192",
+      "type": "image/jpeg"
+    },
+    {
+      "src": "Logo Insan Jaya.jpeg",
+      "sizes": "512x512",
+      "type": "image/jpeg"
+    }
+  ]
+}
