@@ -4,6 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Panggil file manifest -->
+    <link rel="manifest" href="manifest.json">
+    <!-- Warna tema atas HP -->
+    <meta name="theme-color" content="#7c3aed">
     <title>Dashboard Data Siswa</title>
     <script src="https://cdn.tailwindcss.com">
         // Cek apakah user sudah login. Kalau belum, tendang balik ke halaman login!
@@ -575,6 +579,47 @@
             });
 
         loadData();
+        
+        // ================= FITUR TOMBOL INSTALL APLIKASI (PWA) =================
+        let deferredPrompt;
+        const btnInstallApp = document.getElementById('btnInstallApp');
+
+        // 1. Tangkap event dari browser saat web siap diinstal
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // Cegah pop-up bawaan HP muncul otomatis
+            e.preventDefault();
+            // Simpan event-nya ke dalam variabel
+            deferredPrompt = e;
+            // Tampilkan tombol "Install Aplikasi" buatan kita
+            btnInstallApp.classList.remove('hidden');
+        });
+
+        // 2. Apa yang terjadi kalau tombol kita diklik?
+        btnInstallApp.addEventListener('click', async () => {
+            if (deferredPrompt !== null) {
+                // Munculkan pop-up install resmi dari HP
+                deferredPrompt.prompt();
+                
+                // Tunggu jawaban user (di-install atau dicancel)
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    console.log('User setuju menginstal aplikasi');
+                } else {
+                    console.log('User menolak menginstal');
+                }
+                
+                // Kosongkan variabel dan sembunyikan tombol
+                deferredPrompt = null;
+                btnInstallApp.classList.add('hidden');
+            }
+        });
+
+        // 3. Sembunyikan tombol kalau aplikasi ternyata sudah terinstal
+        window.addEventListener('appinstalled', () => {
+            btnInstallApp.classList.add('hidden');
+            console.log('Aplikasi berhasil diinstal');
+        });
+        // =======================================================================
     </script>
 
     <div id="modalEdit" class="hidden fixed inset-0 bg-black/50 z-[9999] flex items-center justify-center p-4">
@@ -652,6 +697,13 @@
 
         </div>
     </div>
+    <!-- TOMBOL INSTALL APLIKASI (Hidden by default) -->
+    <button id="btnInstallApp" class="hidden fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-slate-900 hover:bg-black text-white px-6 py-3.5 rounded-full font-bricolage font-bold text-sm shadow-[0_8px_30px_rgb(0,0,0,0.12)] transition-all z-50 flex items-center gap-2 w-max animate-bounce">
+        <svg class="w-5 h-5 text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+        </svg>
+        Install Aplikasi LKP
+    </button>
 </body>
 
 </html>
