@@ -39,6 +39,7 @@
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
         }
+
         .font-bricolage {
             font-family: 'Bricolage Grotesque', sans-serif;
         }
@@ -60,6 +61,7 @@
             border-top: 1px dashed #e2e8f0;
             margin-top: 1rem;
         }
+
         /* ======================================================== */
 
         /* Custom scrollbar tipis untuk sidebar */
@@ -67,9 +69,11 @@
             width: 6px;
             height: 6px;
         }
+
         .custom-scrollbar::-webkit-scrollbar-track {
             background: transparent;
         }
+
         .custom-scrollbar::-webkit-scrollbar-thumb {
             background: #cbd5e1;
             border-radius: 3px;
@@ -150,12 +154,16 @@
         </nav>
         <!-- ================= BAGIAN PROFIL & LOGOUT ================= -->
         <div class="p-4 border-t border-slate-100 mt-auto bg-white">
-            <p class="text-[10px] text-slate-500 font-medium tracking-wider upperlowercase mt-4 mb-[4px]">Silahkan install
-                aplikasi untuk pengalaman yang lebih baik!</p>
+            <p id="installText" style="display: none;"
+                class="text-[10px] text-slate-500 font-medium tracking-wider mt-4 mb-2 text-center">
+                Silahkan install aplikasi untuk pengalaman yang lebih baik!
+            </p>
             <!-- button install app -->
-            <button id="btnInstallApp" style="display: none;" class="flex items-center justify-center gap-2 w-full px-4 py-2.5 mb-4 text-white bg-slate-800 hover:bg-slate-900 rounded-xl font-bold text-sm transition-colors shadow-md active:scale-[0.98]">
+            <button id="btnInstallApp" style="display: none;"
+                class="flex items-center justify-center gap-2 w-full px-4 py-2.5 mb-4 text-white bg-slate-800 hover:bg-slate-900 rounded-xl font-bold text-sm transition-colors shadow-md active:scale-[0.98]">
                 <svg class="w-5 h-5 text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                 </svg>
                 Install Aplikasi
             </button>
@@ -682,8 +690,9 @@
         // ================= FITUR TOMBOL INSTALL APLIKASI (PWA) =================
         let deferredPrompt = null;
         const btnInstallApp = document.getElementById('btnInstallApp');
+        const installText = document.getElementById('installText'); // Tangkap teksnya
 
-        // Cek apakah user sedang membuka web ini dari dalam Aplikasi PWA (bukan dari browser)
+        // Cek apakah user sedang membuka web ini dari dalam Aplikasi PWA
         const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
 
         // 1. Tangkap event dari browser JIKA aplikasi belum diinstall
@@ -691,9 +700,10 @@
             e.preventDefault();
             deferredPrompt = e;
             
-            // Munculkan tombol HANYA jika dibuka di browser (bukan di dalam aplikasi)
-            if (!isStandalone && btnInstallApp) {
-                btnInstallApp.style.display = 'flex';
+            // Munculkan tombol & teks HANYA jika dibuka di browser
+            if (!isStandalone) {
+                if (btnInstallApp) btnInstallApp.style.display = 'flex';
+                if (installText) installText.style.display = 'block'; // Munculin teksnya
             }
         });
 
@@ -705,17 +715,19 @@
                     const { outcome } = await deferredPrompt.userChoice;
                     if (outcome === 'accepted') {
                         console.log('User setuju menginstal aplikasi');
-                        // Sembunyikan tombol langsung setelah sukses tekan install
+                        // Sembunyikan tombol dan teks langsung setelah sukses
                         btnInstallApp.style.display = 'none'; 
+                        if (installText) installText.style.display = 'none';
                     }
                     deferredPrompt = null;
                 }
             });
         }
 
-        // 3. Deteksi kalau aplikasi berhasil terinstal (Sembunyikan tombol permanen)
+        // 3. Deteksi kalau aplikasi berhasil terinstal
         window.addEventListener('appinstalled', () => {
             if (btnInstallApp) btnInstallApp.style.display = 'none';
+            if (installText) installText.style.display = 'none'; // Ilangin teksnya permanen
             console.log('Aplikasi berhasil diinstal');
         });
         // =======================================================================
