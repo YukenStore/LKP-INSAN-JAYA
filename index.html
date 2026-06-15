@@ -10,11 +10,13 @@
         href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Bricolage+Grotesque:opsz,wght@12..96,700&display=swap"
         rel="stylesheet">
 
-    <script src="https://accounts.google.com/gsi/client" async defer>
-    // Kalau user buka web tapi ternyata dia udah login, langsung tendang ke dalem!
-        if (localStorage.getItem('lkp_user_email')) {
-            window.location.href = 'dashboard.html';
-        }
+    // Satpam Halaman Login
+    <script>
+        setTimeout(() => {
+            if (localStorage.getItem('lkp_user_email')) {
+                window.location.href = 'dashboard.html';
+            }
+        }, 100); // Tunggu 0.1 detik biar browser sempat baca memory
     </script>
 
     <style>
