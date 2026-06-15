@@ -10,7 +10,6 @@
         href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Bricolage+Grotesque:opsz,wght@12..96,700&display=swap"
         rel="stylesheet">
 
-    <!-- Satpam Halaman Login -->
     <script src="https://accounts.google.com/gsi/client" async defer>
     // Kalau user buka web tapi ternyata dia udah login, langsung tendang ke dalem!
         if (localStorage.getItem('lkp_user_email')) {
@@ -103,7 +102,7 @@
             localStorage.setItem('lkp_user_name', responsePayload.name);
             localStorage.setItem('lkp_user_email', responsePayload.email);
             localStorage.setItem('lkp_user_picture', responsePayload.picture);
-            
+
             // Simulasi loading 1.5 detik seolah-olah mengecek database API
             setTimeout(() => {
                 // Di sini nanti logika sesungguhnya: Mengecek apakah email ini terdaftar di DB lu
