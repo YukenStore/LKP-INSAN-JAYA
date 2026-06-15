@@ -683,27 +683,40 @@
         let deferredPrompt = null;
         const btnInstallApp = document.getElementById('btnInstallApp');
 
-        // 1. Tangkap izin dari browser diam-diam
+        // Cek apakah user sedang membuka web ini dari dalam Aplikasi PWA (bukan dari browser)
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+
+        // 1. Tangkap event dari browser JIKA aplikasi belum diinstall
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
+            
+            // Munculkan tombol HANYA jika dibuka di browser (bukan di dalam aplikasi)
+            if (!isStandalone && btnInstallApp) {
+                btnInstallApp.style.display = 'flex';
+            }
         });
 
         // 2. Pas tombolnya diklik user
-        btnInstallApp.addEventListener('click', async () => {
-            if (deferredPrompt !== null) {
-                // Munculkan pop-up resmi dari HP
-                deferredPrompt.prompt();
-
-                const { outcome } = await deferredPrompt.userChoice;
-                if (outcome === 'accepted') {
-                    console.log('User setuju menginstal aplikasi');
+        if (btnInstallApp) {
+            btnInstallApp.addEventListener('click', async () => {
+                if (deferredPrompt !== null) {
+                    deferredPrompt.prompt();
+                    const { outcome } = await deferredPrompt.userChoice;
+                    if (outcome === 'accepted') {
+                        console.log('User setuju menginstal aplikasi');
+                        // Sembunyikan tombol langsung setelah sukses tekan install
+                        btnInstallApp.style.display = 'none'; 
+                    }
+                    deferredPrompt = null;
                 }
-                deferredPrompt = null; // Kosongkan biar ga double
-            } else {
-                // Notifikasi kalau ternyata gagal/udah keinstall
-                alert("Aplikasi LKP Insan Jaya sudah terinstal di perangkat Anda, atau browser ini tidak mendukung fitur instalasi otomatis.");
-            }
+            });
+        }
+
+        // 3. Deteksi kalau aplikasi berhasil terinstal (Sembunyikan tombol permanen)
+        window.addEventListener('appinstalled', () => {
+            if (btnInstallApp) btnInstallApp.style.display = 'none';
+            console.log('Aplikasi berhasil diinstal');
         });
         // =======================================================================
     </script>
