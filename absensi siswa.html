@@ -25,29 +25,44 @@
     <script>
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('sw.js')
-            .then(() => console.log('Service Worker Registered'))
-            .catch((err) => console.log('Service Worker Failed', err));
+                .then(() => console.log('Service Worker Registered'))
+                .catch((err) => console.log('Service Worker Failed', err));
         }
     </script>
     <!-- ================= IMPORT FONT ================= -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Bricolage+Grotesque:wght@700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Bricolage+Grotesque:wght@700&display=swap"
+        rel="stylesheet">
     <style>
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
         }
+
         .font-bricolage {
             font-family: 'Bricolage Grotesque', sans-serif;
         }
+
         /* Custom scrollbar tipis untuk sidebar (Opsional) */
-        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
     </style>
 </head>
 
 <body class="bg-slate-50 text-slate-800 antialiased overflow-hidden flex h-[100dvh] relative">
 
-    <div id="sidebarOverlay" class="fixed inset-0 bg-slate-900/50 z-40 hidden transition-opacity opacity-0 md:hidden"></div>
+    <div id="sidebarOverlay" class="fixed inset-0 bg-slate-900/50 z-40 hidden transition-opacity opacity-0 md:hidden">
+    </div>
 
     <aside id="sidebar"
         class="fixed inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col w-64 h-full bg-white border-r border-slate-200 z-50 flex-shrink-0 shadow-2xl md:shadow-none">
@@ -117,11 +132,17 @@
         </nav>
         <!-- ================= BAGIAN PROFIL & LOGOUT ================= -->
         <div class="p-4 border-t border-slate-100 mt-auto bg-white">
-            <p class="text-[10px] text-slate-500 font-medium tracking-wider upperlowercase mt-4 mb-[4px]">Silahkan install aplikasi untuk pengalaman yang lebih baik!</p>
+            <!-- Teks Peringatan Install -->
+            <p id="installText" style="display: none;"
+                class="text-[10px] text-slate-500 font-medium tracking-wider mt-4 mb-2 text-center">
+                Silahkan install aplikasi untuk pengalaman yang lebih baik!
+            </p>
             <!-- button install app -->
-            <button id="btnInstallApp" style="display: none;" class="flex items-center justify-center gap-2 w-full px-4 py-2.5 mb-4 text-white bg-slate-800 hover:bg-slate-900 rounded-xl font-bold text-sm transition-colors shadow-md active:scale-[0.98]">
+            <button id="btnInstallApp" style="display: none;"
+                class="flex items-center justify-center gap-2 w-full px-4 py-2.5 mb-4 text-white bg-slate-800 hover:bg-slate-900 rounded-xl font-bold text-sm transition-colors shadow-md active:scale-[0.98]">
                 <svg class="w-5 h-5 text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                 </svg>
                 Install Aplikasi
             </button>
@@ -152,7 +173,8 @@
 
     <main class="flex-1 flex flex-col h-full bg-slate-50 overflow-hidden">
 
-        <header class="md:hidden h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 z-10 flex-shrink-0">
+        <header
+            class="md:hidden h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 z-10 flex-shrink-0">
             <div class="flex items-center gap-2">
                 <div class="w-9 h-9 rounded-xl bg-white flex items-center justify-center overflow-hidden border">
                     <img src="Logo Insan Jaya.jpeg" class="w-full h-full object-contain">
@@ -162,7 +184,8 @@
                     <span class="font-bricolage font-bold text-base text-violet-600">INSAN JAYA</span>
                 </div>
             </div>
-            <button id="mobileMenuBtn" class="p-2 text-slate-600 hover:text-violet-600 hover:bg-slate-50 rounded-lg transition-colors">
+            <button id="mobileMenuBtn"
+                class="p-2 text-slate-600 hover:text-violet-600 hover:bg-slate-50 rounded-lg transition-colors">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
@@ -173,8 +196,10 @@
             <div class="max-w-6xl mx-auto space-y-4 md:space-y-6">
 
                 <div class="mb-8">
-                    <h1 class="font-bricolage text-2xl md:text-3xl font-bold text-slate-900 tracking-tight">Absensi Siswa</h1>
-                    <p class="text-sm text-slate-500 mt-1">Berikut adalah absensi siswa selama 12 pertemuan terakhir.</p>
+                    <h1 class="font-bricolage text-2xl md:text-3xl font-bold text-slate-900 tracking-tight">Absensi
+                        Siswa</h1>
+                    <p class="text-sm text-slate-500 mt-1">Berikut adalah absensi siswa selama 12 pertemuan terakhir.
+                    </p>
                 </div>
 
                 <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-4 md:p-8">
@@ -292,7 +317,7 @@
             // Tampilkan ke layar
             document.getElementById('userNameDisplay').textContent = userName;
             document.getElementById('userEmailDisplay').textContent = userEmail;
-            
+
             // Pasang foto profil Google (kalau ga ada, pakai inisial nama)
             if (userPic) {
                 document.getElementById('userProfilePic').src = userPic;
@@ -302,7 +327,7 @@
 
             // Fitur Logout (Hapus data memori pas keluar)
             document.getElementById('btnLogout').addEventListener('click', (e) => {
-                if(!confirm('Apakah Anda yakin ingin keluar?')) {
+                if (!confirm('Apakah Anda yakin ingin keluar?')) {
                     e.preventDefault();
                 } else {
                     localStorage.removeItem('lkp_user_name');
@@ -650,21 +675,24 @@
                 btnSimpan.innerHTML = originalText;
             }
         }
+
         // ================= FITUR TOMBOL INSTALL APLIKASI (PWA) =================
         let deferredPrompt = null;
         const btnInstallApp = document.getElementById('btnInstallApp');
+        const installText = document.getElementById('installText'); // Tangkap teksnya
 
-        // Cek apakah user sedang membuka web ini dari dalam Aplikasi PWA (bukan dari browser)
+        // Cek apakah user sedang membuka web ini dari dalam Aplikasi PWA
         const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
 
         // 1. Tangkap event dari browser JIKA aplikasi belum diinstall
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-            
-            // Munculkan tombol HANYA jika dibuka di browser (bukan di dalam aplikasi)
-            if (!isStandalone && btnInstallApp) {
-                btnInstallApp.style.display = 'flex';
+
+            // Munculkan tombol & teks HANYA jika dibuka di browser
+            if (!isStandalone) {
+                if (btnInstallApp) btnInstallApp.style.display = 'flex';
+                if (installText) installText.style.display = 'block'; // Munculin teksnya
             }
         });
 
@@ -676,17 +704,19 @@
                     const { outcome } = await deferredPrompt.userChoice;
                     if (outcome === 'accepted') {
                         console.log('User setuju menginstal aplikasi');
-                        // Sembunyikan tombol langsung setelah sukses tekan install
-                        btnInstallApp.style.display = 'none'; 
+                        // Sembunyikan tombol dan teks langsung setelah sukses
+                        btnInstallApp.style.display = 'none';
+                        if (installText) installText.style.display = 'none';
                     }
                     deferredPrompt = null;
                 }
             });
         }
 
-        // 3. Deteksi kalau aplikasi berhasil terinstal (Sembunyikan tombol permanen)
+        // 3. Deteksi kalau aplikasi berhasil terinstal
         window.addEventListener('appinstalled', () => {
             if (btnInstallApp) btnInstallApp.style.display = 'none';
+            if (installText) installText.style.display = 'none'; // Ilangin teksnya permanen
             console.log('Aplikasi berhasil diinstal');
         });
         // =======================================================================
