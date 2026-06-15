@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Data Siswa</title>
+    <title>Pendaftaran Baru</title>
 
     <!-- 1. Panggil file manifest & Warna Tema -->
     <link rel="manifest" href="manifest.json">
@@ -25,12 +25,13 @@
     <script>
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('sw.js')
-            .then(() => console.log('Service Worker Registered'))
-            .catch((err) => console.log('Service Worker Failed', err));
+                .then(() => console.log('Service Worker Registered'))
+                .catch((err) => console.log('Service Worker Failed', err));
         }
     </script>
+    <!-- ================= IMPORT FONT ================= -->
     <link
-        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Bricolage+Grotesque:opsz,wght@12..96,700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Bricolage+Grotesque:wght@700&display=swap"
         rel="stylesheet">
     <style>
         body {
@@ -41,7 +42,7 @@
             font-family: 'Bricolage Grotesque', sans-serif;
         }
 
-        /* Custom scrollbar tipis untuk sidebar */
+        /* Custom scrollbar tipis untuk sidebar (Opsional) */
         .custom-scrollbar::-webkit-scrollbar {
             width: 6px;
             height: 6px;
@@ -55,23 +56,16 @@
             background: #cbd5e1;
             border-radius: 3px;
         }
-
-        .no-scrollbar::-webkit-scrollbar {
-            display: none;
-        }
-
-        .no-scrollbar {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
     </style>
 </head>
 
 <body class="bg-slate-50 text-slate-800 antialiased overflow-hidden flex h-[100dvh] relative">
 
-    <div id="sidebarOverlay" class="fixed inset-0 bg-slate-900/50 z-40 hidden transition-opacity opacity-0 md:hidden"></div>
+    <div id="sidebarOverlay" class="fixed inset-0 bg-slate-900/50 z-40 hidden transition-opacity opacity-0 md:hidden">
+    </div>
 
-    <aside id="sidebar" class="fixed inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col w-64 h-full bg-white border-r border-slate-200 z-50 flex-shrink-0 shadow-2xl md:shadow-none">
+    <aside id="sidebar"
+        class="fixed inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col w-64 h-full bg-white border-r border-slate-200 z-50 flex-shrink-0 shadow-2xl md:shadow-none">
         <div class="h-16 flex items-center justify-between px-6 border-b border-slate-100">
             <div class="flex items-center gap-1">
                 <div class="w-12 h-12 rounded-xl bg-white flex items-center justify-center overflow-hidden">
@@ -83,8 +77,11 @@
                     <span class="font-bricolage font-bold text-sm text-violet-600 leading-tight">INSAN JAYA</span>
                 </div>
             </div>
-            <button id="closeSidebarBtn" class="md:hidden p-2 -mr-2 text-slate-400 hover:text-red-500 rounded-lg bg-slate-50 transition-colors">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+            <button id="closeSidebarBtn"
+                class="md:hidden p-2 -mr-2 text-slate-400 hover:text-red-500 rounded-lg bg-slate-50 transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
             </button>
         </div>
 
@@ -108,7 +105,7 @@
             </a>
             <a href="dashboard.html"
                 class="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-medium text-sm transition-colors">
-                <svg class=" w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                 </svg>
@@ -116,21 +113,42 @@
             </a>
 
             <p class="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2 mt-6">Akademik</p>
-            <a href="#" class="flex items-center gap-3 px-3 py-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-medium text-sm transition-colors">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-                Laporan Nilai
+            <a href="#"
+                class="flex items-center gap-3 px-3 py-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-medium text-sm transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                Laporan Hasil Belajar
             </a>
-            <a href="#" class="flex items-center gap-3 px-3 py-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-medium text-sm transition-colors">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
+            <a href="#"
+                class="flex items-center gap-3 px-3 py-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-medium text-sm transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                </svg>
                 Latihan Soal
             </a>
         </nav>
         <!-- ================= BAGIAN PROFIL & LOGOUT ================= -->
         <div class="p-4 border-t border-slate-100 mt-auto bg-white">
+            <p class="text-[10px] text-slate-500 font-medium tracking-wider upperlowercase mt-4">Silahkan install
+                aplikasi untuk pengalaman yang lebih baik!</p>
+            <!-- button install app -->
+            <button id="btnInstallApp"
+                class="flex items-center justify-center gap-2 w-full px-4 py-2.5 mb-4 text-white bg-slate-800 hover:bg-slate-900 rounded-xl font-bold text-sm transition-colors shadow-md active:scale-[0.98]">
+                <svg class="w-5 h-5 text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                </svg>
+                Install Aplikasi
+            </button>
             <!-- Info User -->
             <div class="flex items-center gap-3 mb-4 px-2">
-                <div class="w-10 h-10 rounded-full bg-violet-100 overflow-hidden flex-shrink-0 border border-violet-200">
-                    <img id="userProfilePic" src="https://ui-avatars.com/api/?name=User&background=c7d2fe&color=4f46e5" alt="Profile" class="w-full h-full object-cover">
+                <div
+                    class="w-10 h-10 rounded-full bg-violet-100 overflow-hidden flex-shrink-0 border border-violet-200">
+                    <img id="userProfilePic" src="https://ui-avatars.com/api/?name=User&background=c7d2fe&color=4f46e5"
+                        alt="Profile" class="w-full h-full object-cover">
                 </div>
                 <div class="overflow-hidden">
                     <p id="userNameDisplay" class="text-sm font-bold text-slate-800 truncate">Memuat...</p>
@@ -138,9 +156,11 @@
                 </div>
             </div>
             <!-- Tombol Keluar -->
-            <a href="index.html" id="btnLogout" class="flex items-center justify-center gap-2 w-full px-4 py-2.5 text-red-600 bg-red-50 hover:bg-red-100 rounded-xl font-bold text-sm transition-colors border border-red-100">
+            <a href="index.html" id="btnLogout"
+                class="flex items-center justify-center gap-2 w-full px-4 py-2.5 text-red-600 bg-red-50 hover:bg-red-100 rounded-xl font-bold text-sm transition-colors border border-red-100">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                 </svg>
                 Keluar
             </a>
@@ -149,7 +169,8 @@
     </aside>
 
     <main class="flex-1 flex flex-col h-full relative overflow-hidden">
-        <header class="md:hidden h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 z-10 flex-shrink-0">
+        <header
+            class="md:hidden h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 z-10 flex-shrink-0">
             <div class="flex items-center gap-2">
                 <div class="w-9 h-9 rounded-xl bg-white flex items-center justify-center overflow-hidden border">
                     <img src="Logo Insan Jaya.jpeg" class="w-full h-full object-contain">
@@ -159,7 +180,8 @@
                     <span class="font-bricolage font-bold text-base text-violet-600">INSAN JAYA</span>
                 </div>
             </div>
-            <button id="mobileMenuBtn" class="p-2 text-slate-600 hover:text-violet-600 hover:bg-slate-50 rounded-lg transition-colors">
+            <button id="mobileMenuBtn"
+                class="p-2 text-slate-600 hover:text-violet-600 hover:bg-slate-50 rounded-lg transition-colors">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
@@ -169,21 +191,25 @@
         <div class="flex-1 overflow-y-auto p-4 md:p-8 pb-8">
             <div class="max-w-2xl mx-auto">
                 <div class="mb-8">
-                    <h1 class="font-bricolage text-2xl md:text-3xl font-bold text-slate-900 tracking-tight">Pendaftaran Baru</h1>
+                    <h1 class="font-bricolage text-2xl md:text-3xl font-bold text-slate-900 tracking-tight">Pendaftaran
+                        Baru</h1>
                     <p class="text-sm text-slate-500 mt-1">Gunakan form ini untuk pendaftaran program les siswa.</p>
                 </div>
 
                 <div class="bg-white p-5 md:p-8 rounded-3xl shadow-sm border border-slate-200/60">
                     <form id="formAbsensi" class="space-y-6">
                         <div>
-                            <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-2">Nama Lengkap Siswa</label>
+                            <label
+                                class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-2">Nama
+                                Lengkap Siswa</label>
                             <input type="text" name="nama_siswa" required placeholder="Nama lengkap siswa..."
                                 class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-violet-500 outline-none transition-all">
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                                <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-2">Program</label>
+                                <label
+                                    class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-2">Program</label>
                                 <select id="program" name="program" required
                                     class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-violet-500 appearance-none bg-no-repeat bg-[right_1rem_center] bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M5%207L10%2012L15%207%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%221.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%3C/svg%3E')]">
                                     <option value="" disabled selected>Pilih program...</option>
@@ -195,7 +221,8 @@
                                 </select>
                             </div>
                             <div>
-                                <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-2">Kelas</label>
+                                <label
+                                    class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-2">Kelas</label>
                                 <select id="kelas" name="kelas" required
                                     class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-violet-500 appearance-none bg-no-repeat bg-[right_1rem_center] bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M5%207L10%2012L15%207%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%221.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%3C/svg%3E')]">
                                     <option value="" disabled selected>Pilih program dulu...</option>
@@ -204,7 +231,9 @@
                         </div>
 
                         <div>
-                            <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-2">Guru Pengajar</label>
+                            <label
+                                class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-2">Guru
+                                Pengajar</label>
                             <select id="guru" name="guru" required
                                 class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-violet-500">
                                 <option value="" disabled selected>Pilih program dulu...</option>
@@ -212,7 +241,8 @@
                         </div>
 
                         <div id="hariBelajarContainer">
-                            <label class="text-[11px] font-bold text-slate-500 uppercase mb-2 block">Hari Belajar (Maks 3)</label>
+                            <label class="text-[11px] font-bold text-slate-500 uppercase mb-2 block">Hari Belajar (Maks
+                                3)</label>
                             <div class="grid grid-cols-2 md:grid-cols-3 gap-2 text-sm">
                                 <label><input type="checkbox" name="hari" value="Senin"> Senin</label>
                                 <label><input type="checkbox" name="hari" value="Selasa"> Selasa</label>
@@ -224,7 +254,8 @@
                         </div>
 
                         <div>
-                            <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-2">Jam Belajar</label>
+                            <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-2">Jam
+                                Belajar</label>
                             <select id="jam" name="jam" required
                                 class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-violet-500">
                                 <option value="" disabled selected>Pilih jam...</option>
@@ -240,16 +271,20 @@
                             </select>
 
                             <div id="customJamContainer" class="hidden mt-4">
-                                <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-3">Custom Jam</label>
+                                <label
+                                    class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-3">Custom
+                                    Jam</label>
                                 <div class="grid grid-cols-2 gap-4">
                                     <div>
                                         <label class="text-xs text-slate-500 mb-1 block">Jam Masuk</label>
-                                        <input type="text" id="jamMasuk" maxlength="5" inputmode="numeric" placeholder="15:30"
+                                        <input type="text" id="jamMasuk" maxlength="5" inputmode="numeric"
+                                            placeholder="15:30"
                                             class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-violet-500">
                                     </div>
                                     <div>
                                         <label class="text-xs text-slate-500 mb-1 block">Jam Keluar</label>
-                                        <input type="text" id="jamKeluar" maxlength="5" inputmode="numeric" placeholder="17:00"
+                                        <input type="text" id="jamKeluar" maxlength="5" inputmode="numeric"
+                                            placeholder="17:00"
                                             class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-violet-500">
                                     </div>
                                 </div>
@@ -282,7 +317,7 @@
             // Tampilkan ke layar
             document.getElementById('userNameDisplay').textContent = userName;
             document.getElementById('userEmailDisplay').textContent = userEmail;
-            
+
             // Pasang foto profil Google (kalau ga ada, pakai inisial nama)
             if (userPic) {
                 document.getElementById('userProfilePic').src = userPic;
@@ -292,7 +327,7 @@
 
             // Fitur Logout (Hapus data memori pas keluar)
             document.getElementById('btnLogout').addEventListener('click', (e) => {
-                if(!confirm('Apakah Anda yakin ingin keluar?')) {
+                if (!confirm('Apakah Anda yakin ingin keluar?')) {
                     e.preventDefault();
                 } else {
                     localStorage.removeItem('lkp_user_name');
@@ -564,6 +599,33 @@
                 }
             });
         });
+        // ================= FITUR TOMBOL INSTALL APLIKASI (PWA) =================
+        let deferredPrompt = null;
+        const btnInstallApp = document.getElementById('btnInstallApp');
+
+        // 1. Tangkap izin dari browser diam-diam
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+        });
+
+        // 2. Pas tombolnya diklik user
+        btnInstallApp.addEventListener('click', async () => {
+            if (deferredPrompt !== null) {
+                // Munculkan pop-up resmi dari HP
+                deferredPrompt.prompt();
+
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    console.log('User setuju menginstal aplikasi');
+                }
+                deferredPrompt = null; // Kosongkan biar ga double
+            } else {
+                // Notifikasi kalau ternyata gagal/udah keinstall
+                alert("Aplikasi LKP Insan Jaya sudah terinstal di perangkat Anda, atau browser ini tidak mendukung fitur instalasi otomatis.");
+            }
+        });
+        // =======================================================================
     </script>
 </body>
 
