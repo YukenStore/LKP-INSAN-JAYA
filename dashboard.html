@@ -823,7 +823,7 @@
         // ================= SISTEM KEAMANAN (HAK AKSES ADMIN) =================
         function cekAksesAdmin() {
             const currentUserEmail = localStorage.getItem('lkp_user_email');
-            const adminEmails = ['lkpinsanjaya@gmail.com', 'yumenoboken@gmail.com'];
+            const adminEmails = ['lpkinsanjaya@gmail.com', 'yumenoboken@gmail.com'];
 
             // Kalau bukan Admin, musnahkan semua elemen yang punya atribut admin-only
             if (!adminEmails.includes(currentUserEmail)) {
