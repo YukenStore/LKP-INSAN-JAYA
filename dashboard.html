@@ -486,6 +486,7 @@
         }
 
         function toggleMenu(id, event) {
+            // 1. Tutup semua menu lain yang lagi kebuka
             document.querySelectorAll('[id^="menu-"]').forEach(menu => {
                 if (menu.id !== `menu-${id}`) {
                     menu.classList.add('hidden');
@@ -493,12 +494,28 @@
             });
 
             const menu = document.getElementById(`menu-${id}`);
-            const rect = event.currentTarget.getBoundingClientRect();
+            const button = event.currentTarget;
+            const rect = button.getBoundingClientRect();
 
-            menu.style.top = `${rect.bottom + 5}px`;
-            menu.style.left = `${rect.left - 110}px`;
-
+            // 2. Munculin menunya dulu biar kita bisa ngukur tingginya
             menu.classList.toggle('hidden');
+
+            // 3. Atur posisi pintar (Smart Positioning)
+            if (!menu.classList.contains('hidden')) {
+                const menuHeight = menu.offsetHeight; // Ukur tinggi kotak menu (Edit + Hapus)
+                const spaceBelow = window.innerHeight - rect.bottom; // Ukur sisa ruang layar di bawah tombol
+
+                // Kalau sisa ruang di bawah lebih kecil dari tinggi menu, lempar menunya ke ATAS!
+                if (spaceBelow < (menuHeight + 20)) {
+                    menu.style.top = `${rect.top - menuHeight - 5}px`;
+                } else {
+                    // Kalau ruang bawah masih lega, munculin normal ke BAWAH
+                    menu.style.top = `${rect.bottom + 5}px`;
+                }
+
+                // Posisi geser kirinya tetap sama
+                menu.style.left = `${rect.left - 110}px`;
+            }
         }
 
         document.addEventListener('click', (e) => {
@@ -699,7 +716,7 @@
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-            
+
             // Munculkan tombol & teks HANYA jika dibuka di browser
             if (!isStandalone) {
                 if (btnInstallApp) btnInstallApp.style.display = 'flex';
@@ -716,7 +733,7 @@
                     if (outcome === 'accepted') {
                         console.log('User setuju menginstal aplikasi');
                         // Sembunyikan tombol dan teks langsung setelah sukses
-                        btnInstallApp.style.display = 'none'; 
+                        btnInstallApp.style.display = 'none';
                         if (installText) installText.style.display = 'none';
                     }
                     deferredPrompt = null;
