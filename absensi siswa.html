@@ -160,6 +160,10 @@
                 </svg>
                 Install Aplikasi
             </button>
+            <div id="iosInstallHint" style="display: none;" class="text-[11px] text-slate-600 font-medium text-center mt-2 mb-4 bg-blue-50/80 p-3 rounded-xl border border-blue-100">
+                🍎 <b>Khusus Pengguna iPhone:</b><br>
+                Tap tombol <svg class="inline w-4 h-4 mx-1 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg> (Bagikan) di bawah Safari, lalu pilih <br><b>"Add to Home Screen"</b> ➕
+            </div>
             <!-- Info User -->
             <div class="flex items-center gap-3 mb-4 px-2">
                 <div
@@ -768,6 +772,24 @@
             if (installText) installText.style.display = 'none'; // Ilangin teksnya permanen
             console.log('Aplikasi berhasil diinstal');
         });
+        // =======================================================================
+
+        // ================= DETEKTOR KHUSUS PENGGUNA iPHONE/iOS =================
+        const iosInstallHint = document.getElementById('iosInstallHint');
+        
+        // Cek apakah perangkatnya produk Apple (iPhone/iPad)
+        const isIos = () => {
+            const userAgent = window.navigator.userAgent.toLowerCase();
+            return /iphone|ipad|ipod/.test(userAgent);
+        };
+        
+        // Cek apakah saat ini sedang dibuka di dalam aplikasi PWA iOS
+        const isInStandaloneMode = () => ('standalone' in window.navigator) && (window.navigator.standalone);
+
+        // Kalau dia pakai iPhone DAN belum diinstall, munculkan panduannya!
+        if (isIos() && !isInStandaloneMode()) {
+            if (iosInstallHint) iosInstallHint.style.display = 'block';
+        }
         // =======================================================================
     </script>
 </body>
