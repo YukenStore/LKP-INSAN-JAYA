@@ -25,7 +25,11 @@
     <script>
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('sw.js')
-                .then(() => console.log('Service Worker Registered'))
+                .then((reg) => {
+                    // Perintah wajib biar PWA selalu ngecek file terbaru ke GitHub
+                    reg.update();
+                    console.log('Service Worker: Siap dan Selalu Update!');
+                })
                 .catch((err) => console.log('Service Worker Failed', err));
         }
     </script>
