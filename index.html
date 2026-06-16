@@ -9,9 +9,12 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Bricolage+Grotesque:opsz,wght@12..96,700&display=swap"
         rel="stylesheet">
+        
+    <!-- 1. MESIN GOOGLE (Punya rumah sendiri) -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
 
-    <script src="https://accounts.google.com/gsi/client" async defer>
-        // Satpam Halaman Login
+    <!-- 2. SATPAM HALAMAN LOGIN (Punya rumah sendiri) -->
+    <script>
         setTimeout(() => {
             if (localStorage.getItem('lkp_user_email')) {
                 window.location.href = 'dashboard.html';
