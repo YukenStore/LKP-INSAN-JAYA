@@ -33,7 +33,7 @@
                 .catch((err) => console.log('Service Worker Failed', err));
         }
     </script>
-    
+
     <!-- ================= IMPORT FONT ================= -->
     <link
         href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Bricolage+Grotesque:wght@700&display=swap"
@@ -136,6 +136,15 @@
             </a>
         </nav>
         <!-- ================= BAGIAN PROFIL & LOGOUT ================= -->
+         <!-- Tombol Segarkan Aplikasi -->
+        <button onclick="refreshAplikasi()"
+            class="flex items-center justify-center gap-2 w-full px-4 py-2.5 mb-3 text-violet-700 bg-violet-50 hover:bg-violet-100 border border-violet-100 rounded-xl font-bold text-sm transition-colors active:scale-[0.98]">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+            Segarkan Aplikasi
+        </button>
         <div class="p-4 border-t border-slate-100 mt-auto bg-white">
             <!-- Teks Peringatan Install -->
             <p id="installText" style="display: none;"
@@ -342,6 +351,29 @@
             });
         });
         // ==============================================================
+
+        // ================= FITUR REFRESH PAKSA (SAPU JAGAT CACHE) =================
+        function refreshAplikasi() {
+            // Ubah teks tombol biar kelihatan lagi loading
+            const btn = document.querySelector('button[onclick="refreshAplikasi()"]');
+            if(btn) btn.innerHTML = 'Menyegarkan... ⏳';
+
+            // 1. Hapus semua ingatan (cache) PWA yang nyangkut di memori HP/Laptop
+            if ('caches' in window) {
+                caches.keys().then((names) => {
+                    names.forEach(name => {
+                        caches.delete(name);
+                    });
+                });
+            }
+
+            // 2. Beri jeda 0.5 detik biar cache benar-benar terhapus, lalu paksa muat ulang dari server (GitHub)
+            setTimeout(() => {
+                window.location.reload(true);
+            }, 500);
+        }
+        // =========================================================================
+
         // ================= MOBILE SIDEBAR MENU LOGIC =================
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('sidebarOverlay');
