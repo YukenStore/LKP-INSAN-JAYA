@@ -354,25 +354,37 @@
         });
         // ==============================================================
 
-        // ================= FITUR REFRESH PAKSA (SAPU JAGAT CACHE) =================
-        function refreshAplikasi() {
+        // ================= FITUR REFRESH PAKSA (SUPER SAPU JAGAT) =================
+        async function refreshAplikasi() {
             // Ubah teks tombol biar kelihatan lagi loading
             const btn = document.querySelector('button[onclick="refreshAplikasi()"]');
-            if(btn) btn.innerHTML = 'Menyegarkan... ⏳';
+            if(btn) btn.innerHTML = 'Menyegarkan Penuh... ⏳';
 
-            // 1. Hapus semua ingatan (cache) PWA yang nyangkut di memori HP/Laptop
-            if ('caches' in window) {
-                caches.keys().then((names) => {
-                    names.forEach(name => {
-                        caches.delete(name);
-                    });
-                });
+            try {
+                // 1. Hapus semua gudang Cache Storage (hapus file HTML/JS/CSS lama)
+                if ('caches' in window) {
+                    const cacheNames = await caches.keys();
+                    await Promise.all(cacheNames.map(name => caches.delete(name)));
+                }
+
+                // 2. Bunuh paksa Service Worker (mesin PWA lama dimatikan)
+                if ('serviceWorker' in navigator) {
+                    const registrations = await navigator.serviceWorker.getRegistrations();
+                    for (let reg of registrations) {
+                        await reg.unregister();
+                    }
+                }
+
+                // 3. Lempar balik ke pintu masuk dengan trik "Anti-Cache"
+                // Nambahin angka waktu acak biar HP nggak berani pakai file bekas
+                setTimeout(() => {
+                    window.location.href = 'index.html?update=' + new Date().getTime();
+                }, 300);
+
+            } catch (error) {
+                console.error('Gagal refresh total:', error);
+                window.location.reload(); // Jalur cadangan kalau error
             }
-
-            // 2. Beri jeda 0.5 detik biar cache benar-benar terhapus, lalu paksa muat ulang dari server (GitHub)
-            setTimeout(() => {
-                window.location.reload(true);
-            }, 500);
         }
         // =========================================================================
 
