@@ -4,16 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Absensi Siswa</title>
+    <title>Absensi Siswa LKP Insan Jaya</title>
 
-    <!-- 1. Panggil file manifest & Warna Tema -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#7c3aed">
 
-    <!-- 2. Tailwind CSS (HARUS SENDIRIAN) -->
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <!-- 3. Satpam Halaman Dalam -->
     <script>
         // Cek apakah user sudah login. Kalau belum, tendang balik ke halaman login!
         if (!localStorage.getItem('lkp_user_email')) {
@@ -21,12 +18,10 @@
         }
     </script>
 
-    <!-- 4. Pendaftar Mesin Aplikasi (Service Worker) -->
     <script>
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('sw.js')
                 .then((reg) => {
-                    // Perintah wajib biar PWA selalu ngecek file terbaru ke GitHub
                     reg.update();
                     console.log('Service Worker: Siap dan Selalu Update!');
                 })
@@ -34,165 +29,113 @@
         }
     </script>
 
-    <!-- ================= IMPORT FONT ================= -->
-    <link
-        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Bricolage+Grotesque:wght@700&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Bricolage+Grotesque:wght@700&display=swap" rel="stylesheet">
+    
     <style>
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-        }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .font-bricolage { font-family: 'Bricolage Grotesque', sans-serif; }
 
-        .font-bricolage {
-            font-family: 'Bricolage Grotesque', sans-serif;
-        }
+        /* Custom scrollbar tipis */
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
 
-        /* Custom scrollbar tipis untuk sidebar (Opsional) */
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
+        /* Custom Animasi Background Blobs */
+        @keyframes blob {
+            0% { transform: translate(0px, 0px) scale(1); }
+            33% { transform: translate(30px, -50px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.9); }
+            100% { transform: translate(0px, 0px) scale(1); }
         }
-
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 3px;
-        }
+        .animate-blob { animation: blob 7s infinite; }
+        .animation-delay-2000 { animation-delay: 2s; }
+        .animation-delay-4000 { animation-delay: 4s; }
     </style>
 </head>
 
 <body class="bg-slate-50 text-slate-800 antialiased overflow-hidden flex h-[100dvh] relative">
 
-    <div id="sidebarOverlay" class="fixed inset-0 bg-slate-900/50 z-40 hidden transition-opacity opacity-0 md:hidden">
-    </div>
+    <div id="sidebarOverlay" class="fixed inset-0 bg-slate-900/50 z-40 hidden transition-opacity opacity-0 md:hidden"></div>
 
-    <aside id="sidebar"
-        class="fixed inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col w-64 h-full bg-white border-r border-slate-200 z-50 flex-shrink-0 shadow-2xl md:shadow-none">
+    <aside id="sidebar" class="fixed inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col w-64 h-full bg-white border-r border-slate-200 z-50 flex-shrink-0 shadow-2xl md:shadow-none">
         <div class="h-16 flex items-center justify-between px-6 border-b border-slate-100">
             <div class="flex items-center gap-1">
                 <div class="w-12 h-12 rounded-xl bg-white flex items-center justify-center overflow-hidden">
-                    <img src="Logo Insan Jaya.jpeg" alt="Logo Insan Jaya" class="w-full h-full object-contain"
-                        onerror="this.src='https://via.placeholder.com/150'" />
+                    <img src="Logo Insan Jaya.jpeg" alt="Logo Insan Jaya" class="w-full h-full object-contain" onerror="this.src='https://via.placeholder.com/150'" />
                 </div>
                 <div class="flex flex-col justify-center">
                     <span class="font-bricolage font-bold text-sm text-slate-900 leading-tight">LKP</span>
                     <span class="font-bricolage font-bold text-sm text-violet-600 leading-tight">INSAN JAYA</span>
                 </div>
             </div>
-            <button id="closeSidebarBtn"
-                class="md:hidden p-2 -mr-2 text-slate-400 hover:text-red-500 rounded-lg bg-slate-50 transition-colors">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
+            <button id="closeSidebarBtn" class="md:hidden p-2 -mr-2 text-slate-400 hover:text-red-500 rounded-lg bg-slate-50 transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
             </button>
         </div>
 
         <nav class="flex-1 overflow-y-auto custom-scrollbar py-4 px-3 space-y-1">
             <p class="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2 mt-1">Menu Utama</p>
-            <a href="pendaftaran.html"
-                class="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-medium text-sm transition-colors">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-                </svg>
+            <a href="pendaftaran.html" class="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-medium text-sm transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
                 Pendaftaran Baru
             </a>
-            <a href="absensi siswa.html"
-                class="flex items-center gap-3 px-3 py-2.5 bg-violet-50 text-violet-700 rounded-xl font-semibold text-sm transition-colors">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
-                </svg>
+            <a href="absensi siswa.html" class="flex items-center gap-3 px-3 py-2.5 bg-violet-50 text-violet-700 rounded-xl font-semibold text-sm transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" /></svg>
                 Absensi Siswa
             </a>
-            <a href="dashboard.html"
-                class="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-medium text-sm transition-colors">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                </svg>
+            <a href="dashboard.html" class="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-medium text-sm transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
                 Data Siswa Aktif
             </a>
 
             <p class="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2 mt-6">Akademik</p>
-            <a href="#"
-                class="flex items-center gap-3 px-3 py-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-medium text-sm transition-colors">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
+            <a href="#" class="flex items-center gap-3 px-3 py-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-medium text-sm transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
                 Laporan Hasil Belajar
             </a>
-            <a href="#"
-                class="flex items-center gap-3 px-3 py-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-medium text-sm transition-colors">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                </svg>
+            <a href="#" class="flex items-center gap-3 px-3 py-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-medium text-sm transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
                 Latihan Soal
             </a>
         </nav>
-        <!-- ================= BAGIAN PROFIL & LOGOUT ================= -->
-         <!-- Tombol Segarkan Aplikasi -->
-        <button onclick="refreshAplikasi()"
-            class="flex items-center justify-center gap-2 w-full px-4 py-2.5 mb-3 text-violet-700 bg-violet-50 hover:bg-violet-100 border border-violet-100 rounded-xl font-bold text-sm transition-colors active:scale-[0.98]">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-            </svg>
+
+        <button onclick="refreshAplikasi()" class="flex items-center justify-center gap-2 w-full px-4 py-2.5 mb-3 text-violet-700 bg-violet-50 hover:bg-violet-100 border border-violet-100 rounded-xl font-bold text-sm transition-colors active:scale-[0.98]">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
             Segarkan Aplikasi
         </button>
         <div class="p-4 border-t border-slate-100 mt-auto bg-white">
-            <!-- Teks Peringatan Install -->
-            <p id="installText" style="display: none;"
-                class="text-[10px] text-slate-500 font-medium tracking-wider mt-4 mb-2 text-center">
-                Silahkan install aplikasi untuk pengalaman yang lebih baik!
-            </p>
-            <!-- button install app -->
-            <button id="btnInstallApp" style="display: none;"
-                class="flex items-center justify-center gap-2 w-full px-4 py-2.5 mb-4 text-white bg-slate-800 hover:bg-slate-900 rounded-xl font-bold text-sm transition-colors shadow-md active:scale-[0.98]">
-                <svg class="w-5 h-5 text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                </svg>
+            <p id="installText" style="display: none;" class="text-[10px] text-slate-500 font-medium tracking-wider mt-4 mb-2 text-center">Silahkan install aplikasi untuk pengalaman yang lebih baik!</p>
+            <button id="btnInstallApp" style="display: none;" class="flex items-center justify-center gap-2 w-full px-4 py-2.5 mb-4 text-white bg-slate-800 hover:bg-slate-900 rounded-xl font-bold text-sm transition-colors shadow-md active:scale-[0.98]">
+                <svg class="w-5 h-5 text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4-4m0 0l-4-4m4 4V4" /></svg>
                 Install Aplikasi
             </button>
             <div id="iosInstallHint" style="display: none;" class="text-[11px] text-slate-600 font-medium text-center mt-2 mb-4 bg-blue-50/80 p-3 rounded-xl border border-blue-100">
                 🍎 <b>Khusus Pengguna iPhone:</b><br>
                 Tap tombol <svg class="inline w-4 h-4 mx-1 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg> (Bagikan) di bawah Safari, lalu pilih <br><b>"Add to Home Screen"</b> ➕
             </div>
-            <!-- Info User -->
+
             <div class="flex items-center gap-3 mb-4 px-2">
-                <div
-                    class="w-10 h-10 rounded-full bg-violet-100 overflow-hidden flex-shrink-0 border border-violet-200">
-                    <img id="userProfilePic" src="https://ui-avatars.com/api/?name=User&background=c7d2fe&color=4f46e5"
-                        alt="Profile" class="w-full h-full object-cover">
+                <div class="w-10 h-10 rounded-full bg-violet-100 overflow-hidden flex-shrink-0 border border-violet-200">
+                    <img id="userProfilePic" src="https://ui-avatars.com/api/?name=User&background=c7d2fe&color=4f46e5" alt="Profile" class="w-full h-full object-cover">
                 </div>
                 <div class="overflow-hidden">
                     <p id="userNameDisplay" class="text-sm font-bold text-slate-800 truncate">Memuat...</p>
                     <p id="userEmailDisplay" class="text-[10px] font-medium text-slate-500 truncate">Memuat email...</p>
                 </div>
             </div>
-            <!-- Tombol Keluar -->
-            <a href="index.html" id="btnLogout"
-                class="flex items-center justify-center gap-2 w-full px-4 py-2.5 text-red-600 bg-red-50 hover:bg-red-100 rounded-xl font-bold text-sm transition-colors border border-red-100">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                </svg>
+            <a href="index.html" id="btnLogout" class="flex items-center justify-center gap-2 w-full px-4 py-2.5 text-red-600 bg-red-50 hover:bg-red-100 rounded-xl font-bold text-sm transition-colors border border-red-100">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
                 Keluar
             </a>
         </div>
-        <!-- ======================================================== -->
     </aside>
 
-    <main class="flex-1 flex flex-col h-full bg-slate-50 overflow-hidden">
+    <main class="flex-1 flex flex-col h-full bg-slate-50/50 relative overflow-hidden">
+        
+        <div class="absolute top-0 right-0 w-96 h-96 bg-violet-200/40 rounded-full mix-blend-multiply filter blur-3xl opacity-60 animate-blob pointer-events-none"></div>
+        <div class="absolute -bottom-8 left-10 w-72 h-72 bg-fuchsia-200/40 rounded-full mix-blend-multiply filter blur-3xl opacity-60 animate-blob animation-delay-2000 pointer-events-none"></div>
 
-        <header
-            class="md:hidden h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 z-10 flex-shrink-0">
+        <header class="md:hidden h-16 bg-white/80 backdrop-blur-md border-b border-slate-200 flex items-center justify-between px-4 z-20 flex-shrink-0 relative">
             <div class="flex items-center gap-2">
                 <div class="w-9 h-9 rounded-xl bg-white flex items-center justify-center overflow-hidden border">
                     <img src="Logo Insan Jaya.jpeg" class="w-full h-full object-contain">
@@ -202,124 +145,87 @@
                     <span class="font-bricolage font-bold text-base text-violet-600">INSAN JAYA</span>
                 </div>
             </div>
-            <button id="mobileMenuBtn"
-                class="p-2 text-slate-600 hover:text-violet-600 hover:bg-slate-50 rounded-lg transition-colors">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
+            <button id="mobileMenuBtn" class="p-2 text-slate-600 hover:text-violet-600 hover:bg-slate-50 rounded-lg transition-colors">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
             </button>
         </header>
 
-        <div class="flex-1 overflow-y-auto p-4 md:p-8 pb-8">
-            <div class="max-w-6xl mx-auto space-y-4 md:space-y-6">
-
-                <div class="mb-8">
-                    <h1 class="font-bricolage text-2xl md:text-3xl font-bold text-slate-900 tracking-tight">Absensi
-                        Siswa</h1>
-                    <p class="text-sm text-slate-500 mt-1">Berikut adalah absensi siswa selama 12 pertemuan terakhir.
-                    </p>
+        <div class="flex-1 overflow-y-auto p-4 md:p-6 pb-8 relative z-10 custom-scrollbar">
+            <div class="max-w-6xl mx-auto">
+                
+                <div class="mb-6 md:mb-8 pt-2">
+                    <h1 class="font-bricolage text-2xl md:text-3xl font-bold text-slate-900 tracking-tight">Absensi Siswa</h1>
+                    <p class="text-sm text-slate-500 mt-1 max-w-lg">Kelola kehadiran kelas secara real-time. Perubahan status akan tersimpan otomatis saat Anda menekan tombol simpan.</p>
                 </div>
 
-                <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-4 md:p-8">
-
-                    <div class="flex flex-col gap-4 mb-6 lg:flex-row lg:items-end lg:justify-between">
-                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                            <div>
-                                <h2 id="judulGuru" class="font-bold text-lg md:text-xl text-slate-800">
-                                    Belum pilih guru
-                                </h2>
-                                <div
-                                    class="inline-flex items-center gap-2 bg-violet-100 border border-violet-200 text-violet-700 px-3 py-1.5 rounded-full mt-2 shadow-sm">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
-                                        </path>
-                                    </svg>
-                                    <div class="flex gap-1 text-xs md:text-sm">
-                                        <select id="bulanSelect"
-                                            class="font-bold bg-transparent outline-none cursor-pointer"></select>
-                                        <select id="tahunSelect"
-                                            class="font-bold bg-transparent outline-none cursor-pointer"></select>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full lg:w-auto">
-                            <div>
-                                <label for="guruSelect" class="sr-only">Pilih Guru</label>
-                                <select id="guruSelect"
-                                    class="w-full lg:w-56 bg-slate-50 border border-slate-200 text-slate-700 font-medium px-4 py-2.5 rounded-xl focus:ring-4 focus:ring-violet-500/20 focus:border-violet-500 outline-none transition-all cursor-pointer hover:bg-slate-100 appearance-none text-sm">
-                                    <option value="">Pilih Guru...</option>
+                <div class="bg-white/90 backdrop-blur-sm p-5 md:p-6 rounded-2xl border border-slate-200/60 shadow-xl shadow-violet-100/20 mb-8 flex flex-wrap gap-4 items-end border-t-4 border-t-violet-500 transition-all">
+                    
+                    <div class="w-full md:w-auto flex-1 min-w-[200px]">
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1.5 tracking-wider">Bulan & Tahun</label>
+                        <div class="flex items-center px-4 py-2.5 border border-slate-200 rounded-xl bg-slate-50 hover:bg-white transition-colors focus-within:border-violet-500 focus-within:ring-4 focus-within:ring-violet-500/10 shadow-sm">
+                            <svg class="w-4 h-4 mr-2 text-violet-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                            <select id="bulanSelect" class="bg-transparent outline-none cursor-pointer appearance-none text-slate-700 font-semibold text-sm pr-1">
                                 </select>
-                            </div>
-                            <div>
-                                <label for="jadwalSelect" class="sr-only">Pilih Jadwal</label>
-                                <select id="jadwalSelect"
-                                    class="w-full lg:w-64 bg-slate-50 border border-slate-200 text-slate-700 font-medium px-4 py-2.5 rounded-xl focus:ring-4 focus:ring-violet-500/20 focus:border-violet-500 outline-none transition-all cursor-pointer hover:bg-slate-100 appearance-none text-sm">
-                                    <option value="">Pilih Jadwal...</option>
+                            <span class="text-slate-300 mx-1">/</span>
+                            <select id="tahunSelect" class="bg-transparent outline-none cursor-pointer appearance-none text-slate-700 font-semibold text-sm pl-1">
                                 </select>
-                            </div>
                         </div>
                     </div>
+                    
+                    <div class="w-full md:w-auto flex-1 min-w-[200px]">
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1.5 tracking-wider">Guru Pengajar</label>
+                        <select id="guruSelect" class="px-4 py-2.5 border border-slate-200 rounded-xl text-sm font-semibold text-slate-700 bg-slate-50 hover:bg-white transition-all w-full outline-none focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10 shadow-sm cursor-pointer appearance-none bg-no-repeat bg-[right_1rem_center] bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M5%207L10%2012L15%207%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%221.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%3C/svg%3E')]">
+                            <option value="">Pilih Guru...</option>
+                        </select>
+                    </div>
 
-                    <div class="rounded-xl border border-slate-200 overflow-hidden">
-                        <div class="overflow-x-auto custom-scrollbar">
-                            <table
-                                class="w-full min-w-[800px] text-center text-xs md:text-sm text-slate-600 table-fixed">
-                                <thead class="bg-slate-50 border-b border-slate-200">
-                                    <tr id="headerRow">
-                                        <th
-                                            class="w-40 border-b px-4 py-3 text-left sticky left-0 z-10 font-bold capitalize bg-violet-50 text-violet-900 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">
-                                            Nama Lengkap
-                                        </th>
-                                    </tr>
-                                    <tr id="tanggalRow" class="bg-slate-50">
-                                        <th
-                                            class="w-40 border-b px-4 py-2 text-left sticky left-0 z-10 font-bold capitalize bg-violet-50 text-violet-900 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">
-                                            Tanggal
-                                        </th>
-                                    </tr>
-                                </thead>
+                    <div class="w-full md:w-auto flex-1 min-w-[200px]">
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1.5 tracking-wider">Jadwal Kelas</label>
+                        <select id="jadwalSelect" class="px-4 py-2.5 border border-slate-200 rounded-xl text-sm font-semibold text-slate-700 bg-slate-50 hover:bg-white transition-all w-full outline-none focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10 shadow-sm cursor-pointer appearance-none bg-no-repeat bg-[right_1rem_center] bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M5%207L10%2012L15%207%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%221.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%3C/svg%3E')]">
+                            <option value="">Pilih Jadwal...</option>
+                        </select>
+                    </div>
+                </div>
 
-                                <tbody id="bodyAbsensi" class="divide-y divide-slate-100 bg-white">
-                                    <tr>
-                                        <td colspan="13" class="py-12 text-center">
-                                            <div class="flex flex-col items-center justify-center space-y-3">
-                                                <div
-                                                    class="w-12 h-12 bg-slate-50 rounded-full flex items-center justify-center">
-                                                    <svg class="w-6 h-6 text-slate-300" fill="none"
-                                                        stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                                            stroke-width="1.5"
-                                                            d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
-                                                        </path>
-                                                    </svg>
-                                                </div>
-                                                <p class="text-slate-400 font-medium text-sm">Pilih kelas terlebih
-                                                    dahulu untuk mulai absensi</p>
+                <div class="bg-white rounded-2xl border border-slate-200/80 shadow-xl shadow-slate-200/40 overflow-hidden relative">
+                    <div class="overflow-x-auto custom-scrollbar">
+                        <table class="w-full text-left border-collapse min-w-[800px] table-fixed">
+                            <thead class="bg-slate-50/80 backdrop-blur border-b border-slate-200">
+                                <tr>
+                                    <th rowspan="2" class="w-48 p-4 text-[11px] font-bold text-slate-500 uppercase align-middle bg-slate-50/95 sticky left-0 z-10 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.05)] border-r border-slate-100">Nama Lengkap Siswa</th>
+                                    <th colspan="12" class="py-2.5 text-[11px] font-bold text-violet-600 uppercase text-center border-b border-slate-200 bg-violet-50/30">Pertemuan Ke-</th>
+                                </tr>
+                                <tr id="tanggalRow" class="bg-white">
+                                    </tr>
+                            </thead>
+                            
+                            <tbody id="bodyAbsensi" class="text-sm divide-y divide-slate-100 bg-white">
+                                <tr>
+                                    <td colspan="13" class="py-20 text-center">
+                                        <div class="flex flex-col items-center justify-center space-y-4">
+                                            <div class="relative w-16 h-16 bg-violet-100 rounded-full flex items-center justify-center shadow-inner">
+                                                <div class="absolute inset-0 bg-violet-200 rounded-full animate-ping opacity-20"></div>
+                                                <svg class="w-8 h-8 text-violet-600 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
                                             </div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+                                            <div>
+                                                <p class="text-slate-700 font-bold text-base mb-1">Pilih Kelas Terlebih Dahulu</p>
+                                                <p class="text-slate-400 font-medium text-xs">Silakan pilih guru dan jadwal kelas pada filter di atas.</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
-
-                    <div class="mt-4 border-t border-slate-100 pt-4 flex justify-end">
-                        <button onclick="saveAll()"
-                            class="group w-full sm:w-auto flex items-center justify-center gap-2 bg-violet-600 hover:bg-violet-700 text-white px-6 py-2.5 rounded-xl font-medium shadow-lg shadow-violet-600/30 transition-all duration-200 text-sm">
-                            <svg class="w-4 h-4 group-hover:scale-110 transition-transform" fill="none"
-                                stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4">
-                                </path>
-                            </svg>
-                            Simpan Absensi
-                        </button>
-                    </div>
-
                 </div>
+
+                <div class="mt-8 flex justify-end">
+                    <button onclick="saveAll()" class="group w-full sm:w-auto flex items-center justify-center gap-2 bg-violet-600 hover:bg-violet-700 text-white px-8 py-3.5 rounded-xl font-bold shadow-[0_8px_20px_-6px_rgba(124,58,237,0.5)] transition-all duration-200 text-sm active:translate-y-1">
+                        <svg class="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
+                        Simpan Semua Perubahan
+                    </button>
+                </div>
+
             </div>
         </div>
     </main>
@@ -327,75 +233,45 @@
     <script>
         // ================= FITUR TAMPILAN PROFIL USER =================
         document.addEventListener('DOMContentLoaded', () => {
-            // Ambil data dari LocalStorage
             const userName = localStorage.getItem('lkp_user_name') || 'Admin LKP';
             const userEmail = localStorage.getItem('lkp_user_email') || 'admin@lkpinsanjaya.com';
             const userPic = localStorage.getItem('lkp_user_picture');
 
-            // Tampilkan ke layar
             document.getElementById('userNameDisplay').textContent = userName;
             document.getElementById('userEmailDisplay').textContent = userEmail;
+            if (userPic) { document.getElementById('userProfilePic').src = userPic; } 
+            else { document.getElementById('userProfilePic').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=c7d2fe&color=4f46e5`; }
 
-            // Pasang foto profil Google (kalau ga ada, pakai inisial nama)
-            if (userPic) {
-                document.getElementById('userProfilePic').src = userPic;
-            } else {
-                document.getElementById('userProfilePic').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=c7d2fe&color=4f46e5`;
-            }
-
-            // Fitur Logout (Hapus data memori pas keluar)
             document.getElementById('btnLogout').addEventListener('click', (e) => {
-                if (!confirm('Apakah Anda yakin ingin keluar?')) {
-                    e.preventDefault();
-                } else {
+                if (!confirm('Apakah Anda yakin ingin keluar?')) { e.preventDefault(); } 
+                else {
                     localStorage.removeItem('lkp_user_name');
                     localStorage.removeItem('lkp_user_email');
                     localStorage.removeItem('lkp_user_picture');
                 }
             });
         });
-        // ==============================================================
 
-        // ================= FITUR REFRESH PAKSA (SUPER SAPU JAGAT) =================
+        // ================= REFRESH APLIKASI =================
         async function refreshAplikasi() {
-            // Ubah teks tombol biar kelihatan lagi loading
             const btn = document.querySelector('button[onclick="refreshAplikasi()"]');
-            if(btn) btn.innerHTML = 'Menyegarkan Penuh... ⏳';
-
+            if(btn) btn.innerHTML = 'Menyegarkan... ⏳';
             try {
-                // 1. Hapus semua gudang Cache Storage (hapus file HTML/JS/CSS lama)
                 if ('caches' in window) {
                     const cacheNames = await caches.keys();
                     await Promise.all(cacheNames.map(name => caches.delete(name)));
                 }
-
-                // 2. Bunuh paksa Service Worker (mesin PWA lama dimatikan)
                 if ('serviceWorker' in navigator) {
                     const registrations = await navigator.serviceWorker.getRegistrations();
-                    for (let reg of registrations) {
-                        await reg.unregister();
-                    }
+                    for (let reg of registrations) { await reg.unregister(); }
                 }
-
-                // 3. Lempar balik ke pintu masuk dengan trik "Anti-Cache"
-                // Nambahin angka waktu acak biar HP nggak berani pakai file bekas
-                setTimeout(() => {
-                    window.location.href = 'index.html?update=' + new Date().getTime();
-                }, 300);
-
-            } catch (error) {
-                console.error('Gagal refresh total:', error);
-                window.location.reload(); // Jalur cadangan kalau error
-            }
+                setTimeout(() => { window.location.href = 'index.html?update=' + new Date().getTime(); }, 300);
+            } catch (error) { window.location.reload(); }
         }
-        // =========================================================================
 
-        // ================= MOBILE SIDEBAR MENU LOGIC =================
+        // ================= MOBILE SIDEBAR =================
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('sidebarOverlay');
-        const menuBtn = document.getElementById('mobileMenuBtn');
-        const closeBtn = document.getElementById('closeSidebarBtn');
-
         function toggleSidebar() {
             const isClosed = sidebar.classList.contains('-translate-x-full');
             if (isClosed) {
@@ -408,21 +284,123 @@
                 setTimeout(() => overlay.classList.add('hidden'), 300);
             }
         }
+        document.getElementById('mobileMenuBtn')?.addEventListener('click', toggleSidebar);
+        document.getElementById('closeSidebarBtn')?.addEventListener('click', toggleSidebar);
+        overlay?.addEventListener('click', toggleSidebar);
 
-        if (menuBtn) menuBtn.addEventListener('click', toggleSidebar);
-        if (closeBtn) closeBtn.addEventListener('click', toggleSidebar);
-        if (overlay) overlay.addEventListener('click', toggleSidebar);
-        // ============================================================
-
+        // ================= LOGIKA ABSENSI =================
         const API_URL = 'https://absensi-api.yumenoboken.workers.dev';
-
         let selectedBulan = new Date().toISOString().slice(0, 7);
         let dataAbsensi = {};
-        let kelasData = [];
         let AUTO_SAVE = true;
         let dataTanggal = {};
 
-        // --- LOGIKA KODE UTAMA ---
+        document.addEventListener("DOMContentLoaded", () => {
+            generateBulan();
+            generateTanggalRow();
+            loadGuru();
+
+            document.getElementById('guruSelect').addEventListener('change', (e) => {
+                const guru = e.target.value;
+                if (!guru) return;
+                loadJadwal(guru);
+            });
+
+            document.getElementById('jadwalSelect').addEventListener('change', (e) => {
+                const guru = document.getElementById('guruSelect').value;
+                const jadwal = e.target.value;
+                if (!guru || !jadwal) return;
+                loadSiswaByJadwal(guru, jadwal);
+            });
+
+            document.getElementById('bulanSelect').addEventListener('change', updateSelectedBulan);
+            document.getElementById('tahunSelect').addEventListener('change', updateSelectedBulan);
+        });
+
+        function generateBulan() {
+            const now = new Date();
+            const bulanSelect = document.getElementById('bulanSelect');
+            const tahunSelect = document.getElementById('tahunSelect');
+            
+            bulanSelect.innerHTML = '';
+            tahunSelect.innerHTML = '';
+
+            const namaBulan = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+            namaBulan.forEach((b, i) => {
+                bulanSelect.innerHTML += `<option value="${String(i + 1).padStart(2, '0')}">${b}</option>`;
+            });
+
+            const tahunIni = now.getFullYear();
+            for (let y = tahunIni - 2; y <= tahunIni + 5; y++) {
+                tahunSelect.innerHTML += `<option value="${y}">${y}</option>`;
+            }
+
+            bulanSelect.value = String(now.getMonth() + 1).padStart(2, '0');
+            tahunSelect.value = tahunIni;
+        }
+
+        function updateSelectedBulan() {
+            const b = document.getElementById('bulanSelect').value;
+            const t = document.getElementById('tahunSelect').value;
+            selectedBulan = `${t}-${b}`;
+            
+            generateTanggalRow(); 
+            
+            const guru = document.getElementById('guruSelect').value;
+            const jadwal = document.getElementById('jadwalSelect').value;
+            if (guru && jadwal) {
+                loadSiswaByJadwal(guru, jadwal);
+            }
+        }
+
+        async function loadGuru() {
+            try {
+                const res = await fetch(`${API_URL}/api/guru`);
+                const guruList = await res.json();
+                const select = document.getElementById('guruSelect');
+                select.innerHTML = '<option value="">Pilih Guru...</option>';
+                guruList.forEach(g => { select.innerHTML += `<option value="${g.guru}">${g.guru}</option>`; });
+            } catch (e) { console.error("Gagal load guru:", e); }
+        }
+
+        async function loadJadwal(guru) {
+            try {
+                const res = await fetch(`${API_URL}/api/jadwal-by-guru?guru=${encodeURIComponent(guru)}`);
+                const data = await res.json();
+                const select = document.getElementById('jadwalSelect');
+                select.innerHTML = '<option value="">Pilih Jadwal...</option>';
+                data.forEach(item => { select.innerHTML += `<option value="${item.jadwal}">${item.jadwal}</option>`; });
+            } catch (e) { console.error("Gagal load jadwal:", e); }
+        }
+
+        function generateTanggalRow() {
+            const tanggalRow = document.getElementById('tanggalRow');
+            tanggalRow.innerHTML = ''; 
+            
+            const [tahun, bulan] = selectedBulan.split('-');
+            const jumlahHari = new Date(tahun, bulan, 0).getDate();
+
+            for (let i = 1; i <= 12; i++) {
+                let options = `<option value="">Tgl</option>`;
+                for (let d = 1; d <= jumlahHari; d++) {
+                    options += `<option value="${d}">${d}</option>`;
+                }
+
+                tanggalRow.innerHTML += `
+                    <th class="border-b border-r border-slate-100 bg-white p-2 min-w-[60px]">
+                        <div class="flex flex-col items-center justify-center gap-1.5">
+                            <span class="text-[10px] text-violet-400 font-bold bg-violet-50 px-2 py-0.5 rounded">P${i}</span>
+                            <select class="w-full max-w-[55px] text-[10px] text-center rounded-md bg-white border border-slate-200 hover:border-violet-300 outline-none py-1 cursor-pointer shadow-sm transition-colors" data-pertemuan="${i}" onchange="handleTanggalChange(this, ${i})">
+                                ${options}
+                            </select>
+                        </div>
+                    </th>
+                `;
+            }
+        }
+
+        function handleTanggalChange(selectEl, pertemuan) { dataTanggal[pertemuan] = selectEl.value; }
+
         async function handleStatusChange(el, siswaId, pertemuan) {
             const val = el.value;
             applyStatusColor(el);
@@ -440,141 +418,109 @@
                             bulan: selectedBulan
                         }])
                     });
-                } catch (e) {
-                    console.error("Auto-save gagal:", e);
-                }
+                } catch (e) { console.error("Auto-save gagal:", e); }
             }
         }
 
         function applyStatusColor(el) {
             const status = el.value.toLowerCase();
             const styles = {
-                'hadir': { bg: '#10b981', text: '#ffffff' },
-                'izin': { bg: '#f59e0b', text: '#ffffff' },
-                'alpha': { bg: '#ef4444', text: '#ffffff' },
-                'default': { bg: '#f3f4f6', text: '#6b7280' }
+                'hadir': { bg: '#dcfce7', text: '#166534', border: '#bbf7d0' },
+                'izin': { bg: '#fef3c7', text: '#92400e', border: '#fde68a' },
+                'alpha': { bg: '#fee2e2', text: '#991b1b', border: '#fecaca' },
+                'default': { bg: '#f8fafc', text: '#94a3b8', border: '#e2e8f0' }
             };
             const style = styles[status] || styles['default'];
             el.style.backgroundColor = style.bg;
             el.style.color = style.text;
+            el.style.borderColor = style.border;
         }
 
-        document.addEventListener("DOMContentLoaded", () => {
-            const headerRow = document.getElementById('headerRow');
-            if (headerRow) {
-                for (let i = 1; i <= 12; i++) {
-                    headerRow.innerHTML += `<th class="border px-2 py-2 w-16 text-center font-semibold text-xs md:text-sm">${i}</th>`;
+        async function loadSiswaByJadwal(guru, jadwal) {
+            const body = document.getElementById('bodyAbsensi');
+            body.innerHTML = `<tr>
+                <td colspan="13" class="py-20 text-center">
+                    <div class="flex flex-col items-center">
+                        <div class="w-8 h-8 border-4 border-violet-200 border-t-violet-600 rounded-full animate-spin mb-3"></div>
+                        <p class="text-slate-500 font-medium text-sm">Menarik data dari server...</p>
+                    </div>
+                </td>
+            </tr>`;
+            
+            try {
+                const res = await fetch(`${API_URL}/api/siswa-by-jadwal?guru=${encodeURIComponent(guru)}&jadwal=${encodeURIComponent(jadwal)}`);
+                const siswa = await res.json();
+                body.innerHTML = '';
+                dataAbsensi = {};
+
+                if (siswa.length === 0) {
+                    body.innerHTML = `<tr>
+                        <td colspan="13" class="py-16 text-center">
+                            <div class="inline-flex items-center justify-center p-4 bg-amber-50 rounded-full mb-3">
+                                <svg class="w-6 h-6 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                            </div>
+                            <p class="text-slate-600 font-bold">Tidak ada siswa</p>
+                            <p class="text-slate-400 text-sm mt-1">Belum ada siswa yang terdaftar di jadwal ini.</p>
+                        </td>
+                    </tr>`;
+                    return;
                 }
-            }
-            loadGuru();
 
-            document.getElementById('guruSelect').addEventListener('change', (e) => {
-                const guru = e.target.value;
-                if (!guru) return;
-                document.getElementById('judulGuru').innerText = `Guru: ${guru}`;
-                generateBulan();
-                loadJadwal(guru);
-            });
-        });
+                siswa.forEach((s, idx) => {
+                    const bgRow = idx % 2 === 0 ? 'bg-white' : 'bg-slate-50/30'; // Efek Zebra Table Halus
+                    let row = `<tr class="${bgRow} hover:bg-violet-50/50 transition-colors group">
+                        <td class="w-48 border-b border-slate-100 px-4 py-3 text-left sticky left-0 z-10 font-semibold capitalize ${bgRow} group-hover:bg-violet-50 text-slate-700 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.02)] truncate text-xs md:text-sm border-r transition-colors">
+                            ${s.nama_siswa.toLowerCase()}
+                        </td>`;
 
-        async function loadGuru() {
-            try {
-                const res = await fetch(`${API_URL}/api/guru`);
-                const guruList = await res.json();
-                const select = document.getElementById('guruSelect');
-                select.innerHTML = '<option value="">Pilih Guru...</option>';
-                guruList.forEach(g => {
-                    select.innerHTML += `<option value="${g.guru}">${g.guru}</option>`;
+                    for (let i = 1; i <= 12; i++) {
+                        row += `
+                            <td class="border-b border-r border-slate-100 p-1.5 text-center" data-siswa="${s.id}" data-pertemuan="${i}">
+                                <select class="w-[48px] h-8 text-[11px] font-bold uppercase rounded-md text-center cursor-pointer transition-all duration-200 outline-none appearance-none border mx-auto block hover:shadow-md" style="background-color: #f8fafc; color: #94a3b8; border-color:#e2e8f0;" onchange="handleStatusChange(this, ${s.id}, ${i})">
+                                    <option value="" class="bg-white text-gray-500">-</option>
+                                    <option value="hadir" class="bg-white text-green-700">H</option>
+                                    <option value="izin" class="bg-white text-amber-700">I</option>
+                                    <option value="alpha" class="bg-white text-red-700">A</option>
+                                </select>
+                            </td>
+                        `;
+                    }
+                    row += `</tr>`;
+                    body.innerHTML += row;
                 });
+
+                await loadAbsensiByGuru(guru);
+                await loadTanggal(guru, jadwal);
             } catch (e) {
-                console.error("Gagal load guru:", e);
+                console.error("Gagal meload siswa:", e);
+                body.innerHTML = `<tr><td colspan="13" class="py-12 text-center text-red-500 font-bold">Terjadi kesalahan saat menghubungi server.</td></tr>`;
             }
         }
 
-        async function loadJadwal(guru) {
+        async function loadAbsensiByGuru(guru) {
             try {
-                const res = await fetch(`${API_URL}/api/jadwal-by-guru?guru=${encodeURIComponent(guru)}`);
+                const res = await fetch(`${API_URL}/api/absensi-by-guru?guru=${encodeURIComponent(guru)}&bulan=${selectedBulan}`);
                 const data = await res.json();
-                const select = document.getElementById('jadwalSelect');
-                select.innerHTML = '<option value="">Pilih Jadwal...</option>';
                 data.forEach(item => {
-                    select.innerHTML += `<option value="${item.jadwal}">${item.jadwal}</option>`;
+                    const td = document.querySelector(`[data-siswa="${item.siswa_id}"][data-pertemuan="${item.pertemuan_ke}"]`);
+                    if (!td) return;
+                    const select = td.querySelector('select');
+                    select.value = item.status;
+                    applyStatusColor(select);
                 });
-            } catch (e) {
-                console.error("Gagal load jadwal:", e);
-            }
+            } catch (e) { console.error("Gagal meload absensi:", e); }
         }
 
-        function generateBulan() {
-            const now = new Date();
-            const bulanSelect = document.getElementById('bulanSelect');
-            const tahunSelect = document.getElementById('tahunSelect');
-
-            bulanSelect.innerHTML = '';
-            tahunSelect.innerHTML = '';
-
-            const namaBulan = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
-            namaBulan.forEach((b, i) => {
-                bulanSelect.innerHTML += `<option value="${String(i + 1).padStart(2, '0')}">${b}</option>`;
-            });
-
-            const startYear = now.getFullYear();
-            const endYear = now.getFullYear() + 10;
-            for (let y = startYear; y <= endYear; y++) {
-                tahunSelect.innerHTML += `<option value="${y}">${y}</option>`;
-            }
-
-            bulanSelect.value = String(now.getMonth() + 1).padStart(2, '0');
-            tahunSelect.value = now.getFullYear();
-
-            updateSelectedBulan();
-            bulanSelect.onchange = updateSelectedBulan;
-            tahunSelect.onchange = updateSelectedBulan;
-        }
-
-        function updateSelectedBulan() {
-            const bulan = document.getElementById('bulanSelect').value;
-            const tahun = document.getElementById('tahunSelect').value;
-            selectedBulan = `${tahun}-${bulan}`;
-
-            generateTanggalRow();
-
-            const guruNow = document.getElementById('guruSelect').value;
-            if (guruNow) {
-                loadAbsensiByGuru(guruNow);
-            }
-        }
-
-        function generateTanggalRow() {
-            const tanggalRow = document.getElementById('tanggalRow');
-            tanggalRow.innerHTML = `
-                <th class="w-40 border-b px-4 py-2 text-left sticky left-0 z-10 font-bold capitalize bg-violet-50 text-violet-900 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">
-                    Tanggal
-                </th>
-            `;
-
-            const bulan = document.getElementById('bulanSelect').value;
-            const tahun = document.getElementById('tahunSelect').value;
-            const jumlahHari = new Date(tahun, bulan, 0).getDate();
-
-            for (let i = 1; i <= 12; i++) {
-                let options = `<option value="">-</option>`;
-                for (let d = 1; d <= jumlahHari; d++) {
-                    options += `<option value="${d}">${d}</option>`;
-                }
-
-                tanggalRow.innerHTML += `
-                    <th class="border p-1 w-16">
-                        <select class="w-full text-[11px] text-center rounded-md border border-slate-200 bg-white outline-none py-1 appearance-none select-absen" data-pertemuan="${i}" onchange="handleTanggalChange(this, ${i})">
-                            ${options}
-                        </select>
-                    </th>
-                `;
-            }
-        }
-
-        function handleTanggalChange(selectEl, pertemuan) {
-            dataTanggal[pertemuan] = selectEl.value;
+        async function loadTanggal(guru, jadwal) {
+            document.querySelectorAll('#tanggalRow select').forEach(s => s.value = '');
+            try {
+                const res = await fetch(`${API_URL}/api/tanggal-pertemuan?guru=${encodeURIComponent(guru)}&jadwal=${encodeURIComponent(jadwal)}&bulan=${selectedBulan}`);
+                const data = await res.json();
+                data.forEach(item => {
+                    const select = document.querySelector(`select[data-pertemuan="${item.pertemuan_ke}"]`);
+                    if (select) { select.value = item.tanggal; }
+                });
+            } catch (e) { console.error("Gagal meload data tanggal:", e); }
         }
 
         async function saveTanggal() {
@@ -584,13 +530,7 @@
 
             const payload = [];
             for (let p in dataTanggal) {
-                payload.push({
-                    guru,
-                    jadwal,
-                    bulan: selectedBulan,
-                    pertemuan_ke: parseInt(p),
-                    tanggal: parseInt(dataTanggal[p])
-                });
+                payload.push({ guru, jadwal, bulan: selectedBulan, pertemuan_ke: parseInt(p), tanggal: parseInt(dataTanggal[p]) });
             }
 
             if (payload.length > 0) {
@@ -602,112 +542,17 @@
             }
         }
 
-        async function loadSiswaByJadwal(guru, jadwal) {
-            try {
-                const res = await fetch(`${API_URL}/api/siswa-by-jadwal?guru=${encodeURIComponent(guru)}&jadwal=${encodeURIComponent(jadwal)}`);
-                const siswa = await res.json();
-
-                const body = document.getElementById('bodyAbsensi');
-                body.innerHTML = '';
-                dataAbsensi = {};
-
-                if (siswa.length === 0) {
-                    body.innerHTML = `<tr><td colspan="13" class="py-12 text-center text-slate-400">Tidak ada siswa di jadwal ini.</td></tr>`;
-                    return;
-                }
-
-                siswa.forEach(s => {
-                    let row = `<tr>
-                        <td class="w-40 border-b px-4 py-2.5 text-left sticky left-0 z-10 font-bold capitalize bg-violet-50 text-violet-900 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)] truncate">
-                            ${s.nama_siswa.toLowerCase()}
-                        </td>`;
-
-                    for (let i = 1; i <= 12; i++) {
-                        row += `
-                            <td class="border p-1 w-16" data-siswa="${s.id}" data-pertemuan="${i}">
-                                <select class="status-select w-full h-7 text-[10px] md:text-[11px] font-bold uppercase rounded-md text-center cursor-pointer transition-all duration-200 border-none outline-none appearance-none select-absen" style="background-color: #f3f4f6; color: #6b7280;" onchange="handleStatusChange(this, ${s.id}, ${i})">
-                                    <option value="" class="bg-white text-gray-500">-</option>
-                                    <option value="hadir" class="bg-green-100 text-green-700">H</option>
-                                    <option value="izin" class="bg-amber-100 text-amber-700">I</option>
-                                    <option value="alpha" class="bg-red-100 text-red-700">A</option>
-                                </select>
-                            </td>
-                        `;
-                    }
-                    row += `</tr>`;
-                    body.innerHTML += row;
-                });
-
-                loadAbsensiByGuru(guru);
-                loadTanggal();
-            } catch (e) {
-                console.error("Gagal meload siswa:", e);
-            }
-        }
-
-        async function loadAbsensiByGuru(guru) {
-            try {
-                const res = await fetch(`${API_URL}/api/absensi-by-guru?guru=${encodeURIComponent(guru)}&bulan=${selectedBulan}`);
-                const data = await res.json();
-
-                data.forEach(item => {
-                    const td = document.querySelector(`[data-siswa="${item.siswa_id}"][data-pertemuan="${item.pertemuan_ke}"]`);
-                    if (!td) return;
-                    const select = td.querySelector('select');
-                    select.value = item.status;
-                    applyStatusColor(select);
-                });
-            } catch (e) {
-                console.error("Gagal meload absensi:", e);
-            }
-        }
-
-        async function loadTanggal() {
-            const guru = document.getElementById('guruSelect').value;
-            const jadwal = document.getElementById('jadwalSelect').value;
-            if (!guru || !jadwal) return;
-
-            document.querySelectorAll('#tanggalRow select').forEach(s => s.value = '');
-
-            try {
-                const res = await fetch(`${API_URL}/api/tanggal-pertemuan?guru=${encodeURIComponent(guru)}&jadwal=${encodeURIComponent(jadwal)}&bulan=${selectedBulan}`);
-                const data = await res.json();
-
-                data.forEach(item => {
-                    const select = document.querySelector(`select[data-pertemuan="${item.pertemuan_ke}"]`);
-                    if (select) {
-                        select.value = item.tanggal;
-                    }
-                });
-            } catch (e) {
-                console.error("Gagal meload data tanggal:", e);
-            }
-        }
-
-        document.getElementById('jadwalSelect').addEventListener('change', async (e) => {
-            const guru = document.getElementById('guruSelect').value;
-            const jadwal = e.target.value;
-            if (!guru || !jadwal) return;
-
-            await loadSiswaByJadwal(guru, jadwal);
-        });
-
         async function saveAll() {
             const payload = [];
             for (let key in dataAbsensi) {
                 const [siswa_id, pertemuan_ke] = key.split('-');
-                payload.push({
-                    siswa_id,
-                    pertemuan_ke,
-                    status: dataAbsensi[key],
-                    bulan: selectedBulan
-                });
+                payload.push({ siswa_id, pertemuan_ke, status: dataAbsensi[key], bulan: selectedBulan });
             }
 
             const btnSimpan = document.querySelector('button[onclick="saveAll()"]');
             const originalText = btnSimpan.innerHTML;
             btnSimpan.disabled = true;
-            btnSimpan.innerHTML = "Memproses...";
+            btnSimpan.innerHTML = `<svg class="w-5 h-5 animate-spin mr-2" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Menyimpan...`;
 
             try {
                 if (payload.length) {
@@ -717,81 +562,27 @@
                         body: JSON.stringify(payload)
                     });
                 }
-
                 await saveTanggal();
-                alert("✅ Semua data berhasil tersimpan!");
+                
+                // Balikkan tombol
+                btnSimpan.innerHTML = `<svg class="w-5 h-5 mr-2 text-green-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Berhasil Disimpan!`;
+                btnSimpan.classList.remove('bg-violet-600', 'hover:bg-violet-700');
+                btnSimpan.classList.add('bg-green-600', 'hover:bg-green-700');
+                
+                setTimeout(() => {
+                    btnSimpan.innerHTML = originalText;
+                    btnSimpan.classList.add('bg-violet-600', 'hover:bg-violet-700');
+                    btnSimpan.classList.remove('bg-green-600', 'hover:bg-green-700');
+                    btnSimpan.disabled = false;
+                }, 3000);
+
             } catch (e) {
                 console.error("Gagal menyimpan:", e);
                 alert("❌ Gagal menyimpan data absensi.");
-            } finally {
                 btnSimpan.disabled = false;
                 btnSimpan.innerHTML = originalText;
             }
         }
-
-        // ================= FITUR TOMBOL INSTALL APLIKASI (PWA) =================
-        let deferredPrompt = null;
-        const btnInstallApp = document.getElementById('btnInstallApp');
-        const installText = document.getElementById('installText'); // Tangkap teksnya
-
-        // Cek apakah user sedang membuka web ini dari dalam Aplikasi PWA
-        const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
-
-        // 1. Tangkap event dari browser JIKA aplikasi belum diinstall
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-
-            // Munculkan tombol & teks HANYA jika dibuka di browser
-            if (!isStandalone) {
-                if (btnInstallApp) btnInstallApp.style.display = 'flex';
-                if (installText) installText.style.display = 'block'; // Munculin teksnya
-            }
-        });
-
-        // 2. Pas tombolnya diklik user
-        if (btnInstallApp) {
-            btnInstallApp.addEventListener('click', async () => {
-                if (deferredPrompt !== null) {
-                    deferredPrompt.prompt();
-                    const { outcome } = await deferredPrompt.userChoice;
-                    if (outcome === 'accepted') {
-                        console.log('User setuju menginstal aplikasi');
-                        // Sembunyikan tombol dan teks langsung setelah sukses
-                        btnInstallApp.style.display = 'none';
-                        if (installText) installText.style.display = 'none';
-                    }
-                    deferredPrompt = null;
-                }
-            });
-        }
-
-        // 3. Deteksi kalau aplikasi berhasil terinstal
-        window.addEventListener('appinstalled', () => {
-            if (btnInstallApp) btnInstallApp.style.display = 'none';
-            if (installText) installText.style.display = 'none'; // Ilangin teksnya permanen
-            console.log('Aplikasi berhasil diinstal');
-        });
-        // =======================================================================
-
-        // ================= DETEKTOR KHUSUS PENGGUNA iPHONE/iOS =================
-        const iosInstallHint = document.getElementById('iosInstallHint');
-        
-        // Cek apakah perangkatnya produk Apple (iPhone/iPad)
-        const isIos = () => {
-            const userAgent = window.navigator.userAgent.toLowerCase();
-            return /iphone|ipad|ipod/.test(userAgent);
-        };
-        
-        // Cek apakah saat ini sedang dibuka di dalam aplikasi PWA iOS
-        const isInStandaloneMode = () => ('standalone' in window.navigator) && (window.navigator.standalone);
-
-        // Kalau dia pakai iPhone DAN belum diinstall, munculkan panduannya!
-        if (isIos() && !isInStandaloneMode()) {
-            if (iosInstallHint) iosInstallHint.style.display = 'block';
-        }
-        // =======================================================================
     </script>
 </body>
-
 </html>
