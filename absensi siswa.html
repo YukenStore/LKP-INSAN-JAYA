@@ -29,113 +29,219 @@
         }
     </script>
 
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Bricolage+Grotesque:wght@700&display=swap" rel="stylesheet">
-    
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Bricolage+Grotesque:wght@700&display=swap"
+        rel="stylesheet">
+
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; }
-        .font-bricolage { font-family: 'Bricolage Grotesque', sans-serif; }
+        /* Animasi Panah Kanan-Kiri untuk Hint Mobile */
+        @keyframes bounce-x {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            50% {
+                transform: translateX(4px);
+            }
+        }
+
+        .animate-bounce-x {
+            animation: bounce-x 1.5s infinite ease-in-out;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        .font-bricolage {
+            font-family: 'Bricolage Grotesque', sans-serif;
+        }
 
         /* Custom scrollbar tipis */
-        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
 
         /* Custom Animasi Background Blobs */
         @keyframes blob {
-            0% { transform: translate(0px, 0px) scale(1); }
-            33% { transform: translate(30px, -50px) scale(1.1); }
-            66% { transform: translate(-20px, 20px) scale(0.9); }
-            100% { transform: translate(0px, 0px) scale(1); }
+            0% {
+                transform: translate(0px, 0px) scale(1);
+            }
+
+            33% {
+                transform: translate(30px, -50px) scale(1.1);
+            }
+
+            66% {
+                transform: translate(-20px, 20px) scale(0.9);
+            }
+
+            100% {
+                transform: translate(0px, 0px) scale(1);
+            }
         }
-        .animate-blob { animation: blob 7s infinite; }
-        .animation-delay-2000 { animation-delay: 2s; }
-        .animation-delay-4000 { animation-delay: 4s; }
+
+        .animate-blob {
+            animation: blob 7s infinite;
+        }
+
+        .animation-delay-2000 {
+            animation-delay: 2s;
+        }
+
+        .animation-delay-4000 {
+            animation-delay: 4s;
+        }
     </style>
 </head>
 
 <body class="bg-slate-50 text-slate-800 antialiased overflow-hidden flex h-[100dvh] relative">
 
-    <div id="sidebarOverlay" class="fixed inset-0 bg-slate-900/50 z-40 hidden transition-opacity opacity-0 md:hidden"></div>
+    <div id="sidebarOverlay" class="fixed inset-0 bg-slate-900/50 z-40 hidden transition-opacity opacity-0 md:hidden">
+    </div>
 
-    <aside id="sidebar" class="fixed inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col w-64 h-full bg-white border-r border-slate-200 z-50 flex-shrink-0 shadow-2xl md:shadow-none">
+    <aside id="sidebar"
+        class="fixed inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col w-64 h-full bg-white border-r border-slate-200 z-50 flex-shrink-0 shadow-2xl md:shadow-none">
         <div class="h-16 flex items-center justify-between px-6 border-b border-slate-100">
             <div class="flex items-center gap-1">
                 <div class="w-12 h-12 rounded-xl bg-white flex items-center justify-center overflow-hidden">
-                    <img src="Logo Insan Jaya.jpeg" alt="Logo Insan Jaya" class="w-full h-full object-contain" onerror="this.src='https://via.placeholder.com/150'" />
+                    <img src="Logo Insan Jaya.jpeg" alt="Logo Insan Jaya" class="w-full h-full object-contain"
+                        onerror="this.src='https://via.placeholder.com/150'" />
                 </div>
                 <div class="flex flex-col justify-center">
                     <span class="font-bricolage font-bold text-sm text-slate-900 leading-tight">LKP</span>
                     <span class="font-bricolage font-bold text-sm text-violet-600 leading-tight">INSAN JAYA</span>
                 </div>
             </div>
-            <button id="closeSidebarBtn" class="md:hidden p-2 -mr-2 text-slate-400 hover:text-red-500 rounded-lg bg-slate-50 transition-colors">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+            <button id="closeSidebarBtn"
+                class="md:hidden p-2 -mr-2 text-slate-400 hover:text-red-500 rounded-lg bg-slate-50 transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
             </button>
         </div>
 
         <nav class="flex-1 overflow-y-auto custom-scrollbar py-4 px-3 space-y-1">
             <p class="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2 mt-1">Menu Utama</p>
-            <a href="pendaftaran.html" class="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-medium text-sm transition-colors">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+            <a href="pendaftaran.html"
+                class="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-medium text-sm transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
                 Pendaftaran Baru
             </a>
-            <a href="absensi siswa.html" class="flex items-center gap-3 px-3 py-2.5 bg-violet-50 text-violet-700 rounded-xl font-semibold text-sm transition-colors">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" /></svg>
+            <a href="absensi siswa.html"
+                class="flex items-center gap-3 px-3 py-2.5 bg-violet-50 text-violet-700 rounded-xl font-semibold text-sm transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                </svg>
                 Absensi Siswa
             </a>
-            <a href="dashboard.html" class="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-medium text-sm transition-colors">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
+            <a href="dashboard.html"
+                class="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-medium text-sm transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                </svg>
                 Data Siswa Aktif
             </a>
 
             <p class="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2 mt-6">Akademik</p>
-            <a href="#" class="flex items-center gap-3 px-3 py-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-medium text-sm transition-colors">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+            <a href="#"
+                class="flex items-center gap-3 px-3 py-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-medium text-sm transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
                 Laporan Hasil Belajar
             </a>
-            <a href="#" class="flex items-center gap-3 px-3 py-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-medium text-sm transition-colors">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
+            <a href="#"
+                class="flex items-center gap-3 px-3 py-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-medium text-sm transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                </svg>
                 Latihan Soal
             </a>
         </nav>
 
-        <button onclick="refreshAplikasi()" class="flex items-center justify-center gap-2 w-full px-4 py-2.5 mb-3 text-violet-700 bg-violet-50 hover:bg-violet-100 border border-violet-100 rounded-xl font-bold text-sm transition-colors active:scale-[0.98]">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+        <button onclick="refreshAplikasi()"
+            class="flex items-center justify-center gap-2 w-full px-4 py-2.5 mb-3 text-violet-700 bg-violet-50 hover:bg-violet-100 border border-violet-100 rounded-xl font-bold text-sm transition-colors active:scale-[0.98]">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
             Segarkan Aplikasi
         </button>
         <div class="p-4 border-t border-slate-100 mt-auto bg-white">
-            <p id="installText" style="display: none;" class="text-[10px] text-slate-500 font-medium tracking-wider mt-4 mb-2 text-center">Silahkan install aplikasi untuk pengalaman yang lebih baik!</p>
-            <button id="btnInstallApp" style="display: none;" class="flex items-center justify-center gap-2 w-full px-4 py-2.5 mb-4 text-white bg-slate-800 hover:bg-slate-900 rounded-xl font-bold text-sm transition-colors shadow-md active:scale-[0.98]">
-                <svg class="w-5 h-5 text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4-4m0 0l-4-4m4 4V4" /></svg>
+            <p id="installText" style="display: none;"
+                class="text-[10px] text-slate-500 font-medium tracking-wider mt-4 mb-2 text-center">Silahkan install
+                aplikasi untuk pengalaman yang lebih baik!</p>
+            <button id="btnInstallApp" style="display: none;"
+                class="flex items-center justify-center gap-2 w-full px-4 py-2.5 mb-4 text-white bg-slate-800 hover:bg-slate-900 rounded-xl font-bold text-sm transition-colors shadow-md active:scale-[0.98]">
+                <svg class="w-5 h-5 text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4-4m0 0l-4-4m4 4V4" />
+                </svg>
                 Install Aplikasi
             </button>
-            <div id="iosInstallHint" style="display: none;" class="text-[11px] text-slate-600 font-medium text-center mt-2 mb-4 bg-blue-50/80 p-3 rounded-xl border border-blue-100">
+            <div id="iosInstallHint" style="display: none;"
+                class="text-[11px] text-slate-600 font-medium text-center mt-2 mb-4 bg-blue-50/80 p-3 rounded-xl border border-blue-100">
                 🍎 <b>Khusus Pengguna iPhone:</b><br>
-                Tap tombol <svg class="inline w-4 h-4 mx-1 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg> (Bagikan) di bawah Safari, lalu pilih <br><b>"Add to Home Screen"</b> ➕
+                Tap tombol <svg class="inline w-4 h-4 mx-1 text-blue-600" fill="none" stroke="currentColor"
+                    viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                </svg> (Bagikan) di bawah Safari, lalu pilih <br><b>"Add to Home Screen"</b> ➕
             </div>
 
             <div class="flex items-center gap-3 mb-4 px-2">
-                <div class="w-10 h-10 rounded-full bg-violet-100 overflow-hidden flex-shrink-0 border border-violet-200">
-                    <img id="userProfilePic" src="https://ui-avatars.com/api/?name=User&background=c7d2fe&color=4f46e5" alt="Profile" class="w-full h-full object-cover">
+                <div
+                    class="w-10 h-10 rounded-full bg-violet-100 overflow-hidden flex-shrink-0 border border-violet-200">
+                    <img id="userProfilePic" src="https://ui-avatars.com/api/?name=User&background=c7d2fe&color=4f46e5"
+                        alt="Profile" class="w-full h-full object-cover">
                 </div>
                 <div class="overflow-hidden">
                     <p id="userNameDisplay" class="text-sm font-bold text-slate-800 truncate">Memuat...</p>
                     <p id="userEmailDisplay" class="text-[10px] font-medium text-slate-500 truncate">Memuat email...</p>
                 </div>
             </div>
-            <a href="index.html" id="btnLogout" class="flex items-center justify-center gap-2 w-full px-4 py-2.5 text-red-600 bg-red-50 hover:bg-red-100 rounded-xl font-bold text-sm transition-colors border border-red-100">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+            <a href="index.html" id="btnLogout"
+                class="flex items-center justify-center gap-2 w-full px-4 py-2.5 text-red-600 bg-red-50 hover:bg-red-100 rounded-xl font-bold text-sm transition-colors border border-red-100">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg>
                 Keluar
             </a>
         </div>
     </aside>
 
     <main class="flex-1 flex flex-col h-full bg-slate-50/50 relative overflow-hidden">
-        
-        <div class="absolute top-0 right-0 w-96 h-96 bg-violet-200/40 rounded-full mix-blend-multiply filter blur-3xl opacity-60 animate-blob pointer-events-none"></div>
-        <div class="absolute -bottom-8 left-10 w-72 h-72 bg-fuchsia-200/40 rounded-full mix-blend-multiply filter blur-3xl opacity-60 animate-blob animation-delay-2000 pointer-events-none"></div>
 
-        <header class="md:hidden h-16 bg-white/80 backdrop-blur-md border-b border-slate-200 flex items-center justify-between px-4 z-20 flex-shrink-0 relative">
+        <div
+            class="absolute top-0 right-0 w-96 h-96 bg-violet-200/40 rounded-full mix-blend-multiply filter blur-3xl opacity-60 animate-blob pointer-events-none">
+        </div>
+        <div
+            class="absolute -bottom-8 left-10 w-72 h-72 bg-fuchsia-200/40 rounded-full mix-blend-multiply filter blur-3xl opacity-60 animate-blob animation-delay-2000 pointer-events-none">
+        </div>
+
+        <header
+            class="md:hidden h-16 bg-white/80 backdrop-blur-md border-b border-slate-200 flex items-center justify-between px-4 z-20 flex-shrink-0 relative">
             <div class="flex items-center gap-2">
                 <div class="w-9 h-9 rounded-xl bg-white flex items-center justify-center overflow-hidden border">
                     <img src="Logo Insan Jaya.jpeg" class="w-full h-full object-contain">
@@ -145,83 +251,113 @@
                     <span class="font-bricolage font-bold text-base text-violet-600">INSAN JAYA</span>
                 </div>
             </div>
-            <button id="mobileMenuBtn" class="p-2 text-slate-600 hover:text-violet-600 hover:bg-slate-50 rounded-lg transition-colors">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
+            <button id="mobileMenuBtn"
+                class="p-2 text-slate-600 hover:text-violet-600 hover:bg-slate-50 rounded-lg transition-colors">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
             </button>
         </header>
 
         <div class="flex-1 overflow-y-auto p-4 md:p-6 pb-8 relative z-10 custom-scrollbar">
             <div class="max-w-6xl mx-auto">
-                
+
                 <div class="mb-6 md:mb-8 pt-2">
-                    <h1 class="font-bricolage text-2xl md:text-3xl font-bold text-slate-900 tracking-tight">Absensi Siswa</h1>
-                    <p class="text-sm text-slate-500 mt-1 max-w-lg">Kelola kehadiran kelas secara real-time. Perubahan status akan tersimpan otomatis saat Anda menekan tombol simpan.</p>
+                    <h1 class="font-bricolage text-2xl md:text-3xl font-bold text-slate-900 tracking-tight">Absensi
+                        Siswa</h1>
+                    <p class="text-sm text-slate-500 mt-1 max-w-lg">Kelola kehadiran kelas secara real-time. Perubahan
+                        status akan tersimpan otomatis saat Anda menekan tombol simpan.</p>
                 </div>
 
-                <div class="bg-white/90 backdrop-blur-sm p-5 md:p-6 rounded-2xl border border-slate-200/60 shadow-xl shadow-violet-100/20 mb-8 flex flex-wrap gap-4 items-end border-t-4 border-t-violet-500 transition-all">
-                    
+                <div
+                    class="bg-white/90 backdrop-blur-sm p-5 md:p-6 rounded-2xl border border-slate-200/60 shadow-xl shadow-violet-100/20 mb-8 flex flex-wrap gap-4 items-end border-t-4 border-t-violet-500 transition-all">
+
                     <div class="w-full md:w-auto flex-1 min-w-[200px]">
-                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1.5 tracking-wider">Bulan & Tahun</label>
-                        <div class="flex items-center px-4 py-2.5 border border-slate-200 rounded-xl bg-slate-50 hover:bg-white transition-colors focus-within:border-violet-500 focus-within:ring-4 focus-within:ring-violet-500/10 shadow-sm">
-                            <svg class="w-4 h-4 mr-2 text-violet-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                            <select id="bulanSelect" class="bg-transparent outline-none cursor-pointer appearance-none text-slate-700 font-semibold text-sm pr-1">
-                                </select>
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1.5 tracking-wider">Bulan
+                            & Tahun</label>
+                        <div
+                            class="flex items-center px-4 py-2.5 border border-slate-200 rounded-xl bg-slate-50 hover:bg-white transition-colors focus-within:border-violet-500 focus-within:ring-4 focus-within:ring-violet-500/10 shadow-sm">
+                            <svg class="w-4 h-4 mr-2 text-violet-500 shrink-0" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
+                                </path>
+                            </svg>
+                            <select id="bulanSelect"
+                                class="bg-transparent outline-none cursor-pointer appearance-none text-slate-700 font-semibold text-sm pr-1">
+                            </select>
                             <span class="text-slate-300 mx-1">/</span>
-                            <select id="tahunSelect" class="bg-transparent outline-none cursor-pointer appearance-none text-slate-700 font-semibold text-sm pl-1">
-                                </select>
+                            <select id="tahunSelect"
+                                class="bg-transparent outline-none cursor-pointer appearance-none text-slate-700 font-semibold text-sm pl-1">
+                            </select>
                         </div>
                     </div>
-                    
+
                     <div class="w-full md:w-auto flex-1 min-w-[200px]">
-                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1.5 tracking-wider">Guru Pengajar</label>
-                        <select id="guruSelect" class="px-4 py-2.5 border border-slate-200 rounded-xl text-sm font-semibold text-slate-700 bg-slate-50 hover:bg-white transition-all w-full outline-none focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10 shadow-sm cursor-pointer appearance-none bg-no-repeat bg-[right_1rem_center] bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M5%207L10%2012L15%207%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%221.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%3C/svg%3E')]">
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1.5 tracking-wider">Guru
+                            Pengajar</label>
+                        <select id="guruSelect"
+                            class="px-4 py-2.5 border border-slate-200 rounded-xl text-sm font-semibold text-slate-700 bg-slate-50 hover:bg-white transition-all w-full outline-none focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10 shadow-sm cursor-pointer appearance-none bg-no-repeat bg-[right_1rem_center] bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M5%207L10%2012L15%207%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%221.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%3C/svg%3E')]">
                             <option value="">Pilih Guru...</option>
                         </select>
                     </div>
 
                     <div class="w-full md:w-auto flex-1 min-w-[200px]">
-                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1.5 tracking-wider">Jadwal Kelas</label>
-                        <select id="jadwalSelect" class="px-4 py-2.5 border border-slate-200 rounded-xl text-sm font-semibold text-slate-700 bg-slate-50 hover:bg-white transition-all w-full outline-none focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10 shadow-sm cursor-pointer appearance-none bg-no-repeat bg-[right_1rem_center] bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M5%207L10%2012L15%207%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%221.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%3C/svg%3E')]">
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1.5 tracking-wider">Jadwal
+                            Kelas</label>
+                        <select id="jadwalSelect"
+                            class="px-4 py-2.5 border border-slate-200 rounded-xl text-sm font-semibold text-slate-700 bg-slate-50 hover:bg-white transition-all w-full outline-none focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10 shadow-sm cursor-pointer appearance-none bg-no-repeat bg-[right_1rem_center] bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M5%207L10%2012L15%207%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%221.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%3C/svg%3E')]">
                             <option value="">Pilih Jadwal...</option>
                         </select>
                     </div>
                 </div>
 
-                <div class="bg-white rounded-2xl border border-slate-200/80 shadow-xl shadow-slate-200/40 overflow-hidden relative">
-                    <div class="overflow-x-auto custom-scrollbar">
+                <!-- KOTAK TABEL STYLISH -->
+                <div
+                    class="bg-white rounded-2xl border border-slate-200/80 shadow-xl shadow-slate-200/40 overflow-hidden relative">
+
+                    <!-- Hint Scroll Mobile (Hanya muncul di HP) -->
+                    <div
+                        class="md:hidden bg-violet-50/80 border-b border-violet-100 px-4 py-2.5 flex items-center justify-center gap-2 text-violet-600 text-[10px] font-extrabold uppercase tracking-widest shadow-inner">
+                        Geser tabel untuk isi absen
+                        <svg class="w-4 h-4 animate-bounce-x" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                d="M13 5l7 7-7 7M5 5l7 7-7 7"></path>
+                        </svg>
+                    </div>
+
+                    <div class="overflow-x-auto custom-scrollbar relative">
                         <table class="w-full text-left border-collapse min-w-[800px] table-fixed">
-                            <thead class="bg-slate-50/80 backdrop-blur border-b border-slate-200">
+                            <thead class="bg-slate-50 border-b border-slate-200">
                                 <tr>
-                                    <th rowspan="2" class="w-48 p-4 text-[11px] font-bold text-slate-500 uppercase align-middle bg-slate-50/95 sticky left-0 z-10 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.05)] border-r border-slate-100">Nama Lengkap Siswa</th>
-                                    <th colspan="12" class="py-2.5 text-[11px] font-bold text-violet-600 uppercase text-center border-b border-slate-200 bg-violet-50/30">Pertemuan Ke-</th>
+                                    <!-- PERBAIKAN LEBAR KOLOM & SHADOW MENTOK -->
+                                    <th rowspan="2"
+                                        class="w-28 md:w-48 p-3 md:p-4 text-[12px] md:text-[12px] font-bold text-violet-800 uppercase align-middle bg-slate-100 sticky left-0 z-20 shadow-[4px_0_15px_-3px_rgba(0,0,0,0.15)] border-r border-slate-200">
+                                        Nama Siswa</th>
+                                    <th colspan="12"
+                                        class="py-2.5 text-[11px] font-bold text-violet-600 uppercase text-center border-b border-slate-200 bg-violet-50/40">
+                                        Pertemuan Ke-</th>
                                 </tr>
-                                <tr id="tanggalRow" class="bg-white">
-                                    </tr>
+                                <tr id="tanggalRow" class="bg-slate-50/40">
+                                    <!-- JS -->
+                                </tr>
                             </thead>
-                            
+
                             <tbody id="bodyAbsensi" class="text-sm divide-y divide-slate-100 bg-white">
-                                <tr>
-                                    <td colspan="13" class="py-20 text-center">
-                                        <div class="flex flex-col items-center justify-center space-y-4">
-                                            <div class="relative w-16 h-16 bg-violet-100 rounded-full flex items-center justify-center shadow-inner">
-                                                <div class="absolute inset-0 bg-violet-200 rounded-full animate-ping opacity-20"></div>
-                                                <svg class="w-8 h-8 text-violet-600 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
-                                            </div>
-                                            <div>
-                                                <p class="text-slate-700 font-bold text-base mb-1">Pilih Kelas Terlebih Dahulu</p>
-                                                <p class="text-slate-400 font-medium text-xs">Silakan pilih guru dan jadwal kelas pada filter di atas.</p>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
+                                <!-- JS -->
                         </table>
                     </div>
                 </div>
 
                 <div class="mt-8 flex justify-end">
-                    <button onclick="saveAll()" class="group w-full sm:w-auto flex items-center justify-center gap-2 bg-violet-600 hover:bg-violet-700 text-white px-8 py-3.5 rounded-xl font-bold shadow-[0_8px_20px_-6px_rgba(124,58,237,0.5)] transition-all duration-200 text-sm active:translate-y-1">
-                        <svg class="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
+                    <button onclick="saveAll()"
+                        class="group w-full sm:w-auto flex items-center justify-center gap-2 bg-violet-600 hover:bg-violet-700 text-white px-8 py-3.5 rounded-xl font-bold shadow-[0_8px_20px_-6px_rgba(124,58,237,0.5)] transition-all duration-200 text-sm active:translate-y-1">
+                        <svg class="w-5 h-5 group-hover:scale-110 transition-transform" fill="none"
+                            stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4">
+                            </path>
+                        </svg>
                         Simpan Semua Perubahan
                     </button>
                 </div>
@@ -239,11 +375,11 @@
 
             document.getElementById('userNameDisplay').textContent = userName;
             document.getElementById('userEmailDisplay').textContent = userEmail;
-            if (userPic) { document.getElementById('userProfilePic').src = userPic; } 
+            if (userPic) { document.getElementById('userProfilePic').src = userPic; }
             else { document.getElementById('userProfilePic').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=c7d2fe&color=4f46e5`; }
 
             document.getElementById('btnLogout').addEventListener('click', (e) => {
-                if (!confirm('Apakah Anda yakin ingin keluar?')) { e.preventDefault(); } 
+                if (!confirm('Apakah Anda yakin ingin keluar?')) { e.preventDefault(); }
                 else {
                     localStorage.removeItem('lkp_user_name');
                     localStorage.removeItem('lkp_user_email');
@@ -255,7 +391,7 @@
         // ================= REFRESH APLIKASI =================
         async function refreshAplikasi() {
             const btn = document.querySelector('button[onclick="refreshAplikasi()"]');
-            if(btn) btn.innerHTML = 'Menyegarkan... ⏳';
+            if (btn) btn.innerHTML = 'Menyegarkan... ⏳';
             try {
                 if ('caches' in window) {
                     const cacheNames = await caches.keys();
@@ -321,7 +457,7 @@
             const now = new Date();
             const bulanSelect = document.getElementById('bulanSelect');
             const tahunSelect = document.getElementById('tahunSelect');
-            
+
             bulanSelect.innerHTML = '';
             tahunSelect.innerHTML = '';
 
@@ -343,9 +479,9 @@
             const b = document.getElementById('bulanSelect').value;
             const t = document.getElementById('tahunSelect').value;
             selectedBulan = `${t}-${b}`;
-            
-            generateTanggalRow(); 
-            
+
+            generateTanggalRow();
+
             const guru = document.getElementById('guruSelect').value;
             const jadwal = document.getElementById('jadwalSelect').value;
             if (guru && jadwal) {
@@ -375,8 +511,8 @@
 
         function generateTanggalRow() {
             const tanggalRow = document.getElementById('tanggalRow');
-            tanggalRow.innerHTML = ''; 
-            
+            tanggalRow.innerHTML = '';
+
             const [tahun, bulan] = selectedBulan.split('-');
             const jumlahHari = new Date(tahun, bulan, 0).getDate();
 
@@ -389,7 +525,7 @@
                 tanggalRow.innerHTML += `
                     <th class="border-b border-r border-slate-100 bg-white p-2 min-w-[60px]">
                         <div class="flex flex-col items-center justify-center gap-1.5">
-                            <span class="text-[10px] text-violet-400 font-bold bg-violet-50 px-2 py-0.5 rounded">P${i}</span>
+                            <span class="text-[10px] text-violet-600 font-bold bg-violet-50 px-2 py-0.5 rounded">P${i}</span>
                             <select class="w-full max-w-[55px] text-[10px] text-center rounded-md bg-white border border-slate-200 hover:border-violet-300 outline-none py-1 cursor-pointer shadow-sm transition-colors" data-pertemuan="${i}" onchange="handleTanggalChange(this, ${i})">
                                 ${options}
                             </select>
@@ -446,7 +582,7 @@
                     </div>
                 </td>
             </tr>`;
-            
+
             try {
                 const res = await fetch(`${API_URL}/api/siswa-by-jadwal?guru=${encodeURIComponent(guru)}&jadwal=${encodeURIComponent(jadwal)}`);
                 const siswa = await res.json();
@@ -467,9 +603,11 @@
                 }
 
                 siswa.forEach((s, idx) => {
-                    const bgRow = idx % 2 === 0 ? 'bg-white' : 'bg-slate-50/30'; // Efek Zebra Table Halus
-                    let row = `<tr class="${bgRow} hover:bg-violet-50/50 transition-colors group">
-                        <td class="w-48 border-b border-slate-100 px-4 py-3 text-left sticky left-0 z-10 font-semibold capitalize ${bgRow} group-hover:bg-violet-50 text-slate-700 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.02)] truncate text-xs md:text-sm border-r transition-colors">
+                    // PERBAIKAN: Gak ada lagi transparansi (/30). Pakai warna SOLID (bg-white & bg-slate-50)
+                    const bgRow = idx % 2 === 0 ? 'bg-white' : 'bg-slate-50';
+
+                    let row = `<tr class="${bgRow} hover:bg-violet-100/50 transition-colors group">
+                        <td class="w-28 md:w-48 border-b border-slate-200 px-3 md:px-4 py-3 text-left sticky left-0 z-10 font-bold capitalize ${bgRow} group-hover:bg-violet-50 text-slate-700 shadow-[4px_0_15px_-3px_rgba(0,0,0,0.15)] truncate text-[11px] md:text-sm border-r">
                             ${s.nama_siswa.toLowerCase()}
                         </td>`;
 
@@ -563,12 +701,12 @@
                     });
                 }
                 await saveTanggal();
-                
+
                 // Balikkan tombol
                 btnSimpan.innerHTML = `<svg class="w-5 h-5 mr-2 text-green-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Berhasil Disimpan!`;
                 btnSimpan.classList.remove('bg-violet-600', 'hover:bg-violet-700');
                 btnSimpan.classList.add('bg-green-600', 'hover:bg-green-700');
-                
+
                 setTimeout(() => {
                     btnSimpan.innerHTML = originalText;
                     btnSimpan.classList.add('bg-violet-600', 'hover:bg-violet-700');
@@ -585,4 +723,5 @@
         }
     </script>
 </body>
+
 </html>
