@@ -599,13 +599,17 @@
         }
 
         async function simpanEdit() {
+            // Ambil KTP user yang lagi login
+            const currentUserEmail = localStorage.getItem('lkp_user_email');
+
             const data = {
                 id: Number(document.getElementById('editId').value),
                 nama_siswa: document.getElementById('editNama').value,
                 program: document.getElementById('editProgram').value,
                 kelas: document.getElementById('editKelas').value,
                 guru: document.getElementById('editGuru').value,
-                jadwal: document.getElementById('editJadwal').value
+                jadwal: document.getElementById('editJadwal').value,
+                user_email: currentUserEmail // <--- INI TAMBAHANNYA: Kirim email ke server
             };
 
             try {
@@ -738,8 +742,19 @@
 
         async function hapus(id) {
             if (!confirm("Hapus data?")) return;
+            
+            // Ambil KTP user yang lagi login
+            const currentUserEmail = localStorage.getItem('lkp_user_email');
+
             try {
-                await fetch(`${API}/delete`, { method: 'POST', body: JSON.stringify({ id }) });
+                await fetch(`${API}/delete`, { 
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json' }, // Tambahin header ini biar server ngerti
+                    body: JSON.stringify({ 
+                        id: id, 
+                        user_email: currentUserEmail // <--- INI TAMBAHANNYA: Kirim email ke server
+                    }) 
+                });
                 loadData();
             } catch (error) {
                 alert("Gagal menghapus data");
@@ -823,7 +838,7 @@
         // ================= SISTEM KEAMANAN (HAK AKSES ADMIN) =================
         function cekAksesAdmin() {
             const currentUserEmail = localStorage.getItem('lkp_user_email');
-            const adminEmails = ['lpkinsanjaya@gmail.com', 'yumenoboken@gmail.com'];
+            const adminEmails = ['lkpinsanjaya@gmail.com', 'yumenoboken@gmail.com'];
 
             // Kalau bukan Admin, musnahkan semua elemen yang punya atribut admin-only
             if (!adminEmails.includes(currentUserEmail)) {
