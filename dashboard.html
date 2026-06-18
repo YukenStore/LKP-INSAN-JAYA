@@ -6,27 +6,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Data Siswa</title>
 
-    <!-- 1. Panggil file manifest & Warna Tema -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#7c3aed">
 
-    <!-- 2. Tailwind CSS (HARUS SENDIRIAN) -->
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <!-- 3. Satpam Halaman Dalam -->
     <script>
-        // Cek apakah user sudah login. Kalau belum, tendang balik ke halaman login!
         if (!localStorage.getItem('lkp_user_email')) {
             window.location.href = 'index.html';
         }
     </script>
 
-    <!-- 4. Pendaftar Mesin Aplikasi (Service Worker) -->
     <script>
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('sw.js')
                 .then((reg) => {
-                    // Perintah wajib biar PWA selalu ngecek file terbaru ke GitHub
                     reg.update();
                     console.log('Service Worker: Siap dan Selalu Update!');
                 })
@@ -34,12 +28,11 @@
         }
     </script>
 
-    <!-- ================= IMPORT FONT ================= -->
     <link
         href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Bricolage+Grotesque:wght@700&display=swap"
         rel="stylesheet">
+
     <style>
-        /* Pengaturan Font Utama */
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
         }
@@ -48,9 +41,7 @@
             font-family: 'Bricolage Grotesque', sans-serif;
         }
 
-        /* ========================================================
-           INI DIA YANG ILANG: Animasi Buka-Tutup Data di HP 
-           ======================================================== */
+        /* Animasi Buka-Tutup Data di HP */
         .details-content {
             max-height: 0;
             opacity: 0;
@@ -65,8 +56,6 @@
             border-top: 1px dashed #e2e8f0;
             margin-top: 1rem;
         }
-
-        /* ======================================================== */
 
         /* Custom scrollbar tipis untuk sidebar */
         .custom-scrollbar::-webkit-scrollbar {
@@ -156,8 +145,7 @@
                 Latihan Soal
             </a>
         </nav>
-        <!-- ================= BAGIAN PROFIL & LOGOUT ================= -->
-        <!-- Tombol Segarkan Aplikasi -->
+
         <button onclick="refreshAplikasi()"
             class="flex items-center justify-center gap-2 w-full px-4 py-2.5 mb-3 text-violet-700 bg-violet-50 hover:bg-violet-100 border border-violet-100 rounded-xl font-bold text-sm transition-colors active:scale-[0.98]">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -168,10 +156,8 @@
         </button>
         <div class="p-4 border-t border-slate-100 mt-auto bg-white">
             <p id="installText" style="display: none;"
-                class="text-[10px] text-slate-500 font-medium tracking-wider mt-4 mb-2 text-center">
-                Silahkan install aplikasi untuk pengalaman yang lebih baik!
-            </p>
-            <!-- button install app -->
+                class="text-[10px] text-slate-500 font-medium tracking-wider mt-4 mb-2 text-center">Silahkan install
+                aplikasi untuk pengalaman yang lebih baik!</p>
             <button id="btnInstallApp" style="display: none;"
                 class="flex items-center justify-center gap-2 w-full px-4 py-2.5 mb-4 text-white bg-slate-800 hover:bg-slate-900 rounded-xl font-bold text-sm transition-colors shadow-md active:scale-[0.98]">
                 <svg class="w-5 h-5 text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -180,11 +166,16 @@
                 </svg>
                 Install Aplikasi
             </button>
-            <div id="iosInstallHint" style="display: none;" class="text-[11px] text-slate-600 font-medium text-center mt-2 mb-4 bg-blue-50/80 p-3 rounded-xl border border-blue-100">
+            <div id="iosInstallHint" style="display: none;"
+                class="text-[11px] text-slate-600 font-medium text-center mt-2 mb-4 bg-blue-50/80 p-3 rounded-xl border border-blue-100">
                 🍎 <b>Khusus Pengguna iPhone:</b><br>
-                Tap tombol <svg class="inline w-4 h-4 mx-1 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg> (Bagikan) di bawah Safari, lalu pilih <br><b>"Add to Home Screen"</b> ➕
+                Tap tombol <svg class="inline w-4 h-4 mx-1 text-blue-600" fill="none" stroke="currentColor"
+                    viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                </svg> (Bagikan) di bawah Safari, lalu pilih <br><b>"Add to Home Screen"</b> ➕
             </div>
-            <!-- Info User -->
+
             <div class="flex items-center gap-3 mb-4 px-2">
                 <div
                     class="w-10 h-10 rounded-full bg-violet-100 overflow-hidden flex-shrink-0 border border-violet-200">
@@ -196,7 +187,6 @@
                     <p id="userEmailDisplay" class="text-[10px] font-medium text-slate-500 truncate">Memuat email...</p>
                 </div>
             </div>
-            <!-- Tombol Keluar -->
             <a href="index.html" id="btnLogout"
                 class="flex items-center justify-center gap-2 w-full px-4 py-2.5 text-red-600 bg-red-50 hover:bg-red-100 rounded-xl font-bold text-sm transition-colors border border-red-100">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -206,7 +196,6 @@
                 Keluar
             </a>
         </div>
-        <!-- ======================================================== -->
     </aside>
 
     <main class="flex-1 flex flex-col h-full overflow-hidden relative">
@@ -230,7 +219,6 @@
         </header>
 
         <div class="flex-1 overflow-y-auto p-4 pb-8 md:p-6 md:pb-6">
-
             <div class="max-w-6xl mx-auto">
                 <div class="mb-8">
                     <h1 class="font-bricolage text-2xl md:text-3xl font-bold text-slate-900 tracking-tight">Data Siswa
@@ -255,20 +243,16 @@
                 <div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-4 mt-6">
                     <input id="searchNama" placeholder="Cari nama..."
                         class="col-span-2 md:col-span-1 px-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-violet-500">
-
                     <select id="filterProgram"
                         class="px-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 bg-white">
                         <option value="">Semua Program</option>
                     </select>
-
                     <select id="filterKelas"
                         class="px-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 bg-white">
                         <option value="">Semua Kelas</option>
                     </select>
-
                     <input id="filterGuru" placeholder="Cari guru..."
                         class="px-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-violet-500">
-
                     <input id="filterJadwal" placeholder="Cari jadwal..."
                         class="px-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-violet-500">
                 </div>
@@ -290,107 +274,63 @@
                 </div>
 
                 <div id="mobileList" class="md:hidden space-y-3"></div>
-
             </div>
         </div>
     </main>
 
     <div id="modalEdit" class="hidden fixed inset-0 bg-black/50 z-[9999] flex items-center justify-center p-4">
-
         <div class="bg-white rounded-2xl w-full max-w-lg p-6">
-
             <div class="flex justify-between items-center mb-5">
-                <h2 class="text-xl font-bold text-slate-800">
-                    Edit Siswa
-                </h2>
-
-                <button admin-only onclick="tutupModalEdit()" class="text-slate-500 hover:text-slate-700 text-xl">
-                    ✕
-                </button>
+                <h2 class="text-xl font-bold text-slate-800">Edit Siswa</h2>
+                <button onclick="tutupModalEdit()" class="text-slate-500 hover:text-slate-700 text-xl">✕</button>
             </div>
-
             <input type="hidden" id="editId">
-
             <div class="space-y-4">
-
                 <div>
-                    <label class="block text-sm font-semibold mb-1">
-                        Nama Siswa
-                    </label>
-
+                    <label class="block text-sm font-semibold mb-1">Nama Siswa</label>
                     <input id="editNama" class="w-full border border-slate-300 rounded-xl px-4 py-3">
                 </div>
-
                 <div>
-                    <label class="block text-sm font-semibold mb-1">
-                        Program
-                    </label>
-
+                    <label class="block text-sm font-semibold mb-1">Program</label>
                     <input id="editProgram" class="w-full border border-slate-300 rounded-xl px-4 py-3">
                 </div>
-
                 <div>
-                    <label class="block text-sm font-semibold mb-1">
-                        Kelas
-                    </label>
-
+                    <label class="block text-sm font-semibold mb-1">Kelas</label>
                     <input id="editKelas" class="w-full border border-slate-300 rounded-xl px-4 py-3">
                 </div>
-
                 <div>
-                    <label class="block text-sm font-semibold mb-1">
-                        Guru
-                    </label>
-
+                    <label class="block text-sm font-semibold mb-1">Guru</label>
                     <input id="editGuru" class="w-full border border-slate-300 rounded-xl px-4 py-3">
                 </div>
-
                 <div>
-                    <label class="block text-sm font-semibold mb-1">
-                        Jadwal
-                    </label>
-
+                    <label class="block text-sm font-semibold mb-1">Jadwal</label>
                     <textarea id="editJadwal" rows="3"
                         class="w-full border border-slate-300 rounded-xl px-4 py-3"></textarea>
                 </div>
-
             </div>
-
             <div class="flex justify-end gap-3 mt-6">
-
-                <button admin-only onclick="tutupModalEdit()" class="px-4 py-2 rounded-xl bg-slate-100">
-                    Batal
-                </button>
-
-                <button admin-only onclick="simpanEdit()" class="px-4 py-2 rounded-xl bg-violet-600 text-white">
-                    Simpan
-                </button>
-
+                <button onclick="tutupModalEdit()" class="px-4 py-2 rounded-xl bg-slate-100">Batal</button>
+                <button onclick="simpanEdit()" class="px-4 py-2 rounded-xl bg-violet-600 text-white">Simpan</button>
             </div>
-
         </div>
     </div>
 
     <script>
         // ================= FITUR TAMPILAN PROFIL USER =================
         document.addEventListener('DOMContentLoaded', () => {
-            // Ambil data dari LocalStorage
             const userName = localStorage.getItem('lkp_user_name') || 'Admin LKP';
             const userEmail = localStorage.getItem('lkp_user_email') || 'admin@lkpinsanjaya.com';
             const userPic = localStorage.getItem('lkp_user_picture');
 
-            // Tampilkan ke layar
             document.getElementById('userNameDisplay').textContent = userName;
             document.getElementById('userEmailDisplay').textContent = userEmail;
 
-            // Pasang foto profil Google (kalau ga ada, pakai inisial nama)
             if (userPic) {
                 document.getElementById('userProfilePic').src = userPic;
             } else {
                 document.getElementById('userProfilePic').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=c7d2fe&color=4f46e5`;
             }
 
-            // Fitur Logout (Hapus data memori pas keluar)
             document.getElementById('btnLogout').addEventListener('click', (e) => {
                 if (!confirm('Apakah Anda yakin ingin keluar?')) {
                     e.preventDefault();
@@ -401,7 +341,7 @@
                 }
             });
         });
-        // ==============================================================
+
         // ================= MOBILE SIDEBAR MENU LOGIC =================
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('sidebarOverlay');
@@ -424,18 +364,45 @@
         if (menuBtn) menuBtn.addEventListener('click', toggleSidebar);
         if (closeBtn) closeBtn.addEventListener('click', toggleSidebar);
         if (overlay) overlay.addEventListener('click', toggleSidebar);
-        // ============================================================
 
         let allData = [];
         const API = 'https://absensi-api.yumenoboken.workers.dev/api';
 
+        // ================= FUNGSI FETCH DENGAN SATPAM (AUTH) JADI LEBIH PINTAR =================
+        async function fetchWithAuth(url, options = {}) {
+            const userEmail = localStorage.getItem('lkp_user_email');
+
+            const headers = {
+                'X-Admin-Email': userEmail || '', // Kirim KTP!
+                'Content-Type': 'application/json',
+                ...(options.headers || {})
+            };
+
+            const response = await fetch(url, { ...options, headers });
+
+            // Kalau 403 (Forbidden) -> Udah login, tapi nyoba fitur admin
+            if (response.status === 403) {
+                alert("⛔ Ditolak Server: Cuma Admin yang boleh mengubah data ini!");
+                throw new Error("Forbidden: Bukan Admin");
+            }
+
+            // Kalau 401 (Unauthorized) -> Bener-bener belum login
+            if (response.status === 401) {
+                alert("⛔ Sesi tidak valid, silakan login ulang.");
+                localStorage.clear();
+                window.location.href = 'index.html';
+                throw new Error("Unauthorized");
+            }
+
+            return response;
+        }
+
         async function loadData() {
             try {
-                const res = await fetch(`${API}/data`);
+                const res = await fetchWithAuth(`${API}/data`);
                 const data = await res.json();
 
                 allData = data;
-
                 document.getElementById('totalSiswa').innerText = data.length;
 
                 const today = new Date().toLocaleDateString('en-CA');
@@ -478,105 +445,74 @@
                         </span>
                     </td>
                     <td admin-only class="p-4 align-top text-center relative">
-                        <button
-                            onclick="toggleMenu(${s.id}, event)"
-                            class="w-8 h-8 rounded-lg hover:bg-slate-200 flex items-center justify-center mx-auto transition-colors">
+                        <button onclick="toggleMenu(${s.id}, event)" class="w-8 h-8 rounded-lg hover:bg-slate-200 flex items-center justify-center mx-auto transition-colors">
                             ⋮
                         </button>
-                        <div
-                            id="menu-${s.id}"
-                            class="hidden fixed bg-white border border-slate-200 rounded-xl shadow-xl z-[9999] min-w-[150px] overflow-hidden text-left">
-                            <button
-                                onclick="editSiswa(${s.id})"
-                                class="w-full text-left px-4 py-2.5 hover:bg-slate-50 text-slate-700 font-medium text-sm border-b border-slate-100">
+                        <div id="menu-${s.id}" class="hidden fixed bg-white border border-slate-200 rounded-xl shadow-xl z-[9999] min-w-[150px] overflow-hidden text-left">
+                            <button onclick="editSiswa(${s.id})" class="w-full text-left px-4 py-2.5 hover:bg-slate-50 text-slate-700 font-medium text-sm border-b border-slate-100">
                                 ✏️ Edit
                             </button>
-                            <button
-                                onclick="hapus(${s.id})"
-                                class="w-full text-left px-4 py-2.5 hover:bg-red-50 text-red-600 font-medium text-sm">
+                            <button onclick="hapus(${s.id})" class="w-full text-left px-4 py-2.5 hover:bg-red-50 text-red-600 font-medium text-sm">
                                 🗑️ Hapus
                             </button>
                         </div>
                     </td>
                 </tr>
             `).join('');
+
+            // Panggil lagi untuk nyembunyiin tombol yang baru ke-render
+            cekAksesAdmin();
         }
 
         function toggleMenu(id, event) {
-            // 1. Tutup semua menu lain yang lagi kebuka
             document.querySelectorAll('[id^="menu-"]').forEach(menu => {
-                if (menu.id !== `menu-${id}`) {
-                    menu.classList.add('hidden');
-                }
+                if (menu.id !== `menu-${id}`) menu.classList.add('hidden');
             });
 
             const menu = document.getElementById(`menu-${id}`);
             const button = event.currentTarget;
             const rect = button.getBoundingClientRect();
 
-            // 2. Munculin menunya dulu biar kita bisa ngukur tingginya
             menu.classList.toggle('hidden');
 
-            // 3. Atur posisi pintar (Smart Positioning)
             if (!menu.classList.contains('hidden')) {
-                const menuHeight = menu.offsetHeight; // Ukur tinggi kotak menu (Edit + Hapus)
-                const spaceBelow = window.innerHeight - rect.bottom; // Ukur sisa ruang layar di bawah tombol
+                const menuHeight = menu.offsetHeight;
+                const spaceBelow = window.innerHeight - rect.bottom;
 
-                // Kalau sisa ruang di bawah lebih kecil dari tinggi menu, lempar menunya ke ATAS!
                 if (spaceBelow < (menuHeight + 20)) {
                     menu.style.top = `${rect.top - menuHeight - 5}px`;
                 } else {
-                    // Kalau ruang bawah masih lega, munculin normal ke BAWAH
                     menu.style.top = `${rect.bottom + 5}px`;
                 }
-
-                // Posisi geser kirinya tetap sama
                 menu.style.left = `${rect.left - 110}px`;
             }
         }
 
         document.addEventListener('click', (e) => {
-            if (!e.target.closest('[onclick^="toggleMenu"]') &&
-                !e.target.closest('[id^="menu-"]')) {
-                document
-                    .querySelectorAll('[id^="menu-"]')
-                    .forEach(menu => menu.classList.add('hidden'));
+            if (!e.target.closest('[onclick^="toggleMenu"]') && !e.target.closest('[id^="menu-"]')) {
+                document.querySelectorAll('[id^="menu-"]').forEach(menu => menu.classList.add('hidden'));
             }
         });
 
-        // ================= FITUR REFRESH PAKSA (SUPER SAPU JAGAT) =================
         async function refreshAplikasi() {
-            // Ubah teks tombol biar kelihatan lagi loading
             const btn = document.querySelector('button[onclick="refreshAplikasi()"]');
-            if(btn) btn.innerHTML = 'Menyegarkan Penuh... ⏳';
+            if (btn) btn.innerHTML = 'Menyegarkan Penuh... ⏳';
 
             try {
-                // 1. Hapus semua gudang Cache Storage (hapus file HTML/JS/CSS lama)
                 if ('caches' in window) {
                     const cacheNames = await caches.keys();
                     await Promise.all(cacheNames.map(name => caches.delete(name)));
                 }
-
-                // 2. Bunuh paksa Service Worker (mesin PWA lama dimatikan)
                 if ('serviceWorker' in navigator) {
                     const registrations = await navigator.serviceWorker.getRegistrations();
-                    for (let reg of registrations) {
-                        await reg.unregister();
-                    }
+                    for (let reg of registrations) await reg.unregister();
                 }
-
-                // 3. Lempar balik ke pintu masuk dengan trik "Anti-Cache"
-                // Nambahin angka waktu acak biar HP nggak berani pakai file bekas
-                setTimeout(() => {
-                    window.location.href = 'index.html?update=' + new Date().getTime();
-                }, 300);
-
+                setTimeout(() => { window.location.href = 'index.html?update=' + new Date().getTime(); }, 300);
             } catch (error) {
                 console.error('Gagal refresh total:', error);
-                window.location.reload(); // Jalur cadangan kalau error
+                window.location.reload();
             }
         }
-        // =========================================================================
 
         function editSiswa(id) {
             const siswa = allData.find(s => s.id == id);
@@ -599,32 +535,27 @@
         }
 
         async function simpanEdit() {
-            // Ambil KTP user yang lagi login
-            const currentUserEmail = localStorage.getItem('lkp_user_email');
-
             const data = {
                 id: Number(document.getElementById('editId').value),
                 nama_siswa: document.getElementById('editNama').value,
                 program: document.getElementById('editProgram').value,
                 kelas: document.getElementById('editKelas').value,
                 guru: document.getElementById('editGuru').value,
-                jadwal: document.getElementById('editJadwal').value,
-                user_email: currentUserEmail // <--- INI TAMBAHANNYA: Kirim email ke server
+                jadwal: document.getElementById('editJadwal').value
             };
 
             try {
-                const res = await fetch(`${API}/edit`, {
+                // Sekarang fetchWithAuth bakal ngeluarin alert kalau 403
+                await fetchWithAuth(`${API}/edit`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(data)
                 });
 
-                if (!res.ok) throw new Error();
-
                 tutupModalEdit();
                 loadData();
-            } catch {
-                alert('Gagal menyimpan perubahan');
+            } catch (e) {
+                // Biarin try-catch nangkep error dari fetchWithAuth tanpa ngelakuin reload halaman
+                console.log("Aksi gagal:", e.message);
             }
         }
 
@@ -657,17 +588,11 @@
                             <div class="bg-slate-50 p-2 rounded-lg"><p class="text-[10px] font-bold text-slate-400 uppercase mb-0.5">Program</p><p class="text-sm font-bold text-slate-700 capitalize">${s.program}</p></div>
                             <div class="bg-slate-50 p-2 rounded-lg"><p class="text-[10px] font-bold text-slate-400 uppercase mb-0.5">Guru</p><p class="text-sm font-bold text-slate-700">${s.guru}</p></div>
                             <div class="col-span-2 bg-amber-50 border border-amber-100 p-2 rounded-lg"><p class="text-[10px] font-bold text-amber-500 uppercase mb-0.5">Jadwal</p><p class="text-sm font-bold text-amber-700 leading-relaxed">${s.jadwal || '-'}</p></div>
-                            <div class="col-span-2 mt-1 flex gap-2">
-                                <button
-                                    admin-only
-                                    onclick="editSiswa(${s.id})"
-                                    class="flex-1 flex justify-center items-center gap-2 text-slate-700 font-bold text-sm bg-slate-100 hover:bg-slate-200 py-2.5 rounded-xl transition-colors">
+                            <div admin-only class="col-span-2 mt-1 flex gap-2">
+                                <button onclick="editSiswa(${s.id})" class="flex-1 flex justify-center items-center gap-2 text-slate-700 font-bold text-sm bg-slate-100 hover:bg-slate-200 py-2.5 rounded-xl transition-colors">
                                     ✏️ Edit
                                 </button>
-                                <button
-                                    admin-only
-                                    onclick="hapus(${s.id})"
-                                    class="flex-1 flex justify-center items-center gap-2 text-red-600 font-bold text-sm bg-red-50 hover:bg-red-100 py-2.5 rounded-xl transition-colors">
+                                <button onclick="hapus(${s.id})" class="flex-1 flex justify-center items-center gap-2 text-red-600 font-bold text-sm bg-red-50 hover:bg-red-100 py-2.5 rounded-xl transition-colors">
                                     🗑️ Hapus
                                 </button>
                             </div>
@@ -675,6 +600,9 @@
                     </div>
                 </div>
             `}).join('');
+
+            // Panggil lagi untuk nyembunyiin tombol yang baru ke-render
+            cekAksesAdmin();
         }
 
         function toggleDetails(id, iconId) {
@@ -706,11 +634,8 @@
         }
 
         function initFilterOptions(data) {
-            const programSet = [...new Set(data.map(d => d.program))]
-                .sort((a, b) => a.localeCompare(b, 'id', { sensitivity: 'base' }));
-
-            const kelasSet = [...new Set(data.map(d => d.kelas))]
-                .sort((a, b) => a.localeCompare(b, 'id', { sensitivity: 'base' }));
+            const programSet = [...new Set(data.map(d => d.program))].sort((a, b) => a.localeCompare(b, 'id', { sensitivity: 'base' }));
+            const kelasSet = [...new Set(data.map(d => d.kelas))].sort((a, b) => a.localeCompare(b, 'id', { sensitivity: 'base' }));
 
             const progEl = document.getElementById('filterProgram');
             const kelasEl = document.getElementById('filterKelas');
@@ -718,89 +643,60 @@
             progEl.innerHTML = '<option value="">Semua Program</option>';
             kelasEl.innerHTML = '<option value="">Semua Kelas</option>';
 
-            programSet.forEach(p => {
-                progEl.innerHTML += `<option value="${p}">${p}</option>`;
-            });
-
-            kelasSet.forEach(k => {
-                kelasEl.innerHTML += `<option value="${k}">${k}</option>`;
-            });
+            programSet.forEach(p => progEl.innerHTML += `<option value="${p}">${p}</option>`);
+            kelasSet.forEach(k => kelasEl.innerHTML += `<option value="${k}">${k}</option>`);
         }
 
         function formatNama(nama) {
-            return nama
-                .toLowerCase()
-                .replace(/\./g, '')
-                .replace(/\s+/g, ' ')
-                .trim()
-                .split(' ')
-                .map(kata =>
-                    kata.charAt(0).toUpperCase() + kata.slice(1)
-                )
-                .join(' ');
+            return nama.toLowerCase().replace(/\./g, '').replace(/\s+/g, ' ').trim()
+                .split(' ').map(kata => kata.charAt(0).toUpperCase() + kata.slice(1)).join(' ');
         }
 
         async function hapus(id) {
             if (!confirm("Hapus data?")) return;
-            
-            // Ambil KTP user yang lagi login
-            const currentUserEmail = localStorage.getItem('lkp_user_email');
 
             try {
-                await fetch(`${API}/delete`, { 
-                    method: 'POST', 
-                    headers: { 'Content-Type': 'application/json' }, // Tambahin header ini biar server ngerti
-                    body: JSON.stringify({ 
-                        id: id, 
-                        user_email: currentUserEmail // <--- INI TAMBAHANNYA: Kirim email ke server
-                    }) 
+                await fetchWithAuth(`${API}/delete`, {
+                    method: 'POST',
+                    body: JSON.stringify({ id: id })
                 });
                 loadData();
-            } catch (error) {
-                alert("Gagal menghapus data");
+            } catch (e) {
+                console.log("Aksi hapus gagal:", e.message);
             }
         }
 
-        ['searchNama', 'filterProgram', 'filterKelas', 'filterGuru', 'filterJadwal']
-            .forEach(id => {
-                const el = document.getElementById(id);
-                if (el) {
-                    el.addEventListener('input', applyFilter);
-                    el.addEventListener('change', applyFilter);
-                }
-            });
+        ['searchNama', 'filterProgram', 'filterKelas', 'filterGuru', 'filterJadwal'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.addEventListener('input', applyFilter);
+                el.addEventListener('change', applyFilter);
+            }
+        });
 
         loadData();
 
         // ================= FITUR TOMBOL INSTALL APLIKASI (PWA) =================
         let deferredPrompt = null;
         const btnInstallApp = document.getElementById('btnInstallApp');
-        const installText = document.getElementById('installText'); // Tangkap teksnya
-
-        // Cek apakah user sedang membuka web ini dari dalam Aplikasi PWA
+        const installText = document.getElementById('installText');
         const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
 
-        // 1. Tangkap event dari browser JIKA aplikasi belum diinstall
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-
-            // Munculkan tombol & teks HANYA jika dibuka di browser
             if (!isStandalone) {
                 if (btnInstallApp) btnInstallApp.style.display = 'flex';
-                if (installText) installText.style.display = 'block'; // Munculin teksnya
+                if (installText) installText.style.display = 'block';
             }
         });
 
-        // 2. Pas tombolnya diklik user
         if (btnInstallApp) {
             btnInstallApp.addEventListener('click', async () => {
                 if (deferredPrompt !== null) {
                     deferredPrompt.prompt();
                     const { outcome } = await deferredPrompt.userChoice;
                     if (outcome === 'accepted') {
-                        console.log('User setuju menginstal aplikasi');
-                        // Sembunyikan tombol dan teks langsung setelah sukses
                         btnInstallApp.style.display = 'none';
                         if (installText) installText.style.display = 'none';
                     }
@@ -809,77 +705,32 @@
             });
         }
 
-        // 3. Deteksi kalau aplikasi berhasil terinstal
         window.addEventListener('appinstalled', () => {
             if (btnInstallApp) btnInstallApp.style.display = 'none';
-            if (installText) installText.style.display = 'none'; // Ilangin teksnya permanen
-            console.log('Aplikasi berhasil diinstal');
+            if (installText) installText.style.display = 'none';
         });
-        // =======================================================================
 
-        // ================= DETEKTOR KHUSUS PENGGUNA iPHONE/iOS =================
         const iosInstallHint = document.getElementById('iosInstallHint');
-        
-        // Cek apakah perangkatnya produk Apple (iPhone/iPad)
-        const isIos = () => {
-            const userAgent = window.navigator.userAgent.toLowerCase();
-            return /iphone|ipad|ipod/.test(userAgent);
-        };
-        
-        // Cek apakah saat ini sedang dibuka di dalam aplikasi PWA iOS
+        const isIos = () => /iphone|ipad|ipod/.test(window.navigator.userAgent.toLowerCase());
         const isInStandaloneMode = () => ('standalone' in window.navigator) && (window.navigator.standalone);
 
-        // Kalau dia pakai iPhone DAN belum diinstall, munculkan panduannya!
         if (isIos() && !isInStandaloneMode()) {
             if (iosInstallHint) iosInstallHint.style.display = 'block';
         }
-        // =======================================================================
 
-        // ================= SISTEM KEAMANAN (HAK AKSES ADMIN) =================
+        // ================= SISTEM KEAMANAN UI (Menyembunyikan Tombol) =================
         function cekAksesAdmin() {
             const currentUserEmail = localStorage.getItem('lkp_user_email');
             const adminEmails = ['lkpinsanjaya@gmail.com', 'yumenoboken@gmail.com'];
 
-            // Kalau bukan Admin, musnahkan semua elemen yang punya atribut admin-only
             if (!adminEmails.includes(currentUserEmail)) {
-                // Perhatikan: Pakai kurung siku [] untuk mencari attribute HTML
-                const adminElements = document.querySelectorAll('[admin-only]');
-                
-                adminElements.forEach(el => {
-                    el.remove();
-                });
+                // Menghapus elemen yang ada tag admin-only (baik di Desktop maupun Mobile)
+                document.querySelectorAll('[admin-only]').forEach(el => el.remove());
             }
         }
 
-        // Jalankan sekali saat web pertama dibuka (untuk ngamanin Modal Edit)
+        // Panggil saat DOM Load (walaupun nanti dipanggil lagi setiap render tabel)
         document.addEventListener("DOMContentLoaded", cekAksesAdmin);
-        // =====================================================================
-        function applyFilter() {
-            const nama = document.getElementById('searchNama')?.value.toLowerCase() || '';
-            const program = document.getElementById('filterProgram')?.value || '';
-            const kelas = document.getElementById('filterKelas')?.value || '';
-            const guru = document.getElementById('filterGuru')?.value.toLowerCase() || '';
-            const jadwal = document.getElementById('filterJadwal')?.value.toLowerCase() || '';
-
-            const filtered = allData.filter(s =>
-                s.nama_siswa.toLowerCase().includes(nama) &&
-                (program === '' || s.program === program) &&
-                (kelas === '' || s.kelas === kelas) &&
-                s.guru.toLowerCase().includes(guru) &&
-                (s.jadwal || '').toLowerCase().includes(jadwal)
-            );
-
-            filtered.sort((a, b) =>
-                a.nama_siswa.localeCompare(b.nama_siswa, 'id', { sensitivity: 'base' })
-            );
-
-            renderDesktop(filtered);
-            renderMobile(filtered);
-            
-            // PANGGIL SATPAM DI SINI! 
-            // Biar setelah tabel selesai dirender, tombol adminnya langsung disapu bersih
-            cekAksesAdmin(); 
-        }
     </script>
 </body>
 
