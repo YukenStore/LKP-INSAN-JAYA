@@ -195,7 +195,7 @@
                 class="flex items-center justify-center gap-2 w-full px-4 py-2.5 mb-4 text-white bg-slate-800 hover:bg-slate-900 rounded-xl font-bold text-sm transition-colors shadow-md active:scale-[0.98]">
                 <svg class="w-5 h-5 text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4-4m0 0l-4-4m4 4V4" />
+                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                 </svg>
                 Install Aplikasi
             </button>
@@ -232,7 +232,6 @@
     </aside>
 
     <main class="flex-1 flex flex-col h-full bg-slate-50/50 relative overflow-hidden">
-
         <div
             class="absolute top-0 right-0 w-96 h-96 bg-violet-200/40 rounded-full mix-blend-multiply filter blur-3xl opacity-60 animate-blob pointer-events-none">
         </div>
@@ -261,17 +260,15 @@
 
         <div class="flex-1 overflow-y-auto p-4 md:p-6 pb-8 relative z-10 custom-scrollbar">
             <div class="max-w-6xl mx-auto">
-
                 <div class="mb-6 md:mb-8 pt-2">
                     <h1 class="font-bricolage text-2xl md:text-3xl font-bold text-slate-900 tracking-tight">Absensi
                         Siswa</h1>
                     <p class="text-sm text-slate-500 mt-1 max-w-lg">Kelola kehadiran kelas secara real-time. Perubahan
-                        status akan tersimpan otomatis saat Anda menekan tombol simpan.</p>
+                        status akan tersimpan otomatis saat Anda mengubahnya.</p>
                 </div>
 
                 <div
                     class="bg-white/90 backdrop-blur-sm p-5 md:p-6 rounded-2xl border border-slate-200/60 shadow-xl shadow-violet-100/20 mb-8 flex flex-wrap gap-4 items-end border-t-4 border-t-violet-500 transition-all">
-
                     <div class="w-full md:w-auto flex-1 min-w-[200px]">
                         <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1.5 tracking-wider">Bulan
                             & Tahun</label>
@@ -284,12 +281,10 @@
                                 </path>
                             </svg>
                             <select id="bulanSelect"
-                                class="bg-transparent outline-none cursor-pointer appearance-none text-slate-700 font-semibold text-sm pr-1">
-                            </select>
+                                class="bg-transparent outline-none cursor-pointer appearance-none text-slate-700 font-semibold text-sm pr-1"></select>
                             <span class="text-slate-300 mx-1">/</span>
                             <select id="tahunSelect"
-                                class="bg-transparent outline-none cursor-pointer appearance-none text-slate-700 font-semibold text-sm pl-1">
-                            </select>
+                                class="bg-transparent outline-none cursor-pointer appearance-none text-slate-700 font-semibold text-sm pl-1"></select>
                         </div>
                     </div>
 
@@ -312,11 +307,8 @@
                     </div>
                 </div>
 
-                <!-- KOTAK TABEL STYLISH -->
                 <div
                     class="bg-white rounded-2xl border border-slate-200/80 shadow-xl shadow-slate-200/40 overflow-hidden relative">
-
-                    <!-- Hint Scroll Mobile (Hanya muncul di HP) -->
                     <div
                         class="md:hidden bg-violet-50/80 border-b border-violet-100 px-4 py-2.5 flex items-center justify-center gap-2 text-violet-600 text-[10px] font-extrabold uppercase tracking-widest shadow-inner">
                         Geser tabel untuk isi absen
@@ -330,7 +322,6 @@
                         <table class="w-full text-left border-collapse min-w-[800px] table-fixed">
                             <thead class="bg-slate-50 border-b border-slate-200">
                                 <tr>
-                                    <!-- PERBAIKAN LEBAR KOLOM & SHADOW MENTOK -->
                                     <th rowspan="2"
                                         class="w-28 md:w-48 p-3 md:p-4 text-[12px] md:text-[12px] font-bold text-violet-800 uppercase align-middle bg-slate-100 sticky left-0 z-20 shadow-[4px_0_15px_-3px_rgba(0,0,0,0.15)] border-r border-slate-200">
                                         Nama Siswa</th>
@@ -338,19 +329,15 @@
                                         class="py-2.5 text-[11px] font-bold text-violet-600 uppercase text-center border-b border-slate-200 bg-violet-50/40">
                                         Pertemuan Ke-</th>
                                 </tr>
-                                <tr id="tanggalRow" class="bg-slate-50/40">
-                                    <!-- JS -->
-                                </tr>
+                                <tr id="tanggalRow" class="bg-slate-50/40"></tr>
                             </thead>
-
-                            <tbody id="bodyAbsensi" class="text-sm divide-y divide-slate-100 bg-white">
-                                <!-- JS -->
+                            <tbody id="bodyAbsensi" class="text-sm divide-y divide-slate-100 bg-white"></tbody>
                         </table>
                     </div>
                 </div>
 
-                <div class="mt-8 flex justify-end">
-                    <button onclick="saveAll()"
+                <div class="mt-8 flex justify-end" id="containerSimpan">
+                    <button id="btnSimpanPerubahan" onclick="saveAll()"
                         class="group w-full sm:w-auto flex items-center justify-center gap-2 bg-violet-600 hover:bg-violet-700 text-white px-8 py-3.5 rounded-xl font-bold shadow-[0_8px_20px_-6px_rgba(124,58,237,0.5)] transition-all duration-200 text-sm active:translate-y-1">
                         <svg class="w-5 h-5 group-hover:scale-110 transition-transform" fill="none"
                             stroke="currentColor" viewBox="0 0 24 24">
@@ -361,12 +348,19 @@
                         Simpan Semua Perubahan
                     </button>
                 </div>
-
             </div>
         </div>
     </main>
 
     <script>
+        // ================= FUNGSI CEK AKSES ADMIN / GURU =================
+        function isAdminUser() {
+            const currentUserEmail = localStorage.getItem('lkp_user_email');
+            // Kalau punya daftar email khusus guru lain, tambahin aja di dalam array ini wok!
+            const adminEmails = ['lkpinsanjaya@gmail.com', 'yumenoboken@gmail.com'];
+            return adminEmails.includes(currentUserEmail);
+        }
+
         // ================= FITUR TAMPILAN PROFIL USER =================
         document.addEventListener('DOMContentLoaded', () => {
             const userName = localStorage.getItem('lkp_user_name') || 'Admin LKP';
@@ -386,6 +380,12 @@
                     localStorage.removeItem('lkp_user_picture');
                 }
             });
+
+            // Sembunyikan tombol simpan kalau yang login bukan Admin/Guru
+            if (!isAdminUser()) {
+                const containerSimpan = document.getElementById('containerSimpan');
+                if (containerSimpan) containerSimpan.classList.add('hidden');
+            }
         });
 
         // ================= REFRESH APLIKASI =================
@@ -424,12 +424,41 @@
         document.getElementById('closeSidebarBtn')?.addEventListener('click', toggleSidebar);
         overlay?.addEventListener('click', toggleSidebar);
 
-        // ================= LOGIKA ABSENSI =================
+        // ================= LOGIKA ABSENSI DENGAN SATPAM =================
         const API_URL = 'https://absensi-api.yumenoboken.workers.dev';
         let selectedBulan = new Date().toISOString().slice(0, 7);
         let dataAbsensi = {};
         let AUTO_SAVE = true;
         let dataTanggal = {};
+
+        // FUNGSI BARU: Nambahin KTP (Email) di setiap request dan nangkep error 403
+        async function fetchWithAuth(url, options = {}) {
+            const userEmail = localStorage.getItem('lkp_user_email');
+
+            const headers = {
+                'X-Admin-Email': userEmail || '',
+                'Content-Type': 'application/json',
+                ...(options.headers || {})
+            };
+
+            const response = await fetch(url, { ...options, headers });
+
+            // Kalau 403 (Forbidden) -> Udah login, tapi nyoba ngedit pdhl bukan admin
+            if (response.status === 403) {
+                alert("⛔ Ditolak Server: Cuma Admin/Guru yang boleh mengubah data absen ini!");
+                throw new Error("Forbidden: Bukan Admin");
+            }
+
+            // Kalau 401 (Unauthorized) -> Bener-bener belum login
+            if (response.status === 401) {
+                alert("⛔ Sesi tidak valid, silakan login ulang.");
+                localStorage.clear();
+                window.location.href = 'index.html';
+                throw new Error("Unauthorized");
+            }
+
+            return response;
+        }
 
         document.addEventListener("DOMContentLoaded", () => {
             generateBulan();
@@ -491,22 +520,22 @@
 
         async function loadGuru() {
             try {
-                const res = await fetch(`${API_URL}/api/guru`);
+                const res = await fetchWithAuth(`${API_URL}/api/guru`);
                 const guruList = await res.json();
                 const select = document.getElementById('guruSelect');
                 select.innerHTML = '<option value="">Pilih Guru...</option>';
                 guruList.forEach(g => { select.innerHTML += `<option value="${g.guru}">${g.guru}</option>`; });
-            } catch (e) { console.error("Gagal load guru:", e); }
+            } catch (e) { console.log("Gagal load guru:", e.message); }
         }
 
         async function loadJadwal(guru) {
             try {
-                const res = await fetch(`${API_URL}/api/jadwal-by-guru?guru=${encodeURIComponent(guru)}`);
+                const res = await fetchWithAuth(`${API_URL}/api/jadwal-by-guru?guru=${encodeURIComponent(guru)}`);
                 const data = await res.json();
                 const select = document.getElementById('jadwalSelect');
                 select.innerHTML = '<option value="">Pilih Jadwal...</option>';
                 data.forEach(item => { select.innerHTML += `<option value="${item.jadwal}">${item.jadwal}</option>`; });
-            } catch (e) { console.error("Gagal load jadwal:", e); }
+            } catch (e) { console.log("Gagal load jadwal:", e.message); }
         }
 
         function generateTanggalRow() {
@@ -515,6 +544,9 @@
 
             const [tahun, bulan] = selectedBulan.split('-');
             const jumlahHari = new Date(tahun, bulan, 0).getDate();
+
+            // Cek apakah user yang login itu admin, kalau bukan beri atribut disabled
+            const disabledAttr = isAdminUser() ? '' : 'disabled';
 
             for (let i = 1; i <= 12; i++) {
                 let options = `<option value="">Tgl</option>`;
@@ -526,7 +558,7 @@
                     <th class="border-b border-r border-slate-100 bg-white p-2 min-w-[60px]">
                         <div class="flex flex-col items-center justify-center gap-1.5">
                             <span class="text-[10px] text-violet-600 font-bold bg-violet-50 px-2 py-0.5 rounded">P${i}</span>
-                            <select class="w-full max-w-[55px] text-[10px] text-center rounded-md bg-white border border-slate-200 hover:border-violet-300 outline-none py-1 cursor-pointer shadow-sm transition-colors" data-pertemuan="${i}" onchange="handleTanggalChange(this, ${i})">
+                            <select ${disabledAttr} class="w-full max-w-[55px] text-[10px] text-center rounded-md bg-white border border-slate-200 hover:border-violet-300 outline-none py-1 ${isAdminUser() ? 'cursor-pointer' : 'cursor-not-allowed bg-slate-50 text-slate-800'} shadow-sm transition-colors" data-pertemuan="${i}" onchange="handleTanggalChange(this, ${i})">
                                 ${options}
                             </select>
                         </div>
@@ -535,7 +567,16 @@
             }
         }
 
-        function handleTanggalChange(selectEl, pertemuan) { dataTanggal[pertemuan] = selectEl.value; }
+        async function handleTanggalChange(selectEl, pertemuan) {
+            dataTanggal[pertemuan] = selectEl.value;
+            if (AUTO_SAVE) {
+                try {
+                    await saveTanggal();
+                } catch (e) {
+                    console.log("Auto-save tanggal gagal", e.message);
+                }
+            }
+        }
 
         async function handleStatusChange(el, siswaId, pertemuan) {
             const val = el.value;
@@ -544,9 +585,8 @@
 
             if (AUTO_SAVE) {
                 try {
-                    await fetch(`${API_URL}/api/absensi-bulk`, {
+                    await fetchWithAuth(`${API_URL}/api/absensi-bulk`, {
                         method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify([{
                             siswa_id: siswaId,
                             pertemuan_ke: pertemuan,
@@ -554,7 +594,7 @@
                             bulan: selectedBulan
                         }])
                     });
-                } catch (e) { console.error("Auto-save gagal:", e); }
+                } catch (e) { console.log("Auto-save absen gagal:", e.message); }
             }
         }
 
@@ -584,7 +624,7 @@
             </tr>`;
 
             try {
-                const res = await fetch(`${API_URL}/api/siswa-by-jadwal?guru=${encodeURIComponent(guru)}&jadwal=${encodeURIComponent(jadwal)}`);
+                const res = await fetchWithAuth(`${API_URL}/api/siswa-by-jadwal?guru=${encodeURIComponent(guru)}&jadwal=${encodeURIComponent(jadwal)}`);
                 const siswa = await res.json();
                 body.innerHTML = '';
                 dataAbsensi = {};
@@ -602,8 +642,10 @@
                     return;
                 }
 
+                // Cek apakah user yang login itu admin, kalau bukan beri atribut disabled
+                const disabledAttr = isAdminUser() ? '' : 'disabled';
+
                 siswa.forEach((s, idx) => {
-                    // PERBAIKAN: Gak ada lagi transparansi (/30). Pakai warna SOLID (bg-white & bg-slate-50)
                     const bgRow = idx % 2 === 0 ? 'bg-white' : 'bg-slate-50';
 
                     let row = `<tr class="${bgRow} hover:bg-violet-100/50 transition-colors group">
@@ -614,7 +656,7 @@
                     for (let i = 1; i <= 12; i++) {
                         row += `
                             <td class="border-b border-r border-slate-100 p-1.5 text-center" data-siswa="${s.id}" data-pertemuan="${i}">
-                                <select class="w-[48px] h-8 text-[11px] font-bold uppercase rounded-md text-center cursor-pointer transition-all duration-200 outline-none appearance-none border mx-auto block hover:shadow-md" style="background-color: #f8fafc; color: #94a3b8; border-color:#e2e8f0;" onchange="handleStatusChange(this, ${s.id}, ${i})">
+                                <select ${disabledAttr} class="w-[48px] h-8 text-[11px] font-bold uppercase rounded-md text-center ${isAdminUser() ? 'cursor-pointer hover:shadow-md' : 'cursor-not-allowed bg-slate-50 opacity-80'} transition-all duration-200 outline-none appearance-none border mx-auto block" style="background-color: #f8fafc; color: #94a3b8; border-color:#e2e8f0;" onchange="handleStatusChange(this, ${s.id}, ${i})">
                                     <option value="" class="bg-white text-gray-500">-</option>
                                     <option value="hadir" class="bg-white text-green-700">H</option>
                                     <option value="izin" class="bg-white text-amber-700">I</option>
@@ -630,14 +672,14 @@
                 await loadAbsensiByGuru(guru);
                 await loadTanggal(guru, jadwal);
             } catch (e) {
-                console.error("Gagal meload siswa:", e);
-                body.innerHTML = `<tr><td colspan="13" class="py-12 text-center text-red-500 font-bold">Terjadi kesalahan saat menghubungi server.</td></tr>`;
+                console.log("Gagal meload siswa:", e.message);
+                body.innerHTML = `<tr><td colspan="13" class="py-12 text-center text-red-500 font-bold">Terjadi kesalahan. Anda tidak memiliki akses untuk melihat data ini atau sesi telah habis.</td></tr>`;
             }
         }
 
         async function loadAbsensiByGuru(guru) {
             try {
-                const res = await fetch(`${API_URL}/api/absensi-by-guru?guru=${encodeURIComponent(guru)}&bulan=${selectedBulan}`);
+                const res = await fetchWithAuth(`${API_URL}/api/absensi-by-guru?guru=${encodeURIComponent(guru)}&bulan=${selectedBulan}`);
                 const data = await res.json();
                 data.forEach(item => {
                     const td = document.querySelector(`[data-siswa="${item.siswa_id}"][data-pertemuan="${item.pertemuan_ke}"]`);
@@ -646,19 +688,19 @@
                     select.value = item.status;
                     applyStatusColor(select);
                 });
-            } catch (e) { console.error("Gagal meload absensi:", e); }
+            } catch (e) { console.log("Gagal meload absensi:", e.message); }
         }
 
         async function loadTanggal(guru, jadwal) {
             document.querySelectorAll('#tanggalRow select').forEach(s => s.value = '');
             try {
-                const res = await fetch(`${API_URL}/api/tanggal-pertemuan?guru=${encodeURIComponent(guru)}&jadwal=${encodeURIComponent(jadwal)}&bulan=${selectedBulan}`);
+                const res = await fetchWithAuth(`${API_URL}/api/tanggal-pertemuan?guru=${encodeURIComponent(guru)}&jadwal=${encodeURIComponent(jadwal)}&bulan=${selectedBulan}`);
                 const data = await res.json();
                 data.forEach(item => {
                     const select = document.querySelector(`select[data-pertemuan="${item.pertemuan_ke}"]`);
                     if (select) { select.value = item.tanggal; }
                 });
-            } catch (e) { console.error("Gagal meload data tanggal:", e); }
+            } catch (e) { console.log("Gagal meload data tanggal:", e.message); }
         }
 
         async function saveTanggal() {
@@ -672,11 +714,15 @@
             }
 
             if (payload.length > 0) {
-                await fetch(`${API_URL}/api/tanggal-pertemuan`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
+                try {
+                    await fetchWithAuth(`${API_URL}/api/tanggal-pertemuan`, {
+                        method: 'POST',
+                        body: JSON.stringify(payload)
+                    });
+                } catch (e) {
+                    console.log("Save tanggal gagal:", e.message);
+                    throw e; // Biar errornya dilempar ke fungsi yang manggil
+                }
             }
         }
 
@@ -694,15 +740,13 @@
 
             try {
                 if (payload.length) {
-                    await fetch(`${API_URL}/api/absensi-bulk`, {
+                    await fetchWithAuth(`${API_URL}/api/absensi-bulk`, {
                         method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(payload)
                     });
                 }
                 await saveTanggal();
 
-                // Balikkan tombol
                 btnSimpan.innerHTML = `<svg class="w-5 h-5 mr-2 text-green-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Berhasil Disimpan!`;
                 btnSimpan.classList.remove('bg-violet-600', 'hover:bg-violet-700');
                 btnSimpan.classList.add('bg-green-600', 'hover:bg-green-700');
@@ -715,11 +759,53 @@
                 }, 3000);
 
             } catch (e) {
-                console.error("Gagal menyimpan:", e);
-                alert("❌ Gagal menyimpan data absensi.");
+                console.log("Gagal menyimpan:", e.message);
+                // Gak perlu alert panjang-panjang karena fetchWithAuth udah nanganin pop-up alertnya
                 btnSimpan.disabled = false;
                 btnSimpan.innerHTML = originalText;
             }
+        }
+
+        // ================= FITUR TOMBOL INSTALL APLIKASI (PWA) =================
+        let deferredPrompt = null;
+        const btnInstallApp = document.getElementById('btnInstallApp');
+        const installText = document.getElementById('installText');
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            if (!isStandalone) {
+                if (btnInstallApp) btnInstallApp.style.display = 'flex';
+                if (installText) installText.style.display = 'block';
+            }
+        });
+
+        if (btnInstallApp) {
+            btnInstallApp.addEventListener('click', async () => {
+                if (deferredPrompt !== null) {
+                    deferredPrompt.prompt();
+                    const { outcome } = await deferredPrompt.userChoice;
+                    if (outcome === 'accepted') {
+                        btnInstallApp.style.display = 'none';
+                        if (installText) installText.style.display = 'none';
+                    }
+                    deferredPrompt = null;
+                }
+            });
+        }
+
+        window.addEventListener('appinstalled', () => {
+            if (btnInstallApp) btnInstallApp.style.display = 'none';
+            if (installText) installText.style.display = 'none';
+        });
+
+        const iosInstallHint = document.getElementById('iosInstallHint');
+        const isIos = () => /iphone|ipad|ipod/.test(window.navigator.userAgent.toLowerCase());
+        const isInStandaloneMode = () => ('standalone' in window.navigator) && (window.navigator.standalone);
+
+        if (isIos() && !isInStandaloneMode()) {
+            if (iosInstallHint) iosInstallHint.style.display = 'block';
         }
     </script>
 </body>
