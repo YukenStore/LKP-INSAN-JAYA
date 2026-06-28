@@ -818,10 +818,10 @@
                 }
 
                 html += `
-                    <td class="border-black align-middle p-2 ${btmBorder}">${idx + 1}</td>
-                    ${isBimbel ? `<td class="border-black align-middle p-2 ${btmBorder}">${row.mapel || ''}</td>` : ''}
+                    <td class="border-black align-top text-center p-2 ${btmBorder}">${idx + 1}</td>
+                    ${isBimbel ? `<td class="border-black text-left align-top p-2 ${btmBorder}">${row.mapel || ''}</td>` : ''}
                     <td class="border-black text-left align-top p-2 ${btmBorder}">${row.materi ? row.materi.replace(/\n/g, '<br>') : ''}</td>
-                    <td class="border-black align-middle p-2 ${btmBorder}">${row.kondisi || ''}</td>
+                    <td class="border-black text-center align-top p-2 ${btmBorder}">${row.kondisi || ''}</td>
                     <td class="border-black text-left align-top p-2 ${btmBorder}">${row.hasil ? row.hasil.replace(/\n/g, '<br>') : ''}</td>
                 `;
 
