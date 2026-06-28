@@ -135,7 +135,7 @@
 
         <nav class="flex-1 overflow-y-auto custom-scrollbar py-4 px-3 space-y-1">
             <p class="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2 mt-1">Menu Utama</p>
-            <a href="pendaftaran.html"
+            <a href="pendaftaran.html" id="navPendaftaran"
                 class="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-medium text-sm transition-colors">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -161,7 +161,7 @@
             </a>
 
             <p class="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2 mt-6">Akademik</p>
-            <a href="#"
+            <a href="laporan.html"
                 class="flex items-center gap-3 px-3 py-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-medium text-sm transition-colors">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -353,22 +353,48 @@
     </main>
 
     <script>
-        // ================= FUNGSI CEK AKSES ADMIN / GURU =================
-        function isAdminUser() {
+        // ================= FUNGSI CEK AKSES (DIBEDAKAN ANTARA SUPER ADMIN & GURU) =================
+        function isSuperAdmin() {
             const currentUserEmail = localStorage.getItem('lkp_user_email');
-            // Kalau punya daftar email khusus guru lain, tambahin aja di dalam array ini wok!
-            const adminEmails = ['lpkinsanjaya@gmail.com', 'yumenoboken@gmail.com', 'mlbb080106@gmail.com', 'tzaharasyaputri@gmail.com', 'usniatun25@gmail.com', 'ayunurhasanah1707@gmail.com', 'nurmassari702@gmail.com', 'shintadeslianty@gmail.com', 'uthiuthi1130@gmail.com'];
-            return adminEmails.includes(currentUserEmail);
+            // CUMA 2 EMAIL INI YANG BISA LIHAT MENU PENDAFTARAN
+            const superAdminEmails = ['lpkinsanjaya@gmail.com', 'yumenoboken@gmail.com'];
+            return superAdminEmails.includes(currentUserEmail);
+        }
+
+        function isGuruOrAdmin() {
+            const currentUserEmail = localStorage.getItem('lkp_user_email');
+            // GABUNGAN ADMIN DAN SEMUA GURU YANG BOLEH NGEDIT ABSEN
+            const allowedEmails = [
+                'lpkinsanjaya@gmail.com', 
+                'yumenoboken@gmail.com', 
+                'mlbb080106@gmail.com', 
+                'tzaharasyaputri@gmail.com', 
+                'usniatun25@gmail.com', 
+                'ayunurhasanah1707@gmail.com', 
+                'nurmassari702@gmail.com', 
+                'shintadeslianty@gmail.com',
+                'rantiagustini@gmail.com',
+                'uthiuthi1130@gmail.com'
+            ];
+            return allowedEmails.includes(currentUserEmail);
         }
 
         // ================= FITUR TAMPILAN PROFIL USER =================
         document.addEventListener('DOMContentLoaded', () => {
             const userName = localStorage.getItem('lkp_user_name') || 'Admin LKP';
-            const userEmail = localStorage.getItem('lkp_user_email') || 'admin@lkpinsanjaya.com';
+            const userEmail = localStorage.getItem('lkp_user_email');
             const userPic = localStorage.getItem('lkp_user_picture');
 
+            // 1. Sembunyikan menu Pendaftaran jika bukan Super Admin
+            const navPendaftaran = document.getElementById('navPendaftaran');
+            if (navPendaftaran && !isSuperAdmin()) {
+                navPendaftaran.classList.remove('flex');
+                navPendaftaran.classList.add('hidden');
+            }
+
+            // Tampilkan Profil
             document.getElementById('userNameDisplay').textContent = userName;
-            document.getElementById('userEmailDisplay').textContent = userEmail;
+            document.getElementById('userEmailDisplay').textContent = userEmail || 'admin@lkpinsanjaya.com';
             if (userPic) { document.getElementById('userProfilePic').src = userPic; }
             else { document.getElementById('userProfilePic').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=c7d2fe&color=4f46e5`; }
 
@@ -381,8 +407,8 @@
                 }
             });
 
-            // Sembunyikan tombol simpan kalau yang login bukan Admin/Guru
-            if (!isAdminUser()) {
+            // 2. Sembunyikan tombol simpan kalau yang login bukan Admin ATAU Guru
+            if (!isGuruOrAdmin()) {
                 const containerSimpan = document.getElementById('containerSimpan');
                 if (containerSimpan) containerSimpan.classList.add('hidden');
             }
@@ -431,7 +457,6 @@
         let AUTO_SAVE = true;
         let dataTanggal = {};
 
-        // FUNGSI BARU: Nambahin KTP (Email) di setiap request dan nangkep error 403
         async function fetchWithAuth(url, options = {}) {
             const userEmail = localStorage.getItem('lkp_user_email');
 
@@ -443,13 +468,13 @@
 
             const response = await fetch(url, { ...options, headers });
 
-            // Kalau 403 (Forbidden) -> Udah login, tapi nyoba ngedit pdhl bukan admin
+            // Kalau 403 (Forbidden)
             if (response.status === 403) {
                 alert("⛔ Ditolak Server: Cuma Admin/Guru yang boleh mengubah data absen ini!");
                 throw new Error("Forbidden: Bukan Admin");
             }
 
-            // Kalau 401 (Unauthorized) -> Bener-bener belum login
+            // Kalau 401 (Unauthorized)
             if (response.status === 401) {
                 alert("⛔ Sesi tidak valid, silakan login ulang.");
                 localStorage.clear();
@@ -545,8 +570,8 @@
             const [tahun, bulan] = selectedBulan.split('-');
             const jumlahHari = new Date(tahun, bulan, 0).getDate();
 
-            // Cek apakah user yang login itu admin, kalau bukan beri atribut disabled
-            const disabledAttr = isAdminUser() ? '' : 'disabled';
+            // Cek apakah punya akses edit absensi (Guru / Super Admin)
+            const disabledAttr = isGuruOrAdmin() ? '' : 'disabled';
 
             for (let i = 1; i <= 12; i++) {
                 let options = `<option value="">Tgl</option>`;
@@ -558,7 +583,7 @@
                     <th class="border-b border-r border-slate-100 bg-white p-2 min-w-[60px]">
                         <div class="flex flex-col items-center justify-center gap-1.5">
                             <span class="text-[10px] text-violet-600 font-bold bg-violet-50 px-2 py-0.5 rounded">P${i}</span>
-                            <select ${disabledAttr} class="w-full max-w-[55px] text-[10px] text-center rounded-md bg-white border border-slate-200 hover:border-violet-300 outline-none py-1 ${isAdminUser() ? 'cursor-pointer' : 'cursor-not-allowed bg-slate-50 text-slate-800'} shadow-sm transition-colors" data-pertemuan="${i}" onchange="handleTanggalChange(this, ${i})">
+                            <select ${disabledAttr} class="w-full max-w-[55px] text-[10px] text-center rounded-md bg-white border border-slate-200 hover:border-violet-300 outline-none py-1 ${isGuruOrAdmin() ? 'cursor-pointer' : 'cursor-not-allowed bg-slate-50 text-slate-800'} shadow-sm transition-colors" data-pertemuan="${i}" onchange="handleTanggalChange(this, ${i})">
                                 ${options}
                             </select>
                         </div>
@@ -642,8 +667,8 @@
                     return;
                 }
 
-                // Cek apakah user yang login itu admin, kalau bukan beri atribut disabled
-                const disabledAttr = isAdminUser() ? '' : 'disabled';
+                // Cek apakah punya akses edit absensi (Guru / Super Admin)
+                const disabledAttr = isGuruOrAdmin() ? '' : 'disabled';
 
                 siswa.forEach((s, idx) => {
                     const bgRow = idx % 2 === 0 ? 'bg-white' : 'bg-slate-50';
@@ -656,7 +681,7 @@
                     for (let i = 1; i <= 12; i++) {
                         row += `
                             <td class="border-b border-r border-slate-100 p-1.5 text-center" data-siswa="${s.id}" data-pertemuan="${i}">
-                                <select ${disabledAttr} class="w-[48px] h-8 text-[11px] font-bold uppercase rounded-md text-center ${isAdminUser() ? 'cursor-pointer hover:shadow-md' : 'cursor-not-allowed bg-slate-50 opacity-80'} transition-all duration-200 outline-none appearance-none border mx-auto block" style="background-color: #f8fafc; color: #94a3b8; border-color:#e2e8f0;" onchange="handleStatusChange(this, ${s.id}, ${i})">
+                                <select ${disabledAttr} class="w-[48px] h-8 text-[11px] font-bold uppercase rounded-md text-center ${isGuruOrAdmin() ? 'cursor-pointer hover:shadow-md' : 'cursor-not-allowed bg-slate-50 opacity-80'} transition-all duration-200 outline-none appearance-none border mx-auto block" style="background-color: #f8fafc; color: #94a3b8; border-color:#e2e8f0;" onchange="handleStatusChange(this, ${s.id}, ${i})">
                                     <option value="" class="bg-white text-gray-500">-</option>
                                     <option value="hadir" class="bg-white text-green-700">H</option>
                                     <option value="izin" class="bg-white text-amber-700">I</option>
@@ -760,7 +785,6 @@
 
             } catch (e) {
                 console.log("Gagal menyimpan:", e.message);
-                // Gak perlu alert panjang-panjang karena fetchWithAuth udah nanganin pop-up alertnya
                 btnSimpan.disabled = false;
                 btnSimpan.innerHTML = originalText;
             }
