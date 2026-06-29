@@ -511,11 +511,12 @@
                 <div class="mt-4 space-y-3">
                     <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest">Jadwal Per Hari</label>
                     ${["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"].map(hari => `
-                        <div class="jadwal-row flex items-center gap-3">
-                            <input type="checkbox" value="${hari}" class="jadwal-check">
-                            <span class="w-20 text-sm">${hari}</span>
-                            <input type="text" placeholder="15:30" maxlength="5" inputmode="numeric" class="jam-masuk jadwal-custom-jam flex-1 px-3 py-2 border border-slate-200 rounded-lg">
-                            <input type="text" placeholder="17:00" maxlength="5" inputmode="numeric" class="jam-keluar jadwal-custom-jam flex-1 px-3 py-2 border border-slate-200 rounded-lg">
+                        <div class="jadwal-row flex items-center gap-2 sm:gap-3">
+                            <input type="checkbox" value="${hari}" class="jadwal-check w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0 rounded border-slate-300 text-violet-600 focus:ring-violet-500">
+                            <span class="w-14 sm:w-20 text-xs sm:text-sm font-medium text-slate-700 flex-shrink-0">${hari}</span>
+                            <input type="text" placeholder="15:30" maxlength="5" inputmode="numeric" class="jam-masuk jadwal-custom-jam flex-1 min-w-0 px-1 sm:px-3 py-2 border border-slate-200 rounded-lg text-center outline-none font-mono text-xs sm:text-sm">
+                            <span class="text-slate-400 flex-shrink-0">-</span>
+                            <input type="text" placeholder="17:00" maxlength="5" inputmode="numeric" class="jam-keluar jadwal-custom-jam flex-1 min-w-0 px-1 sm:px-3 py-2 border border-slate-200 rounded-lg text-center outline-none font-mono text-xs sm:text-sm">
                         </div>
                     `).join("")}
                 </div>
