@@ -287,38 +287,103 @@
     </main>
 
     <div id="modalEdit" class="hidden fixed inset-0 bg-black/50 z-[9999] flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl w-full max-w-lg p-6">
-            <div class="flex justify-between items-center mb-5">
+        <div class="bg-white rounded-2xl w-full max-w-lg max-h-[90vh] flex flex-col overflow-hidden shadow-2xl">
+            <!-- Header Sticky -->
+            <div class="flex justify-between items-center p-6 border-b border-slate-100 flex-shrink-0 bg-white z-10">
                 <h2 class="text-xl font-bold text-slate-800">Edit Siswa</h2>
-                <button onclick="tutupModalEdit()" class="text-slate-500 hover:text-slate-700 text-xl">✕</button>
+                <button onclick="tutupModalEdit()" class="text-slate-500 hover:text-red-500 hover:bg-red-50 p-1.5 rounded-lg transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
             </div>
-            <input type="hidden" id="editId">
-            <div class="space-y-4">
-                <div>
-                    <label class="block text-sm font-semibold mb-1">Nama Siswa</label>
-                    <input id="editNama" class="w-full border border-slate-300 rounded-xl px-4 py-3">
-                </div>
-                <div>
-                    <label class="block text-sm font-semibold mb-1">Program</label>
-                    <input id="editProgram" class="w-full border border-slate-300 rounded-xl px-4 py-3">
-                </div>
-                <div>
-                    <label class="block text-sm font-semibold mb-1">Kelas</label>
-                    <input id="editKelas" class="w-full border border-slate-300 rounded-xl px-4 py-3">
-                </div>
-                <div>
-                    <label class="block text-sm font-semibold mb-1">Guru</label>
-                    <input id="editGuru" class="w-full border border-slate-300 rounded-xl px-4 py-3">
-                </div>
-                <div>
-                    <label class="block text-sm font-semibold mb-1">Jadwal</label>
-                    <textarea id="editJadwal" rows="3"
-                        class="w-full border border-slate-300 rounded-xl px-4 py-3"></textarea>
+
+            <!-- Body Scrollable -->
+            <div class="p-6 overflow-y-auto custom-scrollbar flex-1">
+                <input type="hidden" id="editId">
+                <div class="space-y-5">
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-2">Nama Siswa</label>
+                        <input id="editNama" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-violet-500 outline-none transition-all">
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-2">Program</label>
+                            <select id="editProgram" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-violet-500 appearance-none bg-no-repeat bg-[right_1rem_center] bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M5%207L10%2012L15%207%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%221.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%3C/svg%3E')]">
+                                <option value="" disabled selected>Pilih program...</option>
+                                <option value="bahasa arab">Bahasa Arab</option>
+                                <option value="bahasa inggris">Bahasa Inggris</option>
+                                <option value="bimbel">Bimbel</option>
+                                <option value="calistung">Calistung</option>
+                                <option value="komputer">Komputer</option>
+                                <option value="menggambar & mewarnai">Menggambar & Mewarnai</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-2">Kelas</label>
+                            <select id="editKelas" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-violet-500 appearance-none bg-no-repeat bg-[right_1rem_center] bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M5%207L10%2012L15%207%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%221.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%3C/svg%3E')]">
+                                <option value="" disabled selected>Pilih program dulu...</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-2">Guru Pengajar</label>
+                        <select id="editGuru" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-violet-500 appearance-none bg-no-repeat bg-[right_1rem_center] bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M5%207L10%2012L15%207%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%221.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%3C/svg%3E')]">
+                            <option value="" disabled selected>Pilih program dulu...</option>
+                        </select>
+                    </div>
+                    
+                    <div id="editHariBelajarContainer">
+                        <label class="text-[11px] font-bold text-slate-500 uppercase mb-2 block">Hari Belajar (Maks 3)</label>
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-2 text-sm">
+                            <label><input type="checkbox" name="edit_hari" value="Senin"> Senin</label>
+                            <label><input type="checkbox" name="edit_hari" value="Selasa"> Selasa</label>
+                            <label><input type="checkbox" name="edit_hari" value="Rabu"> Rabu</label>
+                            <label><input type="checkbox" name="edit_hari" value="Kamis"> Kamis</label>
+                            <label><input type="checkbox" name="edit_hari" value="Jumat"> Jumat</label>
+                            <label><input type="checkbox" name="edit_hari" value="Sabtu"> Sabtu</label>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-2">Jam Belajar</label>
+                        <select id="editJam" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-violet-500 appearance-none bg-no-repeat bg-[right_1rem_center] bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M5%207L10%2012L15%207%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%221.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%3C/svg%3E')]">
+                            <option value="" disabled selected>Pilih jam...</option>
+                            <option value="07.30-09.00">07.30 - 09.00</option>
+                            <option value="09.00-10.30">09.00 - 10.30</option>
+                            <option value="10.30-12.00">10.30 - 12.00</option>
+                            <option value="12.00-13.30">12.00 - 13.30</option>
+                            <option value="13.30-15.00">13.30 - 15.00</option>
+                            <option value="15.00-16.30">15.00 - 16.30</option>
+                            <option value="16.30-18.00">16.30 - 18.00</option>
+                            <option value="CUSTOM">Pilih jam sendiri...</option>
+                            <option value="CUSTOM_SCHEDULE">Pilih Jadwal Sendiri</option>
+                        </select>
+
+                        <div id="editCustomJamContainer" class="hidden mt-4 bg-slate-50 p-4 rounded-xl border border-slate-100">
+                            <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-3">Custom Jam</label>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="text-xs text-slate-500 mb-1 block">Jam Masuk</label>
+                                    <input type="text" id="editJamMasuk" maxlength="5" inputmode="numeric" placeholder="15:30" class="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-violet-500 text-center font-mono">
+                                </div>
+                                <div>
+                                    <label class="text-xs text-slate-500 mb-1 block">Jam Keluar</label>
+                                    <input type="text" id="editJamKeluar" maxlength="5" inputmode="numeric" placeholder="17:00" class="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-violet-500 text-center font-mono">
+                                </div>
+                            </div>
+                        </div>
+                        <div id="editJadwalCustomContainer" class="hidden"></div>
+                    </div>
                 </div>
             </div>
-            <div class="flex justify-end gap-3 mt-6">
-                <button onclick="tutupModalEdit()" class="px-4 py-2 rounded-xl bg-slate-100">Batal</button>
-                <button onclick="simpanEdit()" class="px-4 py-2 rounded-xl bg-violet-600 text-white">Simpan</button>
+
+            <!-- Footer Sticky -->
+            <div class="flex justify-end gap-3 p-5 border-t border-slate-100 flex-shrink-0 bg-slate-50">
+                <button onclick="tutupModalEdit()" class="px-5 py-2.5 rounded-xl bg-white border border-slate-200 font-semibold text-slate-600 hover:bg-slate-50 transition-colors">Batal</button>
+                <button onclick="simpanEdit()" id="btnSimpanEdit" class="px-5 py-2.5 rounded-xl bg-violet-600 font-semibold text-white shadow-lg shadow-violet-200 hover:bg-violet-700 transition-colors">Simpan</button>
             </div>
         </div>
     </div>
@@ -404,6 +469,49 @@
         let allData = [];
         const API = 'https://absensi-api.yumenoboken.workers.dev/api';
 
+        const kelasByProgram = {
+            "bimbel": ["Kelas 1", "Kelas 2", "Kelas 3", "Kelas 4", "Kelas 5", "Kelas 6"],
+            "bahasa inggris": ["Beginner", "Intermediate", "Upper Intermediate", "Advanced"],
+            "bahasa arab": ["Iqra + B Arab Dasar"],
+            "komputer": ["MS Office"],
+            "calistung": ["Baca + Tulis + Hitung"],
+            "menggambar & mewarnai": ["Gambar + Warna"]
+        };
+
+        const guruByProgram = {
+            "bimbel": ["Muhammad Khalid", "Shinta Deslianty, S.Pd"],
+            "bahasa inggris": ["Ranti Agustini, S.Pd", "Tri Zahara, S.Pd"],
+            "calistung": ["Usniatun Sudiarsih, SH"],
+            "bahasa arab": ["Ayu Nurhasanah, S.Sos"],
+            "komputer": ["Normas Sari"],
+            "menggambar & mewarnai": ["Futria Tamasari S.Hum"]
+        };
+
+        function formatJadwalDisplay(jadwalStr) {
+            if (!jadwalStr) return '-';
+            let s = jadwalStr.trim();
+            if (s.startsWith('(') && s.endsWith(')')) {
+                s = s.substring(1, s.length - 1);
+            }
+            return s;
+        }
+
+        function populateKelasGuru(prog, kelasEl, guruEl, defaultKelas = "", defaultGuru = "") {
+            kelasEl.innerHTML = '<option value="" disabled selected>Pilih kelas...</option>';
+            if (kelasByProgram[prog]) {
+                kelasByProgram[prog].forEach(kelas => {
+                    kelasEl.innerHTML += `<option value="${kelas}" ${kelas === defaultKelas ? 'selected' : ''}>${kelas}</option>`;
+                });
+            }
+
+            guruEl.innerHTML = '<option value="" disabled selected>Pilih guru...</option>';
+            if (guruByProgram[prog]) {
+                guruByProgram[prog].forEach(guru => {
+                    guruEl.innerHTML += `<option value="${guru}" ${guru === defaultGuru ? 'selected' : ''}>${guru}</option>`;
+                });
+            }
+        }
+
         // ================= FUNGSI FETCH DENGAN SATPAM (AUTH) JADI LEBIH PINTAR =================
         async function fetchWithAuth(url, options = {}) {
             const userEmail = localStorage.getItem('lkp_user_email');
@@ -477,7 +585,7 @@
                     </td>
                     <td class="p-4 align-top">
                         <span class="inline-block bg-amber-50 text-amber-600 border border-amber-100 px-3 py-1.5 rounded-lg text-xs font-bold leading-relaxed max-w-[280px] break-words">
-                            ${s.jadwal || '-'}
+                            ${formatJadwalDisplay(s.jadwal)}
                         </span>
                     </td>
                     <td admin-only class="p-4 align-top text-center relative">
@@ -556,14 +664,108 @@
 
             document.getElementById('editId').value = siswa.id;
             document.getElementById('editNama').value = siswa.nama_siswa || '';
-            document.getElementById('editProgram').value = siswa.program || '';
-            document.getElementById('editKelas').value = siswa.kelas || '';
-            document.getElementById('editGuru').value = siswa.guru || '';
-
-            document.getElementById('editJadwal').value =
-                (siswa.jadwal === 'CUSTOM_SCHEDULE') ? '' : (siswa.jadwal || '');
+            
+            const progEl = document.getElementById('editProgram');
+            progEl.value = (siswa.program || '').toLowerCase();
+            
+            populateKelasGuru(progEl.value, document.getElementById('editKelas'), document.getElementById('editGuru'), siswa.kelas, siswa.guru);
+            
+            parseJadwalToEditForm(siswa.jadwal);
 
             document.getElementById('modalEdit').classList.remove('hidden');
+        }
+
+        function parseJadwalToEditForm(jadwalStr) {
+            document.querySelectorAll('input[name="edit_hari"]').forEach(cb => cb.checked = false);
+            document.getElementById('editJam').value = '';
+            document.getElementById('editJamMasuk').value = '';
+            document.getElementById('editJamKeluar').value = '';
+            document.getElementById('editCustomJamContainer').classList.add('hidden');
+            document.getElementById('editJadwalCustomContainer').classList.add('hidden');
+            document.getElementById('editHariBelajarContainer').classList.remove('hidden');
+            
+            document.querySelectorAll('.edit-jadwal-check').forEach(cb => {
+                cb.checked = false;
+                const row = cb.closest('.jadwal-row');
+                if (row) {
+                    row.querySelector('.jam-masuk').value = '';
+                    row.querySelector('.jam-keluar').value = '';
+                }
+            });
+
+            if (!jadwalStr) return;
+
+            jadwalStr = formatJadwalDisplay(jadwalStr);
+
+            const standardRegex = /^(.*?)\s*\(([^)]+)\)$/;
+            const match = jadwalStr.match(standardRegex);
+            
+            let isCustomSchedule = false;
+            
+            if (jadwalStr.includes('),') || jadwalStr.split('(').length > 2) {
+                isCustomSchedule = true;
+            } else if (match) {
+                const hariStr = match[1];
+                const jamStr = match[2];
+                const haris = hariStr.split(',').map(h => h.trim());
+                
+                const validDays = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+                const allValid = haris.every(h => validDays.includes(h));
+                
+                if (allValid) {
+                    haris.forEach(h => {
+                        const cb = document.querySelector(`input[name="edit_hari"][value="${h}"]`);
+                        if (cb) cb.checked = true;
+                    });
+                    
+                    const presetJam = Array.from(document.getElementById('editJam').options).map(o => o.value);
+                    if (presetJam.includes(jamStr)) {
+                        document.getElementById('editJam').value = jamStr;
+                    } else {
+                        document.getElementById('editJam').value = 'CUSTOM';
+                        document.getElementById('editCustomJamContainer').classList.remove('hidden');
+                        const jamParts = jamStr.split('-');
+                        if (jamParts.length === 2) {
+                            document.getElementById('editJamMasuk').value = jamParts[0].trim();
+                            document.getElementById('editJamKeluar').value = jamParts[1].trim();
+                        }
+                    }
+                } else {
+                    isCustomSchedule = true;
+                }
+            } else {
+                isCustomSchedule = true;
+            }
+            
+            if (isCustomSchedule) {
+                document.getElementById('editJam').value = 'CUSTOM_SCHEDULE';
+                document.getElementById('editCustomJamContainer').classList.add('hidden');
+                document.getElementById('editHariBelajarContainer').classList.add('hidden');
+                document.getElementById('editJadwalCustomContainer').classList.remove('hidden');
+                
+                const parts = jadwalStr.split('),').map(p => p.trim());
+                parts.forEach(part => {
+                    if (!part.endsWith(')')) part += ')'; 
+                    const subMatch = part.match(/^(.*?)\s*\(([^)]+)\)$/);
+                    if (subMatch) {
+                        const hari = subMatch[1].trim();
+                        const jam = subMatch[2].trim();
+                        
+                        const cb = document.querySelector(`.edit-jadwal-check[value="${hari}"]`);
+                        if (cb) {
+                            cb.checked = true;
+                            const row = cb.closest('.jadwal-row');
+                            if (row) {
+                                const jamParts = jam.split('-');
+                                if (jamParts.length === 2) {
+                                    row.querySelector('.jam-masuk').value = jamParts[0].trim();
+                                    row.querySelector('.jam-keluar').value = jamParts[1].trim();
+                                }
+                            }
+                        }
+                    }
+                });
+            }
         }
 
         function tutupModalEdit() {
@@ -571,17 +773,60 @@
         }
 
         async function simpanEdit() {
+            let jadwalFinal = "";
+            let jam = document.getElementById('editJam').value;
+            
+            if (jam !== 'CUSTOM_SCHEDULE') {
+                const hariChecked = Array.from(document.querySelectorAll('input[name="edit_hari"]:checked')).map(el => el.value);
+                if (hariChecked.length === 0) {
+                    alert('Pilih minimal 1 hari!');
+                    return;
+                }
+                let hari = hariChecked.join(', ');
+                
+                if (jam === 'CUSTOM') {
+                    const masuk = document.getElementById('editJamMasuk').value;
+                    const keluar = document.getElementById('editJamKeluar').value;
+                    if (!masuk || !keluar) {
+                        alert('Isi jam masuk dan jam keluar!');
+                        return;
+                    }
+                    jam = `${masuk}-${keluar}`;
+                }
+                
+                jadwalFinal = `${hari} (${jam})`;
+            } else {
+                const jadwal = [];
+                document.querySelectorAll('#editJadwalCustomContainer .jadwal-row').forEach(row => {
+                    const check = row.querySelector('.edit-jadwal-check');
+                    if (!check.checked) return;
+                    const masuk = row.querySelector('.jam-masuk').value;
+                    const keluar = row.querySelector('.jam-keluar').value;
+                    if (!masuk || !keluar) return;
+                    jadwal.push(`${check.value} (${masuk}-${keluar})`);
+                });
+
+                if (jadwal.length === 0) {
+                    alert('Pilih minimal 1 jadwal!');
+                    return;
+                }
+                jadwalFinal = jadwal.join(', ');
+            }
+            
+            const btn = document.getElementById('btnSimpanEdit');
+            btn.disabled = true;
+            btn.innerText = 'Menyimpan...';
+
             const data = {
                 id: Number(document.getElementById('editId').value),
-                nama_siswa: document.getElementById('editNama').value,
+                nama_siswa: formatNama(document.getElementById('editNama').value),
                 program: document.getElementById('editProgram').value,
                 kelas: document.getElementById('editKelas').value,
                 guru: document.getElementById('editGuru').value,
-                jadwal: document.getElementById('editJadwal').value
+                jadwal: jadwalFinal
             };
 
             try {
-                // Sekarang fetchWithAuth bakal ngeluarin alert kalau 403
                 await fetchWithAuth(`${API}/edit`, {
                     method: 'POST',
                     body: JSON.stringify(data)
@@ -590,8 +835,10 @@
                 tutupModalEdit();
                 loadData();
             } catch (e) {
-                // Biarin try-catch nangkep error dari fetchWithAuth tanpa ngelakuin reload halaman
                 console.log("Aksi gagal:", e.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerText = 'Simpan';
             }
         }
 
@@ -623,7 +870,7 @@
                         <div class="grid grid-cols-2 gap-4">
                             <div class="bg-slate-50 p-2 rounded-lg"><p class="text-[10px] font-bold text-slate-400 uppercase mb-0.5">Program</p><p class="text-sm font-bold text-slate-700 capitalize">${s.program}</p></div>
                             <div class="bg-slate-50 p-2 rounded-lg"><p class="text-[10px] font-bold text-slate-400 uppercase mb-0.5">Guru</p><p class="text-sm font-bold text-slate-700">${s.guru}</p></div>
-                            <div class="col-span-2 bg-amber-50 border border-amber-100 p-2 rounded-lg"><p class="text-[10px] font-bold text-amber-500 uppercase mb-0.5">Jadwal</p><p class="text-sm font-bold text-amber-700 leading-relaxed">${s.jadwal || '-'}</p></div>
+                            <div class="col-span-2 bg-amber-50 border border-amber-100 p-2 rounded-lg"><p class="text-[10px] font-bold text-amber-500 uppercase mb-0.5">Jadwal</p><p class="text-sm font-bold text-amber-700 leading-relaxed">${formatJadwalDisplay(s.jadwal)}</p></div>
                             <div admin-only class="col-span-2 mt-1 flex gap-2">
                                 <button onclick="editSiswa(${s.id})" class="flex-1 flex justify-center items-center gap-2 text-slate-700 font-bold text-sm bg-slate-100 hover:bg-slate-200 py-2.5 rounded-xl transition-colors">
                                     ✏️ Edit
@@ -711,6 +958,84 @@
         });
 
         loadData();
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const jadwalContainer = document.getElementById('editJadwalCustomContainer');
+            if (jadwalContainer) {
+                jadwalContainer.innerHTML = `
+                    <div class="mt-4 space-y-3">
+                        <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest">Jadwal Per Hari</label>
+                        ${["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"].map(hari => `
+                            <div class="jadwal-row flex items-center gap-2 sm:gap-3">
+                                <input type="checkbox" value="${hari}" class="edit-jadwal-check w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0 rounded border-slate-300 text-violet-600 focus:ring-violet-500">
+                                <span class="w-14 sm:w-20 text-xs sm:text-sm font-medium text-slate-700 flex-shrink-0">${hari}</span>
+                                <input type="text" placeholder="15:30" maxlength="5" inputmode="numeric" class="jam-masuk edit-jadwal-custom-jam flex-1 min-w-0 px-1 sm:px-3 py-2 border border-slate-200 rounded-lg text-center outline-none font-mono text-xs sm:text-sm">
+                                <span class="text-slate-400 flex-shrink-0">-</span>
+                                <input type="text" placeholder="17:00" maxlength="5" inputmode="numeric" class="jam-keluar edit-jadwal-custom-jam flex-1 min-w-0 px-1 sm:px-3 py-2 border border-slate-200 rounded-lg text-center outline-none font-mono text-xs sm:text-sm">
+                            </div>
+                        `).join("")}
+                    </div>
+                `;
+
+                document.querySelectorAll('.edit-jadwal-custom-jam').forEach(autoFormatJam);
+            }
+
+            const progEl = document.getElementById('editProgram');
+            if (progEl) {
+                progEl.addEventListener('change', (e) => {
+                    populateKelasGuru(e.target.value, document.getElementById('editKelas'), document.getElementById('editGuru'));
+                });
+            }
+
+            const jamSelect = document.getElementById('editJam');
+            const customContainer = document.getElementById('editCustomJamContainer');
+            const hariBelajarContainer = document.getElementById('editHariBelajarContainer');
+            
+            if (jamSelect) {
+                jamSelect.addEventListener('change', () => {
+                    if (jamSelect.value === 'CUSTOM') {
+                        customContainer.classList.remove('hidden');
+                        jadwalContainer.classList.add('hidden');
+                        hariBelajarContainer.classList.remove('hidden');
+                    } else if (jamSelect.value === 'CUSTOM_SCHEDULE') {
+                        customContainer.classList.add('hidden');
+                        jadwalContainer.classList.remove('hidden');
+                        hariBelajarContainer.classList.add('hidden');
+                    } else {
+                        customContainer.classList.add('hidden');
+                        jadwalContainer.classList.add('hidden');
+                        hariBelajarContainer.classList.remove('hidden');
+                    }
+                });
+            }
+            
+            const editJamMasuk = document.getElementById('editJamMasuk');
+            const editJamKeluar = document.getElementById('editJamKeluar');
+            if (editJamMasuk) autoFormatJam(editJamMasuk);
+            if (editJamKeluar) autoFormatJam(editJamKeluar);
+            
+            const checkboxes = document.querySelectorAll('input[name="edit_hari"]');
+            checkboxes.forEach(cb => {
+                cb.addEventListener('change', () => {
+                    const checked = document.querySelectorAll('input[name="edit_hari"]:checked');
+                    if (checked.length > 3) {
+                        cb.checked = false;
+                        alert('Maksimal pilih 3 hari!');
+                    }
+                });
+            });
+        });
+        
+        function autoFormatJam(input) {
+            input.addEventListener('input', () => {
+                let value = input.value.replace(/\D/g, '').slice(0, 4);
+                if (value.length >= 1 && parseInt(value[0]) > 2) value = '0' + value[0];
+                if (value.length >= 2 && parseInt(value.slice(0, 2)) > 23) value = '23' + value.slice(2);
+                if (value.length >= 3 && parseInt(value[2]) > 5) value = value.slice(0, 2) + '0' + value.slice(2);
+                if (value.length >= 3) value = value.slice(0, 2) + ':' + value.slice(2);
+                input.value = value;
+            });
+        }
 
         // ================= FITUR TOMBOL INSTALL APLIKASI (PWA) =================
         let deferredPrompt = null;
