@@ -212,9 +212,9 @@
                 <!-- Data will be injected here -->
             </div>
 
-            <div class="p-6 border-t border-slate-100 bg-white flex justify-end gap-3 sticky bottom-0">
-                <button onclick="closeModalDetail()" class="px-6 py-2.5 rounded-xl bg-slate-100 text-slate-700 font-bold hover:bg-slate-200 transition-colors">Tutup</button>
-                <div id="actionButtons"></div>
+            <div class="p-4 sm:p-6 border-t border-slate-100 bg-white flex flex-col-reverse sm:flex-row justify-end gap-3 sticky bottom-0 w-full">
+                <button onclick="closeModalDetail()" class="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-slate-100 text-slate-700 font-bold hover:bg-slate-200 transition-colors">Tutup</button>
+                <div id="actionButtons" class="flex flex-col sm:flex-row gap-3 w-full sm:w-auto"></div>
             </div>
         </div>
     </div>
@@ -452,16 +452,16 @@
             
             if(d.status === 'Belum Lunas') {
                 actionHtml += `
-                    <button onclick="updateStatus(${d.id}, 'Lunas')" class="px-6 py-2.5 rounded-xl bg-green-600 text-white font-bold hover:bg-green-700 shadow-lg shadow-green-200 transition-colors">Tandai Lunas</button>
+                    <button onclick="updateStatus(${d.id}, 'Lunas')" class="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-green-600 text-white font-bold hover:bg-green-700 shadow-lg shadow-green-200 transition-colors">Tandai Lunas</button>
                 `;
             } else if(d.status === 'Lunas') {
                 actionHtml += `
-                    <button onclick="updateStatus(${d.id}, 'Belum Lunas')" class="px-6 py-2.5 rounded-xl bg-yellow-100 text-yellow-700 font-bold hover:bg-yellow-200 transition-colors">Batalkan Lunas</button>
+                    <button onclick="updateStatus(${d.id}, 'Belum Lunas')" class="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-yellow-100 text-yellow-700 font-bold hover:bg-yellow-200 transition-colors">Batalkan Lunas</button>
                 `;
             }
             
             actionHtml += `
-                <button onclick="deletePendaftar(${d.id})" class="px-6 py-2.5 rounded-xl bg-red-50 text-red-600 font-bold hover:bg-red-100 transition-colors">Hapus Pendaftar</button>
+                <button onclick="deletePendaftar(${d.id})" class="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-red-50 text-red-600 font-bold hover:bg-red-100 transition-colors">Hapus Pendaftar</button>
             `;
             
             actions.innerHTML = actionHtml;
