@@ -225,7 +225,7 @@
                 const res = await fetchWithAuth(`${API_URL}/api/pendaftaran-online`);
                 allData = await res.json();
                 renderTable();
-                updateBadge(allData.filter(d => d.status === 'Baru').length);
+                updateBadge(allData.filter(d => d.status === 'Belum Lunas').length);
             } catch (err) {
                 document.getElementById('tableBody').innerHTML = `<tr><td colspan="6" class="text-center py-8 text-red-500 font-medium">Gagal memuat data</td></tr>`;
             }
@@ -256,8 +256,8 @@
 
             tbody.innerHTML = allData.map(d => {
                 let statusBadge = '';
-                if(d.status === 'Baru') statusBadge = `<span class="px-2.5 py-1 bg-yellow-100 text-yellow-700 rounded-lg text-xs font-bold border border-yellow-200">Baru</span>`;
-                else if(d.status === 'Diterima') statusBadge = `<span class="px-2.5 py-1 bg-green-100 text-green-700 rounded-lg text-xs font-bold border border-green-200">Diterima</span>`;
+                if(d.status === 'Belum Lunas') statusBadge = `<span class="px-2.5 py-1 bg-yellow-100 text-yellow-700 rounded-lg text-xs font-bold border border-yellow-200">Belum Lunas</span>`;
+                else if(d.status === 'Lunas') statusBadge = `<span class="px-2.5 py-1 bg-green-100 text-green-700 rounded-lg text-xs font-bold border border-green-200">Lunas</span>`;
                 else statusBadge = `<span class="px-2.5 py-1 bg-slate-100 text-slate-700 rounded-lg text-xs font-bold border border-slate-200">${d.status}</span>`;
 
                 return `
@@ -349,14 +349,23 @@
             document.getElementById('detailContent').innerHTML = html;
             
             const actions = document.getElementById('actionButtons');
-            if(d.status === 'Baru') {
-                actions.innerHTML = `
-                    <button onclick="updateStatus(${d.id}, 'Ditolak')" class="px-6 py-2.5 rounded-xl bg-red-50 text-red-600 font-bold hover:bg-red-100 transition-colors">Tolak</button>
-                    <button onclick="updateStatus(${d.id}, 'Diterima')" class="px-6 py-2.5 rounded-xl bg-green-600 text-white font-bold hover:bg-green-700 shadow-lg shadow-green-200 transition-colors">Terima Pendaftaran</button>
+            let actionHtml = '';
+            
+            if(d.status === 'Belum Lunas') {
+                actionHtml += `
+                    <button onclick="updateStatus(${d.id}, 'Lunas')" class="px-6 py-2.5 rounded-xl bg-green-600 text-white font-bold hover:bg-green-700 shadow-lg shadow-green-200 transition-colors">Tandai Lunas</button>
                 `;
-            } else {
-                actions.innerHTML = ``;
+            } else if(d.status === 'Lunas') {
+                actionHtml += `
+                    <button onclick="updateStatus(${d.id}, 'Belum Lunas')" class="px-6 py-2.5 rounded-xl bg-yellow-100 text-yellow-700 font-bold hover:bg-yellow-200 transition-colors">Batalkan Lunas</button>
+                `;
             }
+            
+            actionHtml += `
+                <button onclick="deletePendaftar(${d.id})" class="px-6 py-2.5 rounded-xl bg-red-50 text-red-600 font-bold hover:bg-red-100 transition-colors">Hapus Pendaftar</button>
+            `;
+            
+            actions.innerHTML = actionHtml;
 
             const modal = document.getElementById('modalDetail');
             const content = document.getElementById('modalDetailContent');
@@ -386,12 +395,32 @@
                 if(res.ok) {
                     closeModalDetail();
                     fetchData();
-                    if(status === 'Diterima') {
-                        alert("Pendaftaran berhasil diterima! Silakan daftarkan anak ini secara resmi ke kelas melalui menu Pendaftaran Baru.");
+                    if(status === 'Lunas') {
+                        alert("Pendaftaran berhasil ditandai sebagai Lunas! Silakan daftarkan anak ini secara resmi ke kelas melalui menu Pendaftaran Baru.");
                     }
                 }
             } catch(e) {
                 alert("Gagal mengupdate status.");
+            }
+        }
+
+        async function deletePendaftar(id) {
+            if(!confirm("Apakah Anda yakin ingin menghapus data pendaftar ini? Tindakan ini tidak dapat dibatalkan.")) return;
+            
+            try {
+                const res = await fetchWithAuth(`${API_URL}/api/pendaftaran-online/delete`, {
+                    method: 'POST',
+                    body: JSON.stringify({ id })
+                });
+                if(res.ok) {
+                    closeModalDetail();
+                    fetchData();
+                    alert("Data pendaftar berhasil dihapus.");
+                } else {
+                    alert("Gagal menghapus data.");
+                }
+            } catch(e) {
+                alert("Terjadi kesalahan saat menghapus data.");
             }
         }
     </script>
