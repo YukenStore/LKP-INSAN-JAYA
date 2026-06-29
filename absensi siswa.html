@@ -218,12 +218,12 @@
                 <!-- Tabel Absensi Vertikal -->
                 <div id="tabelAbsensiContainer" class="hidden bg-white rounded-2xl border border-slate-200/80 shadow-xl shadow-slate-200/40 overflow-hidden relative mb-8">
                     <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse min-w-[500px]">
+                        <table class="w-full text-left border-collapse">
                             <thead class="bg-slate-50 border-b border-slate-200">
                                 <tr>
-                                    <th class="w-24 p-3 md:p-4 text-xs font-bold text-violet-800 uppercase bg-slate-100 border-r border-slate-200 text-center">P-Ke</th>
-                                    <th class="p-3 md:p-4 text-xs font-bold text-violet-800 uppercase bg-slate-100 border-r border-slate-200 text-center">Tanggal Pertemuan</th>
-                                    <th class="p-3 md:p-4 text-xs font-bold text-violet-800 uppercase bg-slate-100 text-center">Status Kehadiran</th>
+                                    <th class="w-12 md:w-24 p-2 md:p-4 text-[10px] md:text-xs font-bold text-violet-800 uppercase bg-slate-100 border-r border-slate-200 text-center">P-Ke</th>
+                                    <th class="p-2 md:p-4 text-[10px] md:text-xs font-bold text-violet-800 uppercase bg-slate-100 border-r border-slate-200 text-center">Tanggal</th>
+                                    <th class="p-2 md:p-4 text-[10px] md:text-xs font-bold text-violet-800 uppercase bg-slate-100 text-center">Kehadiran</th>
                                 </tr>
                             </thead>
                             <tbody id="bodyAbsensiVertikal" class="text-sm divide-y divide-slate-100 bg-white">
@@ -603,22 +603,22 @@
                 const tr = document.createElement('tr');
                 tr.className = `${bgRow} hover:bg-violet-100/50 transition-colors`;
                 tr.innerHTML = `
-                    <td class="p-3 md:p-4 text-center font-bold text-violet-700 text-sm border-r border-slate-100">
-                        <span class="bg-violet-100 px-2 py-1 rounded-lg">P${i}</span>
+                    <td class="p-1.5 md:p-4 text-center font-bold text-violet-700 text-[11px] md:text-sm border-r border-slate-100">
+                        <span class="bg-violet-100 px-1.5 py-1 md:px-2 md:py-1 rounded-lg">P${i}</span>
                     </td>
-                    <td class="p-3 md:p-4 border-r border-slate-100">
+                    <td class="p-1.5 md:p-4 border-r border-slate-100">
                         <div class="flex justify-center">
                             <input type="date" id="tanggal_p${i}" value="${tglValue}" ${disabledAttr} 
                                 onchange="checkTanggalEmpty(this)"
                                 onfocus="this.style.color='#334155'"
                                 onblur="checkTanggalEmpty(this)"
-                                class="border border-slate-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 ${selectCursor} transition-all w-full max-w-[150px]">
+                                class="border border-slate-200 rounded-xl px-1 md:px-3 py-1.5 md:py-2 text-[11px] md:text-sm outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 ${selectCursor} transition-all w-full min-w-[90px] max-w-[140px]">
                         </div>
                     </td>
-                    <td class="p-3 md:p-4">
+                    <td class="p-1.5 md:p-4">
                         <div class="flex justify-center">
                             <select id="status_p${i}" ${disabledAttr} onchange="applyStatusColor(this)" 
-                                class="border border-slate-200 rounded-xl px-3 py-2 text-sm font-bold uppercase outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 bg-white ${selectCursor} transition-all w-full max-w-[150px] text-center" style="background-color: #f8fafc; color: #94a3b8; border-color:#e2e8f0;">
+                                class="border border-slate-200 rounded-xl px-1 md:px-3 py-1.5 md:py-2 text-[11px] md:text-sm font-bold uppercase outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 bg-white ${selectCursor} transition-all w-full min-w-[70px] max-w-[130px] text-center" style="background-color: #f8fafc; color: #94a3b8; border-color:#e2e8f0;">
                                 <option value="" class="bg-white text-gray-500">-</option>
                                 <option value="Hadir" class="bg-white text-green-700">Hadir</option>
                                 <option value="Izin" class="bg-white text-amber-700">Izin</option>
