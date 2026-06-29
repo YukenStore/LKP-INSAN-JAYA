@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rekap Pendaftaran Online</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#7c3aed">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        if (!localStorage.getItem('lkp_user_email')) {
+            window.location.href = 'index.html';
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Bricolage+Grotesque:wght@700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .font-bricolage { font-family: 'Bricolage Grotesque', sans-serif; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased overflow-hidden flex h-[100dvh] relative">
+    <div id="sidebarOverlay" class="fixed inset-0 bg-slate-900/50 z-40 hidden transition-opacity opacity-0 md:hidden"></div>
+
+    <aside id="sidebar" class="fixed inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col w-64 h-full bg-white border-r border-slate-200 z-50 flex-shrink-0 shadow-2xl md:shadow-none">
+        <div class="h-16 flex items-center justify-between px-6 border-b border-slate-100">
+            <div class="flex items-center gap-1">
+                <div class="w-12 h-12 rounded-xl bg-white flex items-center justify-center overflow-hidden">
+                    <img src="Logo Insan Jaya.png" alt="Logo Insan Jaya" class="w-full h-full object-contain" onerror="this.src='https://via.placeholder.com/150'" />
+                </div>
+                <div class="flex flex-col justify-center">
+                    <span class="font-bricolage font-bold text-sm text-slate-900 leading-tight">LKP</span>
+                    <span class="font-bricolage font-bold text-sm text-violet-600 leading-tight">INSAN JAYA</span>
+                </div>
+            </div>
+            <button id="closeSidebarBtn" class="md:hidden p-2 -mr-2 text-slate-400 hover:text-red-500 rounded-lg bg-slate-50 transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+            </button>
+        </div>
+
+        <nav class="flex-1 overflow-y-auto custom-scrollbar py-4 px-3 space-y-1">
+            <p class="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2 mt-1">Menu Utama</p>
+            
+            <a href="rekap-online.html" id="navRekapOnline" class="flex justify-between items-center px-3 py-2.5 bg-violet-50 text-violet-700 rounded-xl font-semibold text-sm transition-colors">
+                <div class="flex items-center gap-3">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                    Pendaftaran Online
+                </div>
+                <span id="badgeNotifMenu" class="hidden bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">0</span>
+            </a>
+
+            <a href="pendaftaran.html" id="navPendaftaran" class="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-medium text-sm transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+                Pendaftaran Baru
+            </a>
+            <a href="absensi siswa.html" class="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-medium text-sm transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" /></svg>
+                Absensi Siswa
+            </a>
+            <a href="dashboard.html" class="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-medium text-sm transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
+                Data Siswa Aktif
+            </a>
+
+            <p class="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2 mt-6">Akademik</p>
+            <a href="laporan.html" class="flex items-center gap-3 px-3 py-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-medium text-sm transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                Laporan Hasil Belajar
+            </a>
+        </nav>
+
+        <div class="p-4 border-t border-slate-100 mt-auto bg-white">
+            <div class="flex items-center gap-3 mb-4 px-2">
+                <div class="w-10 h-10 rounded-full bg-violet-100 overflow-hidden flex-shrink-0 border border-violet-200">
+                    <img id="userProfilePic" src="https://ui-avatars.com/api/?name=User" alt="Profile" class="w-full h-full object-cover">
+                </div>
+                <div class="overflow-hidden">
+                    <p id="userNameDisplay" class="text-sm font-bold text-slate-800 truncate">Memuat...</p>
+                    <p id="userEmailDisplay" class="text-[10px] font-medium text-slate-500 truncate">Memuat email...</p>
+                </div>
+            </div>
+            <a href="index.html" id="btnLogout" class="flex items-center justify-center gap-2 w-full px-4 py-2.5 text-red-600 bg-red-50 hover:bg-red-100 rounded-xl font-bold text-sm transition-colors border border-red-100">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+                Keluar
+            </a>
+        </div>
+    </aside>
+
+    <main class="flex-1 flex flex-col h-full overflow-hidden relative">
+        <header class="md:hidden h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 z-10 flex-shrink-0">
+            <div class="flex items-center gap-2">
+                <div class="w-9 h-9 rounded-xl bg-white flex items-center justify-center overflow-hidden border">
+                    <img src="Logo Insan Jaya.png" class="w-full h-full object-contain">
+                </div>
+                <div class="flex items-center gap-1">
+                    <span class="font-bricolage font-bold text-base text-slate-900">LKP</span>
+                    <span class="font-bricolage font-bold text-base text-violet-600">INSAN JAYA</span>
+                </div>
+            </div>
+            <button id="mobileMenuBtn" class="p-2 text-slate-600 hover:text-violet-600 hover:bg-slate-50 rounded-lg transition-colors">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
+            </button>
+        </header>
+
+        <div class="flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar">
+            <div class="max-w-7xl mx-auto">
+                <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+                    <div>
+                        <h1 class="font-bricolage text-2xl md:text-3xl font-bold text-slate-900 tracking-tight">Pendaftaran Online</h1>
+                        <p class="text-sm text-slate-500 mt-1">Daftar calon siswa yang mengisi formulir secara online.</p>
+                    </div>
+                    <button onclick="fetchData()" class="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 rounded-xl font-medium text-sm transition-colors shadow-sm">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+                        Muat Ulang
+                    </button>
+                </div>
+
+                <div class="bg-white border border-slate-200 rounded-3xl shadow-sm overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse whitespace-nowrap">
+                            <thead>
+                                <tr class="bg-slate-50/80 border-b border-slate-200 text-slate-500 text-[11px] uppercase tracking-wider font-bold">
+                                    <th class="px-6 py-4">Waktu Daftar</th>
+                                    <th class="px-6 py-4">Nama Siswa</th>
+                                    <th class="px-6 py-4">Program</th>
+                                    <th class="px-6 py-4">No. HP</th>
+                                    <th class="px-6 py-4 text-center">Status</th>
+                                    <th class="px-6 py-4 text-right">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableBody" class="divide-y divide-slate-100 text-sm">
+                                <tr><td colspan="6" class="text-center py-8 text-slate-400">Memuat data...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal Detail Pendaftar -->
+    <div id="modalDetail" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-[60] hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col transform scale-95 opacity-0 transition-all duration-300" id="modalDetailContent">
+            <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-white sticky top-0 z-10">
+                <h3 class="font-bricolage font-bold text-xl text-slate-800">Detail Pendaftaran</h3>
+                <button onclick="closeModalDetail()" class="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+            </div>
+            
+            <div class="p-6 overflow-y-auto custom-scrollbar flex-1 bg-slate-50/50" id="detailContent">
+                <!-- Data will be injected here -->
+            </div>
+
+            <div class="p-6 border-t border-slate-100 bg-white flex justify-end gap-3 sticky bottom-0">
+                <button onclick="closeModalDetail()" class="px-6 py-2.5 rounded-xl bg-slate-100 text-slate-700 font-bold hover:bg-slate-200 transition-colors">Tutup</button>
+                <div id="actionButtons"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const adminEmails = ['lpkinsanjaya@gmail.com', 'yumenoboken@gmail.com', 'elsasidamawarniut@gmail.com', 'zilisaje@gmail.com'];
+        const API_URL = 'https://absensi-api.yumenoboken.workers.dev';
+        let allData = [];
+        let currentDetailId = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const userName = localStorage.getItem('lkp_user_name') || 'Admin LKP';
+            const userEmail = localStorage.getItem('lkp_user_email');
+            const userPic = localStorage.getItem('lkp_user_picture');
+
+            if (!userEmail || !adminEmails.includes(userEmail)) {
+                alert("Akses Ditolak. Halaman ini hanya untuk Admin.");
+                window.location.href = 'dashboard.html';
+                return;
+            }
+
+            document.getElementById('userNameDisplay').textContent = userName;
+            document.getElementById('userEmailDisplay').textContent = userEmail;
+            if (userPic) {
+                document.getElementById('userProfilePic').src = userPic;
+            } else {
+                document.getElementById('userProfilePic').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}`;
+            }
+
+            // Mobile sidebar logic
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            function toggleSidebar() {
+                sidebar.classList.toggle('-translate-x-full');
+                overlay.classList.toggle('hidden');
+                if(!overlay.classList.contains('hidden')) {
+                    setTimeout(() => overlay.classList.remove('opacity-0'), 10);
+                } else {
+                    overlay.classList.add('opacity-0');
+                }
+            }
+            document.getElementById('mobileMenuBtn').addEventListener('click', toggleSidebar);
+            document.getElementById('closeSidebarBtn').addEventListener('click', toggleSidebar);
+            overlay.addEventListener('click', toggleSidebar);
+
+            // Logout
+            document.getElementById('btnLogout').addEventListener('click', (e) => {
+                if (!confirm('Apakah Anda yakin ingin keluar?')) e.preventDefault();
+                else localStorage.clear();
+            });
+
+            fetchData();
+        });
+
+        async function fetchWithAuth(url, options = {}) {
+            const userEmail = localStorage.getItem('lkp_user_email');
+            const headers = { 'X-Admin-Email': userEmail || '', 'Content-Type': 'application/json', ...(options.headers || {}) };
+            const res = await fetch(url, { ...options, headers });
+            if (res.status === 403) throw new Error("Bukan Admin");
+            if (res.status === 401) { localStorage.clear(); window.location.href = 'index.html'; }
+            return res;
+        }
+
+        async function fetchData() {
+            try {
+                const res = await fetchWithAuth(`${API_URL}/api/pendaftaran-online`);
+                allData = await res.json();
+                renderTable();
+                updateBadge(allData.filter(d => d.status === 'Baru').length);
+            } catch (err) {
+                document.getElementById('tableBody').innerHTML = `<tr><td colspan="6" class="text-center py-8 text-red-500 font-medium">Gagal memuat data</td></tr>`;
+            }
+        }
+
+        function updateBadge(count) {
+            const badge = document.getElementById('badgeNotifMenu');
+            if(count > 0) {
+                badge.textContent = count;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+        }
+
+        function formatDate(dateStr) {
+            if(!dateStr) return "-";
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('tableBody');
+            if (allData.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="text-center py-10"><div class="flex flex-col items-center"><svg class="w-12 h-12 text-slate-200 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path></svg><span class="text-slate-500 font-medium">Belum ada data pendaftaran</span></div></td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = allData.map(d => {
+                let statusBadge = '';
+                if(d.status === 'Baru') statusBadge = `<span class="px-2.5 py-1 bg-yellow-100 text-yellow-700 rounded-lg text-xs font-bold border border-yellow-200">Baru</span>`;
+                else if(d.status === 'Diterima') statusBadge = `<span class="px-2.5 py-1 bg-green-100 text-green-700 rounded-lg text-xs font-bold border border-green-200">Diterima</span>`;
+                else statusBadge = `<span class="px-2.5 py-1 bg-slate-100 text-slate-700 rounded-lg text-xs font-bold border border-slate-200">${d.status}</span>`;
+
+                return `
+                <tr class="hover:bg-slate-50/50 transition-colors group">
+                    <td class="px-6 py-4 text-slate-500">${formatDate(d.waktu_daftar)}</td>
+                    <td class="px-6 py-4 font-bold text-slate-800">${d.nama_lengkap}</td>
+                    <td class="px-6 py-4 text-slate-600">${d.program}</td>
+                    <td class="px-6 py-4 text-slate-600">${d.no_handphone || '-'}</td>
+                    <td class="px-6 py-4 text-center">${statusBadge}</td>
+                    <td class="px-6 py-4 text-right">
+                        <button onclick="openDetail(${d.id})" class="px-4 py-2 bg-white text-violet-600 border border-violet-200 hover:bg-violet-50 rounded-xl font-bold text-xs transition-colors shadow-sm">Lihat Detail</button>
+                    </td>
+                </tr>
+                `;
+            }).join('');
+        }
+
+        function renderRow(label, value) {
+            return `
+            <div class="border-b border-slate-100 py-3 flex flex-col md:flex-row md:items-start gap-1 md:gap-4">
+                <span class="text-xs font-bold text-slate-400 uppercase tracking-wider md:w-1/3 flex-shrink-0">${label}</span>
+                <span class="text-sm font-medium text-slate-800 md:w-2/3">${value || '-'}</span>
+            </div>`;
+        }
+
+        function openDetail(id) {
+            const d = allData.find(x => x.id === id);
+            if(!d) return;
+            currentDetailId = id;
+
+            const html = `
+                <div class="space-y-6">
+                    <div>
+                        <h4 class="font-bricolage font-bold text-violet-700 mb-2 border-b-2 border-violet-100 inline-block">Data Pribadi</h4>
+                        <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm mt-2">
+                            ${renderRow('Nama Lengkap', d.nama_lengkap)}
+                            ${renderRow('Jenis Kelamin', d.jenis_kelamin)}
+                            ${renderRow('Agama', d.agama)}
+                            ${renderRow('Tempat, Tgl Lahir', `${d.tempat_lahir || ''}, ${d.tanggal_lahir || ''}`)}
+                            ${renderRow('NISN', d.nisn)}
+                            ${renderRow('NIK', d.nik)}
+                            ${renderRow('Alamat', d.alamat)}
+                            ${renderRow('Penerima KPS', d.penerima_kps === 'YA' ? `Ya (No: ${d.no_kps})` : 'Tidak')}
+                        </div>
+                    </div>
+
+                    <div>
+                        <h4 class="font-bricolage font-bold text-blue-700 mb-2 border-b-2 border-blue-100 inline-block">Data Orang Tua / Wali</h4>
+                        <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm mt-2 grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <p class="text-sm font-bold text-slate-600 mb-2">Data Ibu</p>
+                                ${renderRow('Nama', d.nama_ibu)}
+                                ${renderRow('Tahun Lahir', d.tahun_lahir_ibu)}
+                                ${renderRow('Pekerjaan', d.pekerjaan_ibu)}
+                                ${renderRow('Penghasilan', d.penghasilan_ibu)}
+                            </div>
+                            <div>
+                                <p class="text-sm font-bold text-slate-600 mb-2">Data Ayah</p>
+                                ${renderRow('Nama', d.nama_ayah)}
+                                ${renderRow('Tahun Lahir', d.tahun_lahir_ayah)}
+                                ${renderRow('Pekerjaan', d.pekerjaan_ayah)}
+                                ${renderRow('Penghasilan', d.penghasilan_ayah)}
+                            </div>
+                            ${d.nama_wali ? `
+                            <div class="md:col-span-2 pt-4 border-t border-slate-100">
+                                <p class="text-sm font-bold text-slate-600 mb-2">Data Wali</p>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6">
+                                    ${renderRow('Nama', d.nama_wali)}
+                                    ${renderRow('Tahun Lahir', d.tahun_lahir_wali)}
+                                    ${renderRow('Pekerjaan', d.pekerjaan_wali)}
+                                    ${renderRow('Penghasilan', d.penghasilan_wali)}
+                                </div>
+                            </div>
+                            ` : ''}
+                        </div>
+                    </div>
+
+                    <div>
+                        <h4 class="font-bricolage font-bold text-green-700 mb-2 border-b-2 border-green-100 inline-block">Program & Kontak</h4>
+                        <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm mt-2">
+                            ${renderRow('Program', d.program)}
+                            ${renderRow('Waktu Belajar', d.waktu_belajar)}
+                            ${renderRow('No. HP / WA', d.no_handphone)}
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('detailContent').innerHTML = html;
+            
+            const actions = document.getElementById('actionButtons');
+            if(d.status === 'Baru') {
+                actions.innerHTML = `
+                    <button onclick="updateStatus(${d.id}, 'Ditolak')" class="px-6 py-2.5 rounded-xl bg-red-50 text-red-600 font-bold hover:bg-red-100 transition-colors">Tolak</button>
+                    <button onclick="updateStatus(${d.id}, 'Diterima')" class="px-6 py-2.5 rounded-xl bg-green-600 text-white font-bold hover:bg-green-700 shadow-lg shadow-green-200 transition-colors">Terima Pendaftaran</button>
+                `;
+            } else {
+                actions.innerHTML = ``;
+            }
+
+            const modal = document.getElementById('modalDetail');
+            const content = document.getElementById('modalDetailContent');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                content.classList.remove('scale-95', 'opacity-0');
+                content.classList.add('scale-100', 'opacity-100');
+            }, 10);
+        }
+
+        function closeModalDetail() {
+            const modal = document.getElementById('modalDetail');
+            const content = document.getElementById('modalDetailContent');
+            content.classList.remove('scale-100', 'opacity-100');
+            content.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        }
+
+        async function updateStatus(id, status) {
+            if(!confirm(`Apakah Anda yakin ingin mengubah status pendaftaran ini menjadi ${status}?`)) return;
+            
+            try {
+                const res = await fetchWithAuth(`${API_URL}/api/pendaftaran-online/status`, {
+                    method: 'POST',
+                    body: JSON.stringify({ id, status })
+                });
+                if(res.ok) {
+                    closeModalDetail();
+                    fetchData();
+                    if(status === 'Diterima') {
+                        alert("Pendaftaran berhasil diterima! Silakan daftarkan anak ini secara resmi ke kelas melalui menu Pendaftaran Baru.");
+                    }
+                }
+            } catch(e) {
+                alert("Gagal mengupdate status.");
+            }
+        }
+    </script>
+</body>
+</html>
