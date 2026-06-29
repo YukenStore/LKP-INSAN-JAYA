@@ -29,104 +29,54 @@
         }
     </script>
 
-    <link
-        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Bricolage+Grotesque:wght@700&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Bricolage+Grotesque:wght@700&display=swap" rel="stylesheet">
 
     <style>
         /* Animasi Panah Kanan-Kiri untuk Hint Mobile */
         @keyframes bounce-x {
-
-            0%,
-            100% {
-                transform: translateX(0);
-            }
-
-            50% {
-                transform: translateX(4px);
-            }
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(4px); }
         }
 
-        .animate-bounce-x {
-            animation: bounce-x 1.5s infinite ease-in-out;
-        }
-
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-        }
-
-        .font-bricolage {
-            font-family: 'Bricolage Grotesque', sans-serif;
-        }
+        .animate-bounce-x { animation: bounce-x 1.5s infinite ease-in-out; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .font-bricolage { font-family: 'Bricolage Grotesque', sans-serif; }
 
         /* Custom scrollbar tipis */
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 3px;
-        }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
 
         /* Custom Animasi Background Blobs */
         @keyframes blob {
-            0% {
-                transform: translate(0px, 0px) scale(1);
-            }
-
-            33% {
-                transform: translate(30px, -50px) scale(1.1);
-            }
-
-            66% {
-                transform: translate(-20px, 20px) scale(0.9);
-            }
-
-            100% {
-                transform: translate(0px, 0px) scale(1);
-            }
+            0% { transform: translate(0px, 0px) scale(1); }
+            33% { transform: translate(30px, -50px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.9); }
+            100% { transform: translate(0px, 0px) scale(1); }
         }
 
-        .animate-blob {
-            animation: blob 7s infinite;
-        }
-
-        .animation-delay-2000 {
-            animation-delay: 2s;
-        }
-
-        .animation-delay-4000 {
-            animation-delay: 4s;
-        }
+        .animate-blob { animation: blob 7s infinite; }
+        .animation-delay-2000 { animation-delay: 2s; }
+        .animation-delay-4000 { animation-delay: 4s; }
     </style>
 </head>
 
 <body class="bg-slate-50 text-slate-800 antialiased overflow-hidden flex h-[100dvh] relative">
 
-    <div id="sidebarOverlay" class="fixed inset-0 bg-slate-900/50 z-40 hidden transition-opacity opacity-0 md:hidden">
-    </div>
+    <div id="sidebarOverlay" class="fixed inset-0 bg-slate-900/50 z-40 hidden transition-opacity opacity-0 md:hidden"></div>
 
-    <aside id="sidebar"
-        class="fixed inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col w-64 h-full bg-white border-r border-slate-200 z-50 flex-shrink-0 shadow-2xl md:shadow-none">
+    <aside id="sidebar" class="fixed inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col w-64 h-full bg-white border-r border-slate-200 z-50 flex-shrink-0 shadow-2xl md:shadow-none">
         <div class="h-16 flex items-center justify-between px-6 border-b border-slate-100">
             <div class="flex items-center gap-1">
                 <div class="w-12 h-12 rounded-xl bg-white flex items-center justify-center overflow-hidden">
-                    <img src="Logo Insan Jaya.png" alt="Logo Insan Jaya" class="w-full h-full object-contain"
-                        onerror="this.src='https://via.placeholder.com/150'" />
+                    <img src="Logo Insan Jaya.png" alt="Logo Insan Jaya" class="w-full h-full object-contain" onerror="this.src='https://via.placeholder.com/150'" />
                 </div>
                 <div class="flex flex-col justify-center">
                     <span class="font-bricolage font-bold text-sm text-slate-900 leading-tight">LKP</span>
                     <span class="font-bricolage font-bold text-sm text-violet-600 leading-tight">INSAN JAYA</span>
                 </div>
             </div>
-            <button id="closeSidebarBtn"
-                class="md:hidden p-2 -mr-2 text-slate-400 hover:text-red-500 rounded-lg bg-slate-50 transition-colors">
+            <button id="closeSidebarBtn" class="md:hidden p-2 -mr-2 text-slate-400 hover:text-red-500 rounded-lg bg-slate-50 transition-colors">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                 </svg>
@@ -144,112 +94,66 @@
                 <span id="badgeNotifMenu" class="hidden bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">0</span>
             </a>
             
-            <a href="pendaftaran.html" id="navPendaftaran"
-                class="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-medium text-sm transition-colors">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-                </svg>
+            <a href="pendaftaran.html" id="navPendaftaran" class="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-medium text-sm transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
                 Pendaftaran Baru
             </a>
-            <a href="absensi siswa.html"
-                class="flex items-center gap-3 px-3 py-2.5 bg-violet-50 text-violet-700 rounded-xl font-semibold text-sm transition-colors">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
-                </svg>
+            <a href="absensi siswa.html" class="flex items-center gap-3 px-3 py-2.5 bg-violet-50 text-violet-700 rounded-xl font-semibold text-sm transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" /></svg>
                 Absensi Siswa
             </a>
-            <a href="dashboard.html"
-                class="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-medium text-sm transition-colors">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                </svg>
+            <a href="dashboard.html" class="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-medium text-sm transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
                 Data Siswa Aktif
             </a>
 
             <p class="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2 mt-6">Akademik</p>
-            <a href="laporan.html"
-                class="flex items-center gap-3 px-3 py-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-medium text-sm transition-colors">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
+            <a href="laporan.html" class="flex items-center gap-3 px-3 py-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-medium text-sm transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
                 Laporan Hasil Belajar
             </a>
-            <a href="#"
-                class="flex items-center gap-3 px-3 py-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-medium text-sm transition-colors">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                </svg>
+            <a href="#" class="flex items-center gap-3 px-3 py-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-medium text-sm transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
                 Latihan Soal
             </a>
         </nav>
 
-        <button onclick="refreshAplikasi()"
-            class="flex items-center justify-center gap-2 w-full px-4 py-2.5 mb-3 text-violet-700 bg-violet-50 hover:bg-violet-100 border border-violet-100 rounded-xl font-bold text-sm transition-colors active:scale-[0.98]">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-            </svg>
+        <button onclick="refreshAplikasi()" class="flex items-center justify-center gap-2 w-full px-4 py-2.5 mb-3 text-violet-700 bg-violet-50 hover:bg-violet-100 border border-violet-100 rounded-xl font-bold text-sm transition-colors active:scale-[0.98]">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
             Segarkan Aplikasi
         </button>
         <div class="p-4 border-t border-slate-100 mt-auto bg-white">
-            <p id="installText" style="display: none;"
-                class="text-[10px] text-slate-500 font-medium tracking-wider mt-4 mb-2 text-center">Silahkan install
-                aplikasi untuk pengalaman yang lebih baik!</p>
-            <button id="btnInstallApp" style="display: none;"
-                class="flex items-center justify-center gap-2 w-full px-4 py-2.5 mb-4 text-white bg-slate-800 hover:bg-slate-900 rounded-xl font-bold text-sm transition-colors shadow-md active:scale-[0.98]">
-                <svg class="w-5 h-5 text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                </svg>
+            <p id="installText" style="display: none;" class="text-[10px] text-slate-500 font-medium tracking-wider mt-4 mb-2 text-center">Silahkan install aplikasi untuk pengalaman yang lebih baik!</p>
+            <button id="btnInstallApp" style="display: none;" class="flex items-center justify-center gap-2 w-full px-4 py-2.5 mb-4 text-white bg-slate-800 hover:bg-slate-900 rounded-xl font-bold text-sm transition-colors shadow-md active:scale-[0.98]">
+                <svg class="w-5 h-5 text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
                 Install Aplikasi
             </button>
-            <div id="iosInstallHint" style="display: none;"
-                class="text-[11px] text-slate-600 font-medium text-center mt-2 mb-4 bg-blue-50/80 p-3 rounded-xl border border-blue-100">
+            <div id="iosInstallHint" style="display: none;" class="text-[11px] text-slate-600 font-medium text-center mt-2 mb-4 bg-blue-50/80 p-3 rounded-xl border border-blue-100">
                 🍎 <b>Khusus Pengguna iPhone:</b><br>
-                Tap tombol <svg class="inline w-4 h-4 mx-1 text-blue-600" fill="none" stroke="currentColor"
-                    viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
-                </svg> (Bagikan) di bawah Safari, lalu pilih <br><b>"Add to Home Screen"</b> ➕
+                Tap tombol <svg class="inline w-4 h-4 mx-1 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg> (Bagikan) di bawah Safari, lalu pilih <br><b>"Add to Home Screen"</b> ➕
             </div>
 
             <div class="flex items-center gap-3 mb-4 px-2">
-                <div
-                    class="w-10 h-10 rounded-full bg-violet-100 overflow-hidden flex-shrink-0 border border-violet-200">
-                    <img id="userProfilePic" src="https://ui-avatars.com/api/?name=User&background=c7d2fe&color=4f46e5"
-                        alt="Profile" class="w-full h-full object-cover">
+                <div class="w-10 h-10 rounded-full bg-violet-100 overflow-hidden flex-shrink-0 border border-violet-200">
+                    <img id="userProfilePic" src="https://ui-avatars.com/api/?name=User&background=c7d2fe&color=4f46e5" alt="Profile" class="w-full h-full object-cover">
                 </div>
                 <div class="overflow-hidden">
                     <p id="userNameDisplay" class="text-sm font-bold text-slate-800 truncate">Memuat...</p>
                     <p id="userEmailDisplay" class="text-[10px] font-medium text-slate-500 truncate">Memuat email...</p>
                 </div>
             </div>
-            <a href="index.html" id="btnLogout"
-                class="flex items-center justify-center gap-2 w-full px-4 py-2.5 text-red-600 bg-red-50 hover:bg-red-100 rounded-xl font-bold text-sm transition-colors border border-red-100">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                </svg>
+            <a href="index.html" id="btnLogout" class="flex items-center justify-center gap-2 w-full px-4 py-2.5 text-red-600 bg-red-50 hover:bg-red-100 rounded-xl font-bold text-sm transition-colors border border-red-100">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
                 Keluar
             </a>
         </div>
     </aside>
 
     <main class="flex-1 flex flex-col h-full bg-slate-50/50 relative overflow-hidden">
-        <div
-            class="absolute top-0 right-0 w-96 h-96 bg-violet-200/40 rounded-full mix-blend-multiply filter blur-3xl opacity-60 animate-blob pointer-events-none">
-        </div>
-        <div
-            class="absolute -bottom-8 left-10 w-72 h-72 bg-fuchsia-200/40 rounded-full mix-blend-multiply filter blur-3xl opacity-60 animate-blob animation-delay-2000 pointer-events-none">
-        </div>
+        <div class="absolute top-0 right-0 w-96 h-96 bg-violet-200/40 rounded-full mix-blend-multiply filter blur-3xl opacity-60 animate-blob pointer-events-none"></div>
+        <div class="absolute -bottom-8 left-10 w-72 h-72 bg-fuchsia-200/40 rounded-full mix-blend-multiply filter blur-3xl opacity-60 animate-blob animation-delay-2000 pointer-events-none"></div>
 
-        <header
-            class="md:hidden h-16 bg-white/80 backdrop-blur-md border-b border-slate-200 flex items-center justify-between px-4 z-20 flex-shrink-0 relative">
+        <header class="md:hidden h-16 bg-white/80 backdrop-blur-md border-b border-slate-200 flex items-center justify-between px-4 z-20 flex-shrink-0 relative">
             <div class="flex items-center gap-2">
                 <div class="w-9 h-9 rounded-xl bg-white flex items-center justify-center overflow-hidden border">
                     <img src="Logo Insan Jaya.png" class="w-full h-full object-contain">
@@ -259,102 +163,86 @@
                     <span class="font-bricolage font-bold text-base text-violet-600">INSAN JAYA</span>
                 </div>
             </div>
-            <button id="mobileMenuBtn"
-                class="p-2 text-slate-600 hover:text-violet-600 hover:bg-slate-50 rounded-lg transition-colors">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
+            <button id="mobileMenuBtn" class="p-2 text-slate-600 hover:text-violet-600 hover:bg-slate-50 rounded-lg transition-colors">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
             </button>
         </header>
 
         <div class="flex-1 overflow-y-auto p-4 md:p-6 pb-8 relative z-10 custom-scrollbar">
             <div class="max-w-6xl mx-auto">
                 <div class="mb-6 md:mb-8 pt-2">
-                    <h1 class="font-bricolage text-2xl md:text-3xl font-bold text-slate-900 tracking-tight">Absensi
-                        Siswa</h1>
-                    <p class="text-sm text-slate-500 mt-1 max-w-lg">Kelola kehadiran kelas secara real-time. Perubahan
-                        status akan tersimpan otomatis saat Anda mengubahnya.</p>
+                    <h1 class="font-bricolage text-2xl md:text-3xl font-bold text-slate-900 tracking-tight">Absensi Siswa</h1>
+                    <p class="text-sm text-slate-500 mt-1 max-w-lg">Kelola kehadiran kelas secara real-time. Perubahan status akan tersimpan otomatis saat Anda mengubahnya.</p>
                 </div>
 
-                <div
-                    class="bg-white/90 backdrop-blur-sm p-5 md:p-6 rounded-2xl border border-slate-200/60 shadow-xl shadow-violet-100/20 mb-8 flex flex-wrap gap-4 items-end border-t-4 border-t-violet-500 transition-all">
-                    <div class="w-full md:w-auto flex-1 min-w-[200px]">
-                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1.5 tracking-wider">Bulan
-                            & Tahun</label>
-                        <div
-                            class="flex items-center px-4 py-2.5 border border-slate-200 rounded-xl bg-slate-50 hover:bg-white transition-colors focus-within:border-violet-500 focus-within:ring-4 focus-within:ring-violet-500/10 shadow-sm">
-                            <svg class="w-4 h-4 mr-2 text-violet-500 shrink-0" fill="none" stroke="currentColor"
-                                viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
-                                </path>
-                            </svg>
-                            <select id="bulanSelect"
-                                class="bg-transparent outline-none cursor-pointer appearance-none text-slate-700 font-semibold text-sm pr-1"></select>
-                            <span class="text-slate-300 mx-1">/</span>
-                            <select id="tahunSelect"
-                                class="bg-transparent outline-none cursor-pointer appearance-none text-slate-700 font-semibold text-sm pl-1"></select>
-                        </div>
-                    </div>
-
-                    <div class="w-full md:w-auto flex-1 min-w-[200px]">
-                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1.5 tracking-wider">Guru
-                            Pengajar</label>
-                        <select id="guruSelect"
-                            class="px-4 py-2.5 border border-slate-200 rounded-xl text-sm font-semibold text-slate-700 bg-slate-50 hover:bg-white transition-all w-full outline-none focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10 shadow-sm cursor-pointer appearance-none bg-no-repeat bg-[right_1rem_center] bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M5%207L10%2012L15%207%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%221.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%3C/svg%3E')]">
-                            <option value="">Pilih Guru...</option>
+                <!-- Cascading Dropdowns: Program, Guru, Siswa -->
+                <div class="bg-white/90 backdrop-blur-sm p-5 md:p-6 rounded-2xl border border-slate-200/60 shadow-xl shadow-violet-100/20 mb-6 grid grid-cols-1 md:grid-cols-3 gap-4 border-t-4 border-t-violet-500 transition-all">
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1.5 tracking-wider">Program</label>
+                        <select id="inpProgram" class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm font-semibold text-slate-700 bg-slate-50 hover:bg-white outline-none focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10 transition-all cursor-pointer appearance-none bg-no-repeat bg-[right_1rem_center] bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M5%207L10%2012L15%207%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%221.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%3C/svg%3E')]" onchange="onProgramChange()">
+                            <option value="">Memuat Program...</option>
                         </select>
                     </div>
-
-                    <div class="w-full md:w-auto flex-1 min-w-[200px]">
-                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1.5 tracking-wider">Jadwal
-                            Kelas</label>
-                        <select id="jadwalSelect"
-                            class="px-4 py-2.5 border border-slate-200 rounded-xl text-sm font-semibold text-slate-700 bg-slate-50 hover:bg-white transition-all w-full outline-none focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10 shadow-sm cursor-pointer appearance-none bg-no-repeat bg-[right_1rem_center] bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M5%207L10%2012L15%207%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%221.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%3C/svg%3E')]">
-                            <option value="">Pilih Jadwal...</option>
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1.5 tracking-wider">Nama Instruktur</label>
+                        <select id="inpGuru" class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm font-semibold text-slate-700 bg-slate-50 hover:bg-white outline-none focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10 transition-all cursor-pointer appearance-none bg-no-repeat bg-[right_1rem_center] bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M5%207L10%2012L15%207%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%221.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%3C/svg%3E')] disabled:opacity-50 disabled:cursor-not-allowed" disabled onchange="onGuruChange()">
+                            <option value="">Pilih Instruktur...</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1.5 tracking-wider">Nama Siswa</label>
+                        <select id="inpSiswa" class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm font-semibold text-slate-700 bg-slate-50 hover:bg-white outline-none focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10 transition-all cursor-pointer appearance-none bg-no-repeat bg-[right_1rem_center] bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M5%207L10%2012L15%207%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%221.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%3C/svg%3E')] disabled:opacity-50 disabled:cursor-not-allowed" disabled onchange="onSiswaChange()">
+                            <option value="">Pilih Siswa...</option>
                         </select>
                     </div>
                 </div>
 
-                <div
-                    class="bg-white rounded-2xl border border-slate-200/80 shadow-xl shadow-slate-200/40 overflow-hidden relative">
-                    <div
-                        class="md:hidden bg-violet-50/80 border-b border-violet-100 px-4 py-2.5 flex items-center justify-center gap-2 text-violet-600 text-[10px] font-extrabold uppercase tracking-widest shadow-inner">
-                        Geser tabel untuk isi absen
-                        <svg class="w-4 h-4 animate-bounce-x" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
-                                d="M13 5l7 7-7 7M5 5l7 7-7 7"></path>
-                        </svg>
+                <!-- Format Absen & Status SPP -->
+                <div class="bg-white/90 backdrop-blur-sm p-5 md:p-6 rounded-2xl border border-slate-200/60 shadow-xl shadow-violet-100/20 mb-8 flex flex-wrap gap-4 transition-all hidden" id="settingAbsensiContainer">
+                    <div class="flex-1 min-w-[200px]">
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1.5 tracking-wider">Format Absen</label>
+                        <select id="inpFormatAbsen" class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm font-semibold text-slate-700 bg-slate-50 hover:bg-white outline-none focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10 transition-all cursor-pointer appearance-none bg-no-repeat bg-[right_1rem_center] bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M5%207L10%2012L15%207%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%221.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%3C/svg%3E')]" onchange="handleFormatAbsenChange(this)">
+                            <option value="12">12 Pertemuan</option>
+                            <option value="8">8 Pertemuan</option>
+                        </select>
                     </div>
+                    <div class="flex-1 min-w-[200px] hidden" id="sppContainer">
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1.5 tracking-wider">Status SPP</label>
+                        <select id="inpStatusSPP" onchange="applySPPColor(this)" class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm font-bold text-slate-700 bg-slate-50 hover:bg-white outline-none focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10 transition-all cursor-pointer appearance-none bg-no-repeat bg-[right_1rem_center] bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M5%207L10%2012L15%207%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%221.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%3C/svg%3E')]">
+                            <option value="Belum Lunas" style="background-color: #fee2e2; color: #991b1b;">Belum Lunas</option>
+                            <option value="Lunas" style="background-color: #dcfce7; color: #166534;">Lunas</option>
+                        </select>
+                    </div>
+                </div>
 
-                    <div class="overflow-x-auto custom-scrollbar relative">
-                        <table class="w-full text-left border-collapse min-w-[800px] table-fixed">
+                <!-- Tabel Absensi Vertikal -->
+                <div id="tabelAbsensiContainer" class="hidden bg-white rounded-2xl border border-slate-200/80 shadow-xl shadow-slate-200/40 overflow-hidden relative mb-8">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse min-w-[500px]">
                             <thead class="bg-slate-50 border-b border-slate-200">
                                 <tr>
-                                    <th rowspan="2"
-                                        class="w-28 md:w-48 p-3 md:p-4 text-[12px] md:text-[12px] font-bold text-violet-800 uppercase align-middle bg-slate-100 sticky left-0 z-20 shadow-[4px_0_15px_-3px_rgba(0,0,0,0.15)] border-r border-slate-200">
-                                        Nama Siswa</th>
-                                    <th colspan="12"
-                                        class="py-2.5 text-[11px] font-bold text-violet-600 uppercase text-center border-b border-slate-200 bg-violet-50/40">
-                                        Pertemuan Ke-</th>
+                                    <th class="w-24 p-3 md:p-4 text-xs font-bold text-violet-800 uppercase bg-slate-100 border-r border-slate-200 text-center">P-Ke</th>
+                                    <th class="p-3 md:p-4 text-xs font-bold text-violet-800 uppercase bg-slate-100 border-r border-slate-200 text-center">Tanggal Pertemuan</th>
+                                    <th class="p-3 md:p-4 text-xs font-bold text-violet-800 uppercase bg-slate-100 text-center">Status Kehadiran</th>
                                 </tr>
-                                <tr id="tanggalRow" class="bg-slate-50/40"></tr>
                             </thead>
-                            <tbody id="bodyAbsensi" class="text-sm divide-y divide-slate-100 bg-white"></tbody>
+                            <tbody id="bodyAbsensiVertikal" class="text-sm divide-y divide-slate-100 bg-white">
+                                <!-- Generated by JS -->
+                            </tbody>
                         </table>
                     </div>
                 </div>
 
-                <div class="mt-8 flex justify-end" id="containerSimpan">
-                    <button id="btnSimpanPerubahan" onclick="saveAll()"
-                        class="group w-full sm:w-auto flex items-center justify-center gap-2 bg-violet-600 hover:bg-violet-700 text-white px-8 py-3.5 rounded-xl font-bold shadow-[0_8px_20px_-6px_rgba(124,58,237,0.5)] transition-all duration-200 text-sm active:translate-y-1">
-                        <svg class="w-5 h-5 group-hover:scale-110 transition-transform" fill="none"
-                            stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4">
-                            </path>
+                <!-- Action Buttons -->
+                <div class="flex-wrap justify-end gap-3 hidden" id="containerSimpan">
+                    <button id="btnResetAbsensi" onclick="resetAbsensi()" class="hidden w-full sm:w-auto px-6 py-3.5 rounded-xl font-bold bg-red-50 text-red-600 hover:bg-red-100 transition-all text-sm border border-red-100 active:translate-y-1">
+                        Reset Absensi
+                    </button>
+                    <button id="btnSimpanPerubahan" onclick="simpanAbsensi()" class="group w-full sm:w-auto flex items-center justify-center gap-2 bg-violet-600 hover:bg-violet-700 text-white px-8 py-3.5 rounded-xl font-bold shadow-[0_8px_20px_-6px_rgba(124,58,237,0.5)] transition-all duration-200 text-sm active:translate-y-1">
+                        <svg class="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path>
                         </svg>
-                        Simpan Semua Perubahan
+                        Simpan Absensi
                     </button>
                 </div>
             </div>
@@ -416,53 +304,26 @@
                     }).catch(e => console.log('Gagal ambil notifikasi'));
             } else {
                 if (navPendaftaran) {
-                    navPendaftaran.classList.remove('flex');
-                    navPendaftaran.classList.add('hidden');
+                    navPendaftaran.style.display = 'none';
                 }
             }
 
-            // Tampilkan Profil
-            document.getElementById('userNameDisplay').textContent = userName;
-            document.getElementById('userEmailDisplay').textContent = userEmail || 'admin@lkpinsanjaya.com';
-            if (userPic) { document.getElementById('userProfilePic').src = userPic; }
-            else { document.getElementById('userProfilePic').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=c7d2fe&color=4f46e5`; }
-
-            document.getElementById('btnLogout').addEventListener('click', (e) => {
-                if (!confirm('Apakah Anda yakin ingin keluar?')) { e.preventDefault(); }
-                else {
-                    localStorage.removeItem('lkp_user_name');
-                    localStorage.removeItem('lkp_user_email');
-                    localStorage.removeItem('lkp_user_picture');
-                }
-            });
-
-            // 2. Sembunyikan tombol simpan kalau yang login bukan Admin ATAU Guru
-            if (!isGuruOrAdmin()) {
-                const containerSimpan = document.getElementById('containerSimpan');
-                if (containerSimpan) containerSimpan.classList.add('hidden');
+            // 2. Tampilkan Info Profil
+            if (userName) document.getElementById('userNameDisplay').textContent = userName;
+            if (userEmail) document.getElementById('userEmailDisplay').textContent = userEmail;
+            if (userPic) {
+                const imgEl = document.getElementById('userProfilePic');
+                imgEl.src = userPic;
+                imgEl.onerror = () => {
+                    imgEl.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=c7d2fe&color=4f46e5`;
+                };
             }
         });
 
-        // ================= REFRESH APLIKASI =================
-        async function refreshAplikasi() {
-            const btn = document.querySelector('button[onclick="refreshAplikasi()"]');
-            if (btn) btn.innerHTML = 'Menyegarkan... ⏳';
-            try {
-                if ('caches' in window) {
-                    const cacheNames = await caches.keys();
-                    await Promise.all(cacheNames.map(name => caches.delete(name)));
-                }
-                if ('serviceWorker' in navigator) {
-                    const registrations = await navigator.serviceWorker.getRegistrations();
-                    for (let reg of registrations) { await reg.unregister(); }
-                }
-                setTimeout(() => { window.location.href = 'index.html?update=' + new Date().getTime(); }, 300);
-            } catch (error) { window.location.reload(); }
-        }
-
-        // ================= MOBILE SIDEBAR =================
+        // ================= LOGIKA SIDEBAR =================
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('sidebarOverlay');
+        
         function toggleSidebar() {
             const isClosed = sidebar.classList.contains('-translate-x-full');
             if (isClosed) {
@@ -475,180 +336,200 @@
                 setTimeout(() => overlay.classList.add('hidden'), 300);
             }
         }
+        
         document.getElementById('mobileMenuBtn')?.addEventListener('click', toggleSidebar);
         document.getElementById('closeSidebarBtn')?.addEventListener('click', toggleSidebar);
         overlay?.addEventListener('click', toggleSidebar);
 
-        // ================= LOGIKA ABSENSI DENGAN SATPAM =================
+        function refreshAplikasi() {
+            localStorage.removeItem('lkp_absensi_data_cache');
+            window.location.reload(true);
+        }
+
+        // ================= LOGIKA ABSENSI BARU (PER SISWA, LOCAL STORAGE) =================
         const API_URL = 'https://absensi-api.yumenoboken.workers.dev';
-        let selectedBulan = new Date().toISOString().slice(0, 7);
-        let dataAbsensi = {};
-        let AUTO_SAVE = true;
-        let dataTanggal = {};
+        let allData = [];
+        let groupedData = {};
+
+        document.addEventListener("DOMContentLoaded", () => {
+            loadDataAbsensi();
+            
+            // Check SPP and Reset Button access
+            if (isSuperAdmin()) {
+                document.getElementById('sppContainer').classList.remove('hidden');
+                document.getElementById('btnResetAbsensi').classList.remove('hidden');
+                document.getElementById('btnResetAbsensi').style.display = 'block'; // force display block for flex container child
+            } else {
+                document.getElementById('sppContainer').classList.add('hidden');
+                document.getElementById('btnResetAbsensi').classList.add('hidden');
+                document.getElementById('btnResetAbsensi').style.display = 'none';
+            }
+        });
+
+        async function loadDataAbsensi() {
+            try {
+                const res = await fetchWithAuth(`${API_URL}/api/data`);
+                const data = await res.json();
+                
+                // Urutkan siswa secara alfabetis sebelum dikelompokkan
+                data.sort((a, b) => (a.nama_siswa || '').localeCompare(b.nama_siswa || ''));
+                allData = data;
+
+                // Group by program -> guru -> list siswa
+                data.forEach(item => {
+                    const prog = item.program ? item.program.toLowerCase() : 'lainnya';
+                    if (!groupedData[prog]) groupedData[prog] = {};
+                    
+                    const guru = item.guru || 'Tanpa Instruktur';
+                    if (!groupedData[prog][guru]) groupedData[prog][guru] = [];
+                    
+                    groupedData[prog][guru].push(item);
+                });
+
+                const inpProgram = document.getElementById('inpProgram');
+                inpProgram.innerHTML = '<option value="">Pilih Program...</option>';
+                Object.keys(groupedData).sort().forEach(prog => {
+                    const progName = prog.replace(/\b\w/g, c => c.toUpperCase());
+                    inpProgram.innerHTML += `<option value="${prog}">${progName}</option>`;
+                });
+            } catch (error) {
+                console.error("Gagal load data untuk absensi:", error);
+                document.getElementById('inpProgram').innerHTML = '<option value="">Gagal memuat data</option>';
+            }
+        }
 
         async function fetchWithAuth(url, options = {}) {
             const userEmail = localStorage.getItem('lkp_user_email');
-
             const headers = {
                 'X-Admin-Email': userEmail || '',
                 'Content-Type': 'application/json',
                 ...(options.headers || {})
             };
-
             const response = await fetch(url, { ...options, headers });
-
-            // Kalau 403 (Forbidden)
-            if (response.status === 403) {
-                alert("⛔ Ditolak Server: Cuma Admin/Guru yang boleh mengubah data absen ini!");
-                throw new Error("Forbidden: Bukan Admin");
-            }
-
-            // Kalau 401 (Unauthorized)
+            if (response.status === 403) throw new Error("Forbidden: Bukan Admin");
             if (response.status === 401) {
-                alert("⛔ Sesi tidak valid, silakan login ulang.");
                 localStorage.clear();
                 window.location.href = 'index.html';
                 throw new Error("Unauthorized");
             }
-
             return response;
         }
 
-        document.addEventListener("DOMContentLoaded", () => {
-            generateBulan();
-            generateTanggalRow();
-            loadGuru();
+        function onProgramChange() {
+            const prog = document.getElementById('inpProgram').value;
+            const inpGuru = document.getElementById('inpGuru');
+            const inpSiswa = document.getElementById('inpSiswa');
+            
+            inpGuru.innerHTML = '<option value="">Pilih Instruktur...</option>';
+            inpSiswa.innerHTML = '<option value="">Pilih Siswa...</option>';
+            inpGuru.disabled = true;
+            inpSiswa.disabled = true;
+            hideAbsensiUI();
 
-            document.getElementById('guruSelect').addEventListener('change', (e) => {
-                const guru = e.target.value;
-                if (!guru) return;
-                loadJadwal(guru);
-            });
-
-            document.getElementById('jadwalSelect').addEventListener('change', (e) => {
-                const guru = document.getElementById('guruSelect').value;
-                const jadwal = e.target.value;
-                if (!guru || !jadwal) return;
-                loadSiswaByJadwal(guru, jadwal);
-            });
-
-            document.getElementById('bulanSelect').addEventListener('change', updateSelectedBulan);
-            document.getElementById('tahunSelect').addEventListener('change', updateSelectedBulan);
-        });
-
-        function generateBulan() {
-            const now = new Date();
-            const bulanSelect = document.getElementById('bulanSelect');
-            const tahunSelect = document.getElementById('tahunSelect');
-
-            bulanSelect.innerHTML = '';
-            tahunSelect.innerHTML = '';
-
-            const namaBulan = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
-            namaBulan.forEach((b, i) => {
-                bulanSelect.innerHTML += `<option value="${String(i + 1).padStart(2, '0')}">${b}</option>`;
-            });
-
-            const tahunIni = now.getFullYear();
-            for (let y = tahunIni - 2; y <= tahunIni + 5; y++) {
-                tahunSelect.innerHTML += `<option value="${y}">${y}</option>`;
-            }
-
-            bulanSelect.value = String(now.getMonth() + 1).padStart(2, '0');
-            tahunSelect.value = tahunIni;
-        }
-
-        function updateSelectedBulan() {
-            const b = document.getElementById('bulanSelect').value;
-            const t = document.getElementById('tahunSelect').value;
-            selectedBulan = `${t}-${b}`;
-
-            generateTanggalRow();
-
-            const guru = document.getElementById('guruSelect').value;
-            const jadwal = document.getElementById('jadwalSelect').value;
-            if (guru && jadwal) {
-                loadSiswaByJadwal(guru, jadwal);
+            if (prog && groupedData[prog]) {
+                Object.keys(groupedData[prog]).sort().forEach(guru => {
+                    inpGuru.innerHTML += `<option value="${guru}">${guru}</option>`;
+                });
+                inpGuru.disabled = false;
             }
         }
 
-        async function loadGuru() {
-            try {
-                const res = await fetchWithAuth(`${API_URL}/api/guru`);
-                const guruList = await res.json();
-                const select = document.getElementById('guruSelect');
-                select.innerHTML = '<option value="">Pilih Guru...</option>';
-                guruList.forEach(g => { select.innerHTML += `<option value="${g.guru}">${g.guru}</option>`; });
-            } catch (e) { console.log("Gagal load guru:", e.message); }
+        function onGuruChange() {
+            const prog = document.getElementById('inpProgram').value;
+            const guru = document.getElementById('inpGuru').value;
+            const inpSiswa = document.getElementById('inpSiswa');
+            
+            inpSiswa.innerHTML = '<option value="">Pilih Siswa...</option>';
+            inpSiswa.disabled = true;
+            hideAbsensiUI();
+
+            if (prog && guru && groupedData[prog][guru]) {
+                groupedData[prog][guru].forEach(siswa => {
+                    const siswaName = siswa.nama_siswa ? siswa.nama_siswa.toLowerCase().replace(/\b\w/g, c => c.toUpperCase()) : '';
+                    inpSiswa.innerHTML += `<option value="${siswa.id}">${siswaName}</option>`;
+                });
+                inpSiswa.disabled = false;
+            }
         }
 
-        async function loadJadwal(guru) {
-            try {
-                const res = await fetchWithAuth(`${API_URL}/api/jadwal-by-guru?guru=${encodeURIComponent(guru)}`);
-                const data = await res.json();
-                const select = document.getElementById('jadwalSelect');
-                select.innerHTML = '<option value="">Pilih Jadwal...</option>';
-                data.forEach(item => { select.innerHTML += `<option value="${item.jadwal}">${item.jadwal}</option>`; });
-            } catch (e) { console.log("Gagal load jadwal:", e.message); }
+        function onSiswaChange() {
+            const siswaId = document.getElementById('inpSiswa').value;
+            if (siswaId) {
+                showAbsensiUI();
+                loadSiswaData(siswaId);
+            } else {
+                hideAbsensiUI();
+            }
         }
 
-        function generateTanggalRow() {
-            const tanggalRow = document.getElementById('tanggalRow');
-            tanggalRow.innerHTML = '';
+        function hideAbsensiUI() {
+            document.getElementById('settingAbsensiContainer').classList.add('hidden');
+            document.getElementById('tabelAbsensiContainer').classList.add('hidden');
+            document.getElementById('containerSimpan').classList.add('hidden');
+            document.getElementById('containerSimpan').classList.remove('flex');
+        }
 
-            const [tahun, bulan] = selectedBulan.split('-');
-            const jumlahHari = new Date(tahun, bulan, 0).getDate();
+        function showAbsensiUI() {
+            document.getElementById('settingAbsensiContainer').classList.remove('hidden');
+            document.getElementById('tabelAbsensiContainer').classList.remove('hidden');
+            document.getElementById('containerSimpan').classList.remove('hidden');
+            document.getElementById('containerSimpan').classList.add('flex');
+        }
 
-            // Cek apakah punya akses edit absensi (Guru / Super Admin)
-            const disabledAttr = isGuruOrAdmin() ? '' : 'disabled';
-
-            for (let i = 1; i <= 12; i++) {
-                let options = `<option value="">Tgl</option>`;
-                for (let d = 1; d <= jumlahHari; d++) {
-                    options += `<option value="${d}">${d}</option>`;
+        function loadSiswaData(siswaId) {
+            // Cek apakah ada data di localStorage
+            const savedData = localStorage.getItem(`lkp_absensi_siswa_${siswaId}`);
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                const formatSelect = document.getElementById('inpFormatAbsen');
+                formatSelect.value = data.formatAbsen || '12';
+                formatSelect.dataset.oldValue = data.formatAbsen || '12'; // store old value for change confirmation
+                
+                if (isSuperAdmin()) {
+                    const sppSelect = document.getElementById('inpStatusSPP');
+                    sppSelect.value = data.statusSPP || 'Belum Lunas';
+                    applySPPColor(sppSelect);
                 }
-
-                tanggalRow.innerHTML += `
-                    <th class="border-b border-r border-slate-100 bg-white p-2 min-w-[60px]">
-                        <div class="flex flex-col items-center justify-center gap-1.5">
-                            <span class="text-[10px] text-violet-600 font-bold bg-violet-50 px-2 py-0.5 rounded">P${i}</span>
-                            <select ${disabledAttr} class="w-full max-w-[55px] text-[10px] text-center rounded-md bg-white border border-slate-200 hover:border-violet-300 outline-none py-1 ${isGuruOrAdmin() ? 'cursor-pointer' : 'cursor-not-allowed bg-slate-50 text-slate-800'} shadow-sm transition-colors" data-pertemuan="${i}" onchange="handleTanggalChange(this, ${i})">
-                                ${options}
-                            </select>
-                        </div>
-                    </th>
-                `;
+                renderTabelAbsensi(data.pertemuan || {});
+            } else {
+                // Default values
+                const formatSelect = document.getElementById('inpFormatAbsen');
+                formatSelect.value = '12';
+                formatSelect.dataset.oldValue = '12';
+                
+                if (isSuperAdmin()) {
+                    const sppSelect = document.getElementById('inpStatusSPP');
+                    sppSelect.value = 'Belum Lunas';
+                    applySPPColor(sppSelect);
+                }
+                renderTabelAbsensi({});
             }
         }
 
-        async function handleTanggalChange(selectEl, pertemuan) {
-            dataTanggal[pertemuan] = selectEl.value;
-            if (AUTO_SAVE) {
-                try {
-                    await saveTanggal();
-                } catch (e) {
-                    console.log("Auto-save tanggal gagal", e.message);
+        function handleFormatAbsenChange(el) {
+            const newValue = el.value;
+            const oldValue = el.dataset.oldValue || '12';
+            
+            if (oldValue === '12' && newValue === '8') {
+                if (!confirm("Peringatan: Mengubah ke format 8 pertemuan akan menyembunyikan dan menghapus data pertemuan 9-12 saat disimpan. Lanjutkan?")) {
+                    el.value = oldValue; // revert change
+                    return;
                 }
             }
+            el.dataset.oldValue = newValue; // save new value
+            renderTabelAbsensi();
         }
 
-        async function handleStatusChange(el, siswaId, pertemuan) {
+        function applySPPColor(el) {
             const val = el.value;
-            applyStatusColor(el);
-            dataAbsensi[`${siswaId}-${pertemuan}`] = val;
-
-            if (AUTO_SAVE) {
-                try {
-                    await fetchWithAuth(`${API_URL}/api/absensi-bulk`, {
-                        method: 'POST',
-                        body: JSON.stringify([{
-                            siswa_id: siswaId,
-                            pertemuan_ke: pertemuan,
-                            status: val,
-                            bulan: selectedBulan
-                        }])
-                    });
-                } catch (e) { console.log("Auto-save absen gagal:", e.message); }
+            if (val === "Lunas") {
+                el.style.backgroundColor = '#dcfce7'; // green-100
+                el.style.color = '#166534'; // green-800
+                el.style.borderColor = '#bbf7d0'; // green-200
+            } else {
+                el.style.backgroundColor = '#fee2e2'; // red-100
+                el.style.color = '#991b1b'; // red-800
+                el.style.borderColor = '#fecaca'; // red-200
             }
         }
 
@@ -657,7 +538,7 @@
             const styles = {
                 'hadir': { bg: '#dcfce7', text: '#166534', border: '#bbf7d0' },
                 'izin': { bg: '#fef3c7', text: '#92400e', border: '#fde68a' },
-                'alpha': { bg: '#fee2e2', text: '#991b1b', border: '#fecaca' },
+                'alfa': { bg: '#fee2e2', text: '#991b1b', border: '#fecaca' },
                 'default': { bg: '#f8fafc', text: '#94a3b8', border: '#e2e8f0' }
             };
             const style = styles[status] || styles['default'];
@@ -666,163 +547,186 @@
             el.style.borderColor = style.border;
         }
 
-        async function loadSiswaByJadwal(guru, jadwal) {
-            const body = document.getElementById('bodyAbsensi');
-            body.innerHTML = `<tr>
-                <td colspan="13" class="py-20 text-center">
-                    <div class="flex flex-col items-center">
-                        <div class="w-8 h-8 border-4 border-violet-200 border-t-violet-600 rounded-full animate-spin mb-3"></div>
-                        <p class="text-slate-500 font-medium text-sm">Menarik data dari server...</p>
-                    </div>
-                </td>
-            </tr>`;
+        function checkTanggalEmpty(el) {
+            if (!el.value) {
+                // If empty, make text transparent so mm/dd/yyyy isn't visible, without red background
+                el.style.color = 'transparent';
+                el.style.borderColor = '#e2e8f0'; // slate-200
+                el.style.backgroundColor = '#ffffff'; // white
+                el.style.fontWeight = 'normal';
+            } else {
+                el.style.color = '#334155'; // slate-700
+                el.style.borderColor = '#e2e8f0'; // slate-200
+                el.style.backgroundColor = '#ffffff'; // white
+                el.style.fontWeight = 'bold';
+            }
+        }
 
-            try {
-                const res = await fetchWithAuth(`${API_URL}/api/siswa-by-jadwal?guru=${encodeURIComponent(guru)}&jadwal=${encodeURIComponent(jadwal)}`);
-                const siswa = await res.json();
-                body.innerHTML = '';
-                dataAbsensi = {};
-
-                if (siswa.length === 0) {
-                    body.innerHTML = `<tr>
-                        <td colspan="13" class="py-16 text-center">
-                            <div class="inline-flex items-center justify-center p-4 bg-amber-50 rounded-full mb-3">
-                                <svg class="w-6 h-6 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
-                            </div>
-                            <p class="text-slate-600 font-bold">Tidak ada siswa</p>
-                            <p class="text-slate-400 text-sm mt-1">Belum ada siswa yang terdaftar di jadwal ini.</p>
-                        </td>
-                    </tr>`;
-                    return;
+        function renderTabelAbsensi(existingPertemuanData = null) {
+            const formatAbsen = parseInt(document.getElementById('inpFormatAbsen').value);
+            const tbody = document.getElementById('bodyAbsensiVertikal');
+            tbody.innerHTML = '';
+            
+            // Kalau dipanggil via onchange Format Absen, kita baca form state yg ada
+            const isReadingForm = existingPertemuanData === null;
+            let dataPertemuanToUse = existingPertemuanData || {};
+            
+            if (isReadingForm) {
+                const siswaId = document.getElementById('inpSiswa').value;
+                let savedPertemuan = {};
+                if (siswaId) {
+                    const savedData = localStorage.getItem(`lkp_absensi_siswa_${siswaId}`);
+                    if (savedData) savedPertemuan = JSON.parse(savedData).pertemuan || {};
                 }
 
-                // Cek apakah punya akses edit absensi (Guru / Super Admin)
-                const disabledAttr = isGuruOrAdmin() ? '' : 'disabled';
-
-                siswa.forEach((s, idx) => {
-                    const bgRow = idx % 2 === 0 ? 'bg-white' : 'bg-slate-50';
-
-                    let row = `<tr class="${bgRow} hover:bg-violet-100/50 transition-colors group">
-                        <td class="w-28 md:w-48 border-b border-slate-200 px-3 md:px-4 py-3 text-left sticky left-0 z-10 font-bold capitalize ${bgRow} group-hover:bg-violet-50 text-slate-700 shadow-[4px_0_15px_-3px_rgba(0,0,0,0.15)] truncate text-[11px] md:text-sm border-r">
-                            ${s.nama_siswa.toLowerCase()}
-                        </td>`;
-
-                    for (let i = 1; i <= 12; i++) {
-                        row += `
-                            <td class="border-b border-r border-slate-100 p-1.5 text-center" data-siswa="${s.id}" data-pertemuan="${i}">
-                                <select ${disabledAttr} class="w-[48px] h-8 text-[11px] font-bold uppercase rounded-md text-center ${isGuruOrAdmin() ? 'cursor-pointer hover:shadow-md' : 'cursor-not-allowed bg-slate-50 opacity-80'} transition-all duration-200 outline-none appearance-none border mx-auto block" style="background-color: #f8fafc; color: #94a3b8; border-color:#e2e8f0;" onchange="handleStatusChange(this, ${s.id}, ${i})">
-                                    <option value="" class="bg-white text-gray-500">-</option>
-                                    <option value="hadir" class="bg-white text-green-700">H</option>
-                                    <option value="izin" class="bg-white text-amber-700">I</option>
-                                    <option value="alpha" class="bg-white text-red-700">A</option>
-                                </select>
-                            </td>
-                        `;
+                // Ambil state dari input tanggal & select status saat ini sebelum merender ulang
+                for(let i=1; i<=12; i++){
+                    const inpTgl = document.getElementById(`tanggal_p${i}`);
+                    const inpStatus = document.getElementById(`status_p${i}`);
+                    if(inpTgl && inpStatus) {
+                        dataPertemuanToUse[i] = { tanggal: inpTgl.value, status: inpStatus.value };
+                    } else if (savedPertemuan[i]) {
+                        dataPertemuanToUse[i] = savedPertemuan[i]; // Restore hidden data from localstorage
                     }
-                    row += `</tr>`;
-                    body.innerHTML += row;
-                });
-
-                await loadAbsensiByGuru(guru);
-                await loadTanggal(guru, jadwal);
-            } catch (e) {
-                console.log("Gagal meload siswa:", e.message);
-                body.innerHTML = `<tr><td colspan="13" class="py-12 text-center text-red-500 font-bold">Terjadi kesalahan. Anda tidak memiliki akses untuk melihat data ini atau sesi telah habis.</td></tr>`;
-            }
-        }
-
-        async function loadAbsensiByGuru(guru) {
-            try {
-                const res = await fetchWithAuth(`${API_URL}/api/absensi-by-guru?guru=${encodeURIComponent(guru)}&bulan=${selectedBulan}`);
-                const data = await res.json();
-                data.forEach(item => {
-                    const td = document.querySelector(`[data-siswa="${item.siswa_id}"][data-pertemuan="${item.pertemuan_ke}"]`);
-                    if (!td) return;
-                    const select = td.querySelector('select');
-                    select.value = item.status;
-                    applyStatusColor(select);
-                });
-            } catch (e) { console.log("Gagal meload absensi:", e.message); }
-        }
-
-        async function loadTanggal(guru, jadwal) {
-            document.querySelectorAll('#tanggalRow select').forEach(s => s.value = '');
-            try {
-                const res = await fetchWithAuth(`${API_URL}/api/tanggal-pertemuan?guru=${encodeURIComponent(guru)}&jadwal=${encodeURIComponent(jadwal)}&bulan=${selectedBulan}`);
-                const data = await res.json();
-                data.forEach(item => {
-                    const select = document.querySelector(`select[data-pertemuan="${item.pertemuan_ke}"]`);
-                    if (select) { select.value = item.tanggal; }
-                });
-            } catch (e) { console.log("Gagal meload data tanggal:", e.message); }
-        }
-
-        async function saveTanggal() {
-            const guru = document.getElementById('guruSelect').value;
-            const jadwal = document.getElementById('jadwalSelect').value;
-            if (!guru || !jadwal) return;
-
-            const payload = [];
-            for (let p in dataTanggal) {
-                payload.push({ guru, jadwal, bulan: selectedBulan, pertemuan_ke: parseInt(p), tanggal: parseInt(dataTanggal[p]) });
-            }
-
-            if (payload.length > 0) {
-                try {
-                    await fetchWithAuth(`${API_URL}/api/tanggal-pertemuan`, {
-                        method: 'POST',
-                        body: JSON.stringify(payload)
-                    });
-                } catch (e) {
-                    console.log("Save tanggal gagal:", e.message);
-                    throw e; // Biar errornya dilempar ke fungsi yang manggil
                 }
             }
+
+            const disabledAttr = isGuruOrAdmin() ? '' : 'disabled';
+            const selectCursor = isGuruOrAdmin() ? 'cursor-pointer' : 'cursor-not-allowed';
+
+            for (let i = 1; i <= formatAbsen; i++) {
+                const tglValue = dataPertemuanToUse[i]?.tanggal || '';
+                const statusValue = dataPertemuanToUse[i]?.status || '';
+
+                const bgRow = i % 2 === 0 ? 'bg-white' : 'bg-slate-50';
+                
+                const tr = document.createElement('tr');
+                tr.className = `${bgRow} hover:bg-violet-100/50 transition-colors`;
+                tr.innerHTML = `
+                    <td class="p-3 md:p-4 text-center font-bold text-violet-700 text-sm border-r border-slate-100">
+                        <span class="bg-violet-100 px-2 py-1 rounded-lg">P${i}</span>
+                    </td>
+                    <td class="p-3 md:p-4 border-r border-slate-100">
+                        <div class="flex justify-center">
+                            <input type="date" id="tanggal_p${i}" value="${tglValue}" ${disabledAttr} 
+                                onchange="checkTanggalEmpty(this)"
+                                onfocus="this.style.color='#334155'"
+                                onblur="checkTanggalEmpty(this)"
+                                class="border border-slate-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 ${selectCursor} transition-all w-full max-w-[150px]">
+                        </div>
+                    </td>
+                    <td class="p-3 md:p-4">
+                        <div class="flex justify-center">
+                            <select id="status_p${i}" ${disabledAttr} onchange="applyStatusColor(this)" 
+                                class="border border-slate-200 rounded-xl px-3 py-2 text-sm font-bold uppercase outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 bg-white ${selectCursor} transition-all w-full max-w-[150px] text-center" style="background-color: #f8fafc; color: #94a3b8; border-color:#e2e8f0;">
+                                <option value="" class="bg-white text-gray-500">-</option>
+                                <option value="Hadir" class="bg-white text-green-700">Hadir</option>
+                                <option value="Izin" class="bg-white text-amber-700">Izin</option>
+                                <option value="Alfa" class="bg-white text-red-700">Alfa</option>
+                            </select>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+
+                // Apply initial colors and checks
+                const selectEl = document.getElementById(`status_p${i}`);
+                if (statusValue) selectEl.value = statusValue;
+                applyStatusColor(selectEl);
+
+                const dateEl = document.getElementById(`tanggal_p${i}`);
+                checkTanggalEmpty(dateEl);
+            }
         }
 
-        async function saveAll() {
-            const payload = [];
-            for (let key in dataAbsensi) {
-                const [siswa_id, pertemuan_ke] = key.split('-');
-                payload.push({ siswa_id, pertemuan_ke, status: dataAbsensi[key], bulan: selectedBulan });
+        function simpanAbsensi() {
+            const siswaId = document.getElementById('inpSiswa').value;
+            if (!siswaId) return alert('Pilih siswa terlebih dahulu!');
+
+            const formatAbsen = document.getElementById('inpFormatAbsen').value;
+            let statusSPP = "Belum Lunas";
+            
+            if(isSuperAdmin()) {
+                statusSPP = document.getElementById('inpStatusSPP').value;
+            } else {
+                // Keep the old SPP status if Guru is saving
+                const savedData = localStorage.getItem(`lkp_absensi_siswa_${siswaId}`);
+                if(savedData) {
+                    statusSPP = JSON.parse(savedData).statusSPP || "Belum Lunas";
+                }
             }
 
-            const btnSimpan = document.querySelector('button[onclick="saveAll()"]');
+            const pertemuan = {};
+            const jml = parseInt(formatAbsen);
+            let hasEmptyDate = false;
+            
+            for (let i = 1; i <= jml; i++) {
+                const tgl = document.getElementById(`tanggal_p${i}`).value;
+                const sts = document.getElementById(`status_p${i}`).value;
+                pertemuan[i] = {
+                    tanggal: tgl,
+                    status: sts
+                };
+                // Optional: You could warn them about empty dates before saving if you wanted, but we'll let them save partial for now.
+            }
+
+            const payload = {
+                siswaId,
+                formatAbsen,
+                statusSPP,
+                pertemuan,
+                lastUpdated: new Date().toISOString()
+            };
+
+            const btnSimpan = document.getElementById('btnSimpanPerubahan');
             const originalText = btnSimpan.innerHTML;
             btnSimpan.disabled = true;
             btnSimpan.innerHTML = `<svg class="w-5 h-5 animate-spin mr-2" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Menyimpan...`;
 
             try {
-                if (payload.length) {
-                    await fetchWithAuth(`${API_URL}/api/absensi-bulk`, {
-                        method: 'POST',
-                        body: JSON.stringify(payload)
-                    });
-                }
-                await saveTanggal();
-
-                btnSimpan.innerHTML = `<svg class="w-5 h-5 mr-2 text-green-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Berhasil Disimpan!`;
-                btnSimpan.classList.remove('bg-violet-600', 'hover:bg-violet-700');
-                btnSimpan.classList.add('bg-green-600', 'hover:bg-green-700');
-
+                localStorage.setItem(`lkp_absensi_siswa_${siswaId}`, JSON.stringify(payload));
+                
                 setTimeout(() => {
-                    btnSimpan.innerHTML = originalText;
-                    btnSimpan.classList.add('bg-violet-600', 'hover:bg-violet-700');
-                    btnSimpan.classList.remove('bg-green-600', 'hover:bg-green-700');
-                    btnSimpan.disabled = false;
-                }, 3000);
+                    btnSimpan.innerHTML = `<svg class="w-5 h-5 mr-2 text-green-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Berhasil Disimpan!`;
+                    btnSimpan.classList.remove('bg-violet-600', 'hover:bg-violet-700');
+                    btnSimpan.classList.add('bg-green-600', 'hover:bg-green-700');
 
-            } catch (e) {
-                console.log("Gagal menyimpan:", e.message);
+                    setTimeout(() => {
+                        btnSimpan.innerHTML = originalText;
+                        btnSimpan.classList.add('bg-violet-600', 'hover:bg-violet-700');
+                        btnSimpan.classList.remove('bg-green-600', 'hover:bg-green-700');
+                        btnSimpan.disabled = false;
+                    }, 3000);
+                }, 500); // Simulate network delay
+                
+            } catch (error) {
+                console.error("Gagal simpan lokal:", error);
+                alert("Gagal menyimpan data absensi.");
                 btnSimpan.disabled = false;
                 btnSimpan.innerHTML = originalText;
             }
         }
 
+        function resetAbsensi() {
+            const siswaId = document.getElementById('inpSiswa').value;
+            const inpSiswa = document.getElementById('inpSiswa');
+            const namaSiswa = inpSiswa.options[inpSiswa.selectedIndex].text;
+            
+            if (!siswaId) return;
+
+            if (confirm(`Apakah Anda yakin ingin MENGHAPUS (reset) seluruh data absensi dan SPP untuk siswa ${namaSiswa}?`)) {
+                localStorage.removeItem(`lkp_absensi_siswa_${siswaId}`);
+                loadSiswaData(siswaId); // Reload with empty state
+                alert('Data absensi berhasil di-reset.');
+            }
+        }
+        
         // ================= FITUR TOMBOL INSTALL APLIKASI (PWA) =================
         let deferredPrompt = null;
         const btnInstallApp = document.getElementById('btnInstallApp');
         const installText = document.getElementById('installText');
+        const iosInstallHint = document.getElementById('iosInstallHint');
+        
         const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
 
         window.addEventListener('beforeinstallprompt', (e) => {
@@ -848,12 +752,6 @@
             });
         }
 
-        window.addEventListener('appinstalled', () => {
-            if (btnInstallApp) btnInstallApp.style.display = 'none';
-            if (installText) installText.style.display = 'none';
-        });
-
-        const iosInstallHint = document.getElementById('iosInstallHint');
         const isIos = () => /iphone|ipad|ipod/.test(window.navigator.userAgent.toLowerCase());
         const isInStandaloneMode = () => ('standalone' in window.navigator) && (window.navigator.standalone);
 
