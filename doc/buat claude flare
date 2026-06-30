@@ -381,6 +381,32 @@ export default {
           )
         `).run();
 
+        // Tabel Kategori Latihan Soal
+        await env.DB.prepare(`
+          CREATE TABLE IF NOT EXISTS latihan_kategori (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nama_kategori TEXT UNIQUE NOT NULL,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+          )
+        `).run();
+
+        // Tabel Soal Latihan
+        await env.DB.prepare(`
+          CREATE TABLE IF NOT EXISTS latihan_soal (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            kategori_id INTEGER NOT NULL,
+            pertanyaan TEXT NOT NULL,
+            opsi_a TEXT NOT NULL,
+            opsi_b TEXT NOT NULL,
+            opsi_c TEXT NOT NULL,
+            opsi_d TEXT NOT NULL,
+            kunci_jawaban TEXT NOT NULL,
+            pembahasan TEXT,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (kategori_id) REFERENCES latihan_kategori(id) ON DELETE CASCADE
+          )
+        `).run();
+
         return Response.json({ success: true, message: "Semua tabel berhasil disiapkan!" }, { headers: corsHeaders });
       }
 
@@ -694,6 +720,90 @@ export default {
         `).bind(id).run();
 
         return Response.json({ success: true, message: "Data absensi berhasil dihapus." }, { headers: corsHeaders });
+      }
+
+      // ✅ 30. GET KATEGORI LATIHAN - SEMUA ORANG BOLEH AKSES
+      if (request.method === "GET" && url.pathname === "/api/latihan-kategori") {
+        const { results } = await env.DB.prepare(`
+          SELECT * FROM latihan_kategori ORDER BY nama_kategori
+        `).all();
+        return Response.json(results, { headers: corsHeaders });
+      }
+
+      // ✅ 31. POST KATEGORI LATIHAN - HANYA ADMIN
+      if (request.method === "POST" && url.pathname === "/api/latihan-kategori") {
+        const data = await request.json();
+        if (!data.nama_kategori || !data.nama_kategori.trim()) {
+          return Response.json({ success: false, error: "Nama kategori harus diisi" }, { status: 400, headers: corsHeaders });
+        }
+        const cleanName = data.nama_kategori.trim();
+        
+        const existing = await env.DB.prepare("SELECT * FROM latihan_kategori WHERE nama_kategori = ?").bind(cleanName).first();
+        if (existing) {
+          return Response.json({ success: false, error: "Kategori sudah terdaftar" }, { status: 400, headers: corsHeaders });
+        }
+        
+        const info = await env.DB.prepare(`
+          INSERT INTO latihan_kategori (nama_kategori) VALUES (?)
+        `).bind(cleanName).run();
+        
+        return Response.json({ success: true, id: info.lastRowId }, { headers: corsHeaders });
+      }
+
+      // ✅ 32. DELETE KATEGORI LATIHAN - HANYA ADMIN
+      if (request.method === "POST" && url.pathname === "/api/latihan-kategori/delete") {
+        const { id } = await request.json();
+        await env.DB.prepare(`DELETE FROM latihan_kategori WHERE id = ?`).bind(id).run();
+        return Response.json({ success: true }, { headers: corsHeaders });
+      }
+
+      // ✅ 33. GET SOAL LATIHAN - SEMUA ORANG BOLEH AKSES
+      if (request.method === "GET" && url.pathname === "/api/latihan-soal") {
+        const kategori_id = url.searchParams.get("kategori_id");
+        let query = "SELECT s.*, k.nama_kategori FROM latihan_soal s JOIN latihan_kategori k ON s.kategori_id = k.id";
+        let params = [];
+        if (kategori_id) {
+          query += " WHERE s.kategori_id = ?";
+          params.push(kategori_id);
+        }
+        query += " ORDER BY s.id ASC";
+        
+        const { results } = await env.DB.prepare(query).bind(...params).all();
+        return Response.json(results, { headers: corsHeaders });
+      }
+
+      // ✅ 34. POST SOAL LATIHAN - HANYA ADMIN
+      if (request.method === "POST" && url.pathname === "/api/latihan-soal") {
+        const data = await request.json();
+        const { id, kategori_id, pertanyaan, opsi_a, opsi_b, opsi_c, opsi_d, kunci_jawaban, pembahasan } = data;
+        
+        if (!kategori_id || !pertanyaan || !opsi_a || !opsi_b || !opsi_c || !opsi_d || !kunci_jawaban) {
+          return Response.json({ success: false, error: "Semua field wajib diisi kecuali pembahasan" }, { status: 400, headers: corsHeaders });
+        }
+        
+        if (id) {
+          await env.DB.prepare(`
+            UPDATE latihan_soal 
+            SET kategori_id = ?, pertanyaan = ?, opsi_a = ?, opsi_b = ?, opsi_c = ?, opsi_d = ?, kunci_jawaban = ?, pembahasan = ?
+            WHERE id = ?
+          `).bind(kategori_id, pertanyaan, opsi_a, opsi_b, opsi_c, opsi_d, kunci_jawaban, pembahasan || "", id).run();
+          
+          return Response.json({ success: true, message: "Soal berhasil diperbarui" }, { headers: corsHeaders });
+        } else {
+          const info = await env.DB.prepare(`
+            INSERT INTO latihan_soal (kategori_id, pertanyaan, opsi_a, opsi_b, opsi_c, opsi_d, kunci_jawaban, pembahasan)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+          `).bind(kategori_id, pertanyaan, opsi_a, opsi_b, opsi_c, opsi_d, kunci_jawaban, pembahasan || "").run();
+          
+          return Response.json({ success: true, id: info.lastRowId }, { headers: corsHeaders });
+        }
+      }
+
+      // ✅ 35. DELETE SOAL LATIHAN - HANYA ADMIN
+      if (request.method === "POST" && url.pathname === "/api/latihan-soal/delete") {
+        const { id } = await request.json();
+        await env.DB.prepare(`DELETE FROM latihan_soal WHERE id = ?`).bind(id).run();
+        return Response.json({ success: true }, { headers: corsHeaders });
       }
 
     } catch (e) {
