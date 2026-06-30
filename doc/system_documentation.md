@@ -42,6 +42,7 @@ LKP-INSAN-JAYA/
 ├── pendaftaran.html        # Form pendaftaran siswa & kelas baru secara manual (offline)
 ├── rekap-online.html       # Rekapitulasi & persetujuan pendaftar yang mendaftar online
 ├── laporan.html            # Pembuat laporan belajar bulanan (A4 Image Export)
+├── latihan-soal.html       # Halaman Tryout interaktif & editor kuis dinamis
 ├── js/
 │   ├── config.js           # Berkas konfigurasi global (URL API, Peran, Program, dll)
 │   └── common.js           # Script helper bersama (layout, auth check, service worker installer)
@@ -96,6 +97,11 @@ LKP-INSAN-JAYA/
 *   **Sesi Kehadiran harian**: Mendukung check-in dan check-out untuk maksimal 2 sesi per hari (Pagi/Siang).
 *   **Dashboard Pantau (Pimpinan)**: Admin/Pimpinan otomatis masuk ke tab pemantauan. Mereka dapat melihat riwayat kehadiran harian karyawan, foto verifikasi selfie, menambahkan data absen secara manual, mengedit status kehadiran (disertai catatan alasan edit), serta melihat tabel rekapitulasi kehadiran bulanan seluruh staf.
 
+### G. Latihan Soal Tryout (`latihan-soal.html`)
+*   **Simulasi Tryout**: Siswa/Guru memilih mata pelajaran (kategori), menjalankan kuis interaktif dengan timer, navigasi halaman soal, dan menampilkan hasil skor akhir beserta ulasan pembahasan lengkap untuk setiap nomor.
+*   **Bank Soal**: Menyediakan data bank soal per mata pelajaran yang dapat disalin ke clipboard atau dicetak untuk didistribusikan secara fisik.
+*   **Panel Kelola Soal (Khusus Admin)**: Manajemen CRUD kategori dan formulir pembuatan/penyuntingan soal tryout yang terintegrasi secara langsung ke database Cloudflare D1.
+
 ---
 
 ## 4. Panduan Instalasi & Menjalankan Aplikasi
@@ -145,6 +151,12 @@ Aplikasi berinteraksi dengan server backend Cloudflare Workers menggunakan fungs
 | `GET` | `/api/absensi-karyawan/rekap` | Mengambil data rekapitulasi kehadiran bulanan seluruh karyawan. |
 | `PUT` | `/api/absensi-karyawan/:id` | Mengubah status kehadiran karyawan tertentu (oleh pimpinan). |
 | `DELETE` | `/api/absensi-karyawan/:id` | Menghapus data absensi karyawan tertentu (oleh pimpinan). |
+| `GET` | `/api/latihan-kategori` | Mengambil semua daftar kategori mata pelajaran. |
+| `POST` | `/api/latihan-kategori` | Membuat kategori mata pelajaran baru (Admin). |
+| `POST` | `/api/latihan-kategori/delete` | Menghapus kategori mata pelajaran beserta relasi soalnya (Admin). |
+| `GET` | `/api/latihan-soal` | Mengambil daftar soal (opsional filter `kategori_id`). |
+| `POST` | `/api/latihan-soal` | Menyimpan atau memperbarui soal tryout (Admin). |
+| `POST` | `/api/latihan-soal/delete` | Menghapus soal tryout tertentu (Admin). |
 
 ---
 

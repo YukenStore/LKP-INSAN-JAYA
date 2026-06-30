@@ -18,6 +18,7 @@ graph TD
     Dashboard -->|Sidebar Navigation| PendaftaranBaru[Pendaftaran Baru: pendaftaran.html]
     Dashboard -->|Sidebar Navigation| LaporanBelajar[Laporan Belajar: laporan.html]
     Dashboard -->|Sidebar Navigation| RekapOnline[Pendaftaran Online: rekap-online.html]
+    Dashboard -->|Sidebar Navigation| LatihanSoal[Latihan Soal: latihan-soal.html]
     
     %% Hak Akses Pembatasan
     classDef adminOnly fill:#fee2e2,stroke:#ef4444,stroke-width:2px;
@@ -29,6 +30,7 @@ graph TD
     class AbsensiSiswa staff;
     class AbsensiKaryawan staff;
     class LaporanBelajar staff;
+    class LatihanSoal staff;
     class PendaftaranBaru adminOnly;
     class RekapOnline adminOnly;
 ```
@@ -44,6 +46,7 @@ graph TD
 | `pendaftaran.html` | Pendaftaran Baru | Admin / Super Admin | Formulir data diri siswa, NISN, NIK, Detail Jadwal Belajar Kustom (Senin - Sabtu), Data Orang Tua / Wali. |
 | `rekap-online.html` | Pendaftaran Online | Admin / Super Admin | Daftar kiriman form online web publik, Verifikasi Pembayaran Formulir, Konfirmasi Menjadi Siswa Aktif, Hapus Pendaftaran. |
 | `laporan.html` | Laporan Hasil Belajar | Semua Staf | Pengisian draf rapor (otomatis tersimpan), Tabel kompetensi nilai belajar (Maks 8 baris), Pratonton A4 Cetak, Ekspor File JPG. |
+| `latihan-soal.html` | Latihan Soal | Semua Staf | Pilihan mapel dinamis, Simulasi Tryout interaktif dengan timer & halaman evaluasi skor/pembahasan, Bank Soal salin/cetak, serta Form Manajemen CRUD Soal/Kategori mirip Google Form (Khusus Admin). |
 
 ---
 
@@ -87,9 +90,9 @@ Akses menu samping (sidebar) dan endpoint API dibatasi berdasarkan alamat email 
 
 | Peran | Ciri Akun (localStorage) | Akses Menu Sidebar | Akses Operasional API |
 | :--- | :--- | :--- | :--- |
-| **Super Admin / Pimpinan** | Email terdaftar di `ADMIN_EMAILS` (misal: `lpkinsanjaya@gmail.com`) | Semua Menu (Pendaftaran Online, Pendaftaran Baru, Absensi Siswa, Absensi Karyawan, Data Siswa Aktif, Rapor, Latihan Soal). | CRUD Data Siswa, Pengubahan SPP, Reset Absensi Siswa, Manajemen & Verifikasi Absensi Karyawan. |
-| **Admin / Staf TU** | Email terdaftar di `ADMIN_EMAILS` | Semua Menu. | CRUD Data Siswa, Verifikasi Absen Karyawan, Pendaftaran Online/Offline. *Tidak memiliki izin Reset data.* |
-| **Instruktur / Guru** | Email **TIDAK** terdaftar di `ADMIN_EMAILS` tapi terdaftar sebagai Pengajar | Menu Terbatas: Absensi Siswa, Absensi Karyawan (Hanya Absen Saya), Data Siswa Aktif (Hanya Baca), Laporan Hasil Belajar. | Mengisi Absensi Siswa per Sesi, Membuat Laporan Belajar Siswa, Mengisi Absen Selfie Karyawan. |
+| **Super Admin / Pimpinan** | Email terdaftar di `ADMIN_EMAILS` (misal: `lpkinsanjaya@gmail.com`) | Semua Menu (Pendaftaran Online, Pendaftaran Baru, Absensi Siswa, Absensi Karyawan, Data Siswa Aktif, Rapor, Latihan Soal). | CRUD Data Siswa, Pengubahan SPP, Reset Absensi Siswa, Manajemen & Verifikasi Absensi Karyawan, CRUD Soal & Kategori Tryout. |
+| **Admin / Staf TU** | Email terdaftar di `ADMIN_EMAILS` | Semua Menu. | CRUD Data Siswa, Verifikasi Absen Karyawan, Pendaftaran Online/Offline, CRUD Soal & Kategori Tryout. *Tidak memiliki izin Reset data.* |
+| **Instruktur / Guru** | Email **TIDAK** terdaftar di `ADMIN_EMAILS` tapi terdaftar sebagai Pengajar | Menu Terbatas: Absensi Siswa, Absensi Karyawan (Hanya Absen Saya), Data Siswa Aktif (Hanya Baca), Laporan Hasil Belajar, Latihan Soal (Tanpa Tab Kelola). | Mengisi Absensi Siswa per Sesi, Membuat Laporan Belajar Siswa, Mengisi Absen Selfie Karyawan, Simulasi Tryout. |
 
 ---
 

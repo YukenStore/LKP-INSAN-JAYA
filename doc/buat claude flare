@@ -757,6 +757,8 @@ export default {
       // ✅ 32. DELETE KATEGORI LATIHAN - HANYA ADMIN
       if (request.method === "POST" && url.pathname === "/api/latihan-kategori/delete") {
         const { id } = await request.json();
+        // Hapus semua soal terkait kategori ini terlebih dahulu (untuk mendukung cascade delete di SQLite)
+        await env.DB.prepare(`DELETE FROM latihan_soal WHERE kategori_id = ?`).bind(id).run();
         await env.DB.prepare(`DELETE FROM latihan_kategori WHERE id = ?`).bind(id).run();
         return Response.json({ success: true }, { headers: corsHeaders });
       }
