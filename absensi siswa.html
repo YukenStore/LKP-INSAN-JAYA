@@ -581,6 +581,7 @@
             const isReadingForm = existingPertemuanData === null;
             let dataPertemuanToUse = existingPertemuanData || {};
             
+            if (isReadingForm) {
                 const siswaId = document.getElementById('inpSiswa').value;
 
                 // Ambil state dari input tanggal & select status saat ini sebelum merender ulang
@@ -639,6 +640,7 @@
                 const dateEl = document.getElementById(`tanggal_p${i}`);
                 checkTanggalEmpty(dateEl);
             }
+        }
 
         async function simpanAbsensi() {
             const siswaId = document.getElementById('inpSiswa').value;
