@@ -434,10 +434,10 @@
                         </div>
 
                         <!-- TABEL NILAI -->
-                        <div class="flex-1 flex flex-col min-h-0 overflow-hidden border-b border-black">
-                            <table
-                                class="w-full border-collapse print-table text-[14px] text-center h-full table-fixed !border-b-0">
-                                <thead>
+                        <div class="flex-1 min-h-0 relative border-b border-black overflow-hidden">
+                            <div id="tableScrollWrapper" class="absolute inset-0">
+                                <table class="w-full border-collapse print-table text-[14px] text-center min-h-full table-fixed !border-b-0">
+                                    <thead>
                                     <tr id="prevTableHeader" class="bg-[#5b9bd5] text-black font-bold">
                                         <th class="bg-[#92d050] w-[5%] !border-b-0 p-0"></th>
                                         <th class="border-black w-[5%] p-2">NO</th>
@@ -452,6 +452,7 @@
                                     <!-- Data Tabel diinjeksi via JS -->
                                 </tbody>
                             </table>
+                            </div>
                         </div>
 
                         <!-- TTD FOOTER -->
@@ -806,7 +807,7 @@
         }
 
         function isTableOverflowing() {
-            const wrapper = document.querySelector('.flex-1.flex.flex-col.min-h-0.overflow-hidden');
+            const wrapper = document.getElementById('tableScrollWrapper');
             if (!wrapper) return false;
             // Toleransi 2px agar pembulatan pixel di browser tidak memicu peringatan salah
             return wrapper.scrollHeight > wrapper.clientHeight + 2;
