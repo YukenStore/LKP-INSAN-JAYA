@@ -73,6 +73,23 @@ Sistem ini membagi akses fiturnya berdasarkan 3 kelompok pengguna utama:
     *   Pratinjau laporan berukuran A4 standar (794 x 1123 px) berdesain resmi LKP dengan tanda tangan instruktur.
     *   Guru dapat mengunduh laporan hasil belajar tersebut dalam format **JPG** untuk dikirimkan secara mandiri ke wali murid melalui WhatsApp.
 
+### F. Absensi Karyawan & Guru
+*   **Kebutuhan**: Pencatatan kehadiran harian karyawan/guru secara mandiri dengan verifikasi GPS dan swafoto (selfie), serta portal pemantauan untuk pimpinan/admin.
+*   **Aturan Bisnis (Absen Mandiri)**:
+    *   Karyawan memilih namanya dari daftar dropdown karyawan LKP.
+    *   Mendukung maksimal **2 sesi presensi per hari** (Masuk & Pulang untuk masing-masing sesi).
+    *   Verifikasi lokasi GPS mengharuskan karyawan berada dalam radius maksimal **50 meter** dari koordinat kantor LKP Insan Jaya (`-3.66719, 103.77442`).
+    *   Karyawan wajib mengunggah foto selfie real-time yang diambil langsung melalui kamera perangkat. Swafoto akan disimpan di Cloudflare R2 bucket.
+    *   Menyediakan tampilan riwayat presensi bulanan beserta ringkasan jumlah status kehadiran (*Hadir*, *Izin*, *Sakit*, *Alpha*) karyawan bersangkutan.
+*   **Aturan Bisnis (Pantau Karyawan - Khusus Pimpinan)**:
+    *   Pengguna dengan peran pimpinan/admin secara otomatis diarahkan ke tab "Pantau Karyawan" (panel absen mandiri disembunyikan).
+    *   Pimpinan/admin dapat memantau kehadiran harian seluruh karyawan lengkap dengan jam masuk/pulang, status kehadiran, dan tautan untuk melihat foto selfie verifikasi.
+    *   Pimpinan/admin memiliki hak penuh untuk:
+        1.  Mengubah (edit) status kehadiran karyawan dengan disertai catatan alasan perubahan (wajib diisi).
+        2.  Menghapus data presensi karyawan jika terjadi kesalahan input.
+        3.  Menambahkan data presensi karyawan secara manual (untuk kasus izin/sakit atau lupa absen).
+    *   Menampilkan rekapitulasi jumlah kehadiran bulanan seluruh karyawan dalam format tabel ringkasan.
+
 ---
 
 ## 4. Persyaratan Non-Fungsional (NFR)

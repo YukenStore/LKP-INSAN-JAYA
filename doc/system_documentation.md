@@ -38,9 +38,13 @@ LKP-INSAN-JAYA/
 ├── index.html              # Halaman masuk (Login) dengan Google OAuth 2.0
 ├── dashboard.html          # Dashboard utama (Daftar & Edit Data Siswa)
 ├── absensi siswa.html      # Form pencatatan absensi dan status SPP
+├── absensi-karyawan.html   # Panel absensi mandiri karyawan (GPS/Selfie) & pantau pimpinan
 ├── pendaftaran.html        # Form pendaftaran siswa & kelas baru secara manual (offline)
 ├── rekap-online.html       # Rekapitulasi & persetujuan pendaftar yang mendaftar online
 ├── laporan.html            # Pembuat laporan belajar bulanan (A4 Image Export)
+├── js/
+│   ├── config.js           # Berkas konfigurasi global (URL API, Peran, Program, dll)
+│   └── common.js           # Script helper bersama (layout, auth check, service worker installer)
 ├── manifest.json           # File konfigurasi PWA (ikon, nama aplikasi, tema warna)
 ├── sw.js                   # Service Worker (syarat agar PWA bisa diinstal)
 ├── Logo Insan Jaya.png     # Logo LKP resolusi tinggi untuk tampilan web
@@ -86,6 +90,11 @@ LKP-INSAN-JAYA/
 *   **Visual Preview A4**: Menampilkan pratonton (preview) instan rapor berdesain resmi LKP Insan Jaya. Ukuran pratinjau akan menyesuaikan ukuran layar secara otomatis (responsive scale).
 *   **Ekspor Gambar (JPG)**: Dengan bantuan library `dom-to-image`, guru dapat mengunduh rapor tersebut dalam bentuk file gambar berkualitas tinggi berukuran A4 standar yang siap dicetak atau dikirim langsung ke orang tua siswa melalui WhatsApp.
 
+### F. Absensi Karyawan & Guru (`absensi-karyawan.html`)
+*   **Absen Selfie & GPS (Karyawan)**: Mengakses kamera depan dan meminta lokasi GPS. Validasi membatasi pengisian absen hanya dalam radius 50 meter dari LKP. Foto selfie disimpan di Cloudflare R2 bucket.
+*   **Sesi Kehadiran harian**: Mendukung check-in dan check-out untuk maksimal 2 sesi per hari (Pagi/Siang).
+*   **Dashboard Pantau (Pimpinan)**: Admin/Pimpinan otomatis masuk ke tab pemantauan. Mereka dapat melihat riwayat kehadiran harian karyawan, foto verifikasi selfie, menambahkan data absen secara manual, mengedit status kehadiran (disertai catatan alasan edit), serta melihat tabel rekapitulasi kehadiran bulanan seluruh staf.
+
 ---
 
 ## 4. Panduan Instalasi & Menjalankan Aplikasi
@@ -128,6 +137,13 @@ Aplikasi berinteraksi dengan server backend Cloudflare Workers menggunakan fungs
 | `GET` | `/api/pendaftaran-online` | Mengambil daftar lengkap pendaftar online. |
 | `POST` | `/api/pendaftaran-online/status`| Mengubah status pembayaran pendaftaran online. |
 | `POST` | `/api/pendaftaran-online/delete`| Menghapus pendaftar online dari sistem. |
+| `POST` | `/api/upload-foto-absensi` | Mengunggah foto selfie absensi karyawan ke Cloudflare R2 bucket. |
+| `POST` | `/api/absensi-karyawan` | Menyimpan data check-in/check-out absensi karyawan (atau input manual). |
+| `GET` | `/api/absensi-karyawan` | Mengambil riwayat data absensi karyawan per bulan. |
+| `GET` | `/api/absensi-karyawan/hari-ini`| Mengambil daftar absensi harian seluruh karyawan untuk pimpinan. |
+| `GET` | `/api/absensi-karyawan/rekap` | Mengambil data rekapitulasi kehadiran bulanan seluruh karyawan. |
+| `PUT` | `/api/absensi-karyawan/:id` | Mengubah status kehadiran karyawan tertentu (oleh pimpinan). |
+| `DELETE` | `/api/absensi-karyawan/:id` | Menghapus data absensi karyawan tertentu (oleh pimpinan). |
 
 ---
 
@@ -163,9 +179,8 @@ window.location.href = 'dashboard.html';
 
 Sebagai developer yang melanjutkan project ini, berikut beberapa rekomendasi peningkatan kualitas kode (refactoring) yang dapat Anda lakukan:
 
-1.  **Sentralisasi Konfigurasi (Sangat Direkomendasikan)**
-    Saat ini, variabel konfigurasi penting seperti daftar email admin/guru (`adminEmails`), daftar program studi, pilihan kelas, pilihan instruktur, dan base URL API dideklarasikan ulang di setiap halaman HTML. 
-    *   *Saran:* Buat berkas `config.js` untuk menampung data ini dan impor berkas tersebut di setiap halaman HTML.
+1.  **Arsitektur Konfigurasi Sentral (Sudah Diimplementasikan)**
+    Seluruh variabel konfigurasi penting (seperti daftar email admin/guru `CONFIG.ADMIN_EMAILS`, daftar program studi, pilihan kelas, pilihan instruktur, dan base URL API) kini telah dipusatkan pada berkas `js/config.js`. Navigasi sidebar dinamis dan otentikasi halaman diatur oleh `js/common.js`. Developer selanjutnya disarankan untuk selalu mengimpor kedua berkas ini di halaman baru.
 2.  **Perubahan Google OAuth Client ID**
     Jika Anda ingin merilis aplikasi ini ke domain baru atau port lokal yang berbeda secara permanen, buatlah Kredensial OAuth Web Client baru di Google Cloud Console, daftarkan URL asal (origins), dan ganti variabel `client_id` pada baris **133** di file [index.html](file:///c:/Users/lenov/OneDrive/Dokumen/Project/LKP-INSAN-JAYA/index.html#L133).
 3.  **Pengoptimalan PWA Caching**
