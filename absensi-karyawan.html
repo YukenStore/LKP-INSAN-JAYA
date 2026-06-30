@@ -450,11 +450,17 @@
 
             // Init
             if (navigator.permissions) {
-                navigator.permissions.query({ name: 'geolocation' }).then(function(result) {
-                    if (result.state === 'granted') {
-                        checkGPS(); // Auto load if permission already granted
-                    }
-                });
+                try {
+                    navigator.permissions.query({ name: 'geolocation' }).then(function(result) {
+                        if (result.state === 'granted') {
+                            checkGPS(); // Auto load if permission already granted
+                        }
+                    }).catch(err => {
+                        console.warn("Permissions API query rejected:", err);
+                    });
+                } catch (err) {
+                    console.warn("Permissions API query failed synchronously:", err);
+                }
             }
             loadMyHistory();
             if (isLeader) {
@@ -784,10 +790,16 @@
             const tbody = document.getElementById('myHistoryBody');
             
             const inpNama = document.getElementById('inpNamaKaryawan');
-            const finalName = (inpNama && inpNama.value) ? inpNama.value : (localStorage.getItem('lkp_karyawan_name_selected') || userName);
-            const targetEmail = finalName.toLowerCase().replace(/[^a-z0-9]/g, '') + "@lkp.com";
+            const finalName = (inpNama && inpNama.value) ? inpNama.value : (localStorage.getItem('lkp_karyawan_name_selected') || userName || '');
+            
+            tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-500 text-xs">Memuat data...</td></tr>`;
 
-            tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-500 text-xs">Memuat data...</td></tr>`;
+            if (!finalName) {
+                tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-500 text-xs">Silakan pilih nama Anda untuk memuat riwayat.</td></tr>`;
+                return;
+            }
+
+            const targetEmail = finalName.toLowerCase().replace(/[^a-z0-9]/g, '') + "@lkp.com";
 
             try {
                 // Ambil data format baru (menggunakan targetEmail dari Nama)
@@ -799,7 +811,10 @@
                 const data2 = await res2.json();
 
                 // Gabungkan data, filter HANYA untuk nama yang sedang dipilih, lalu hapus duplikat
-                let combined = [...data1, ...data2].filter(d => d.nama === finalName);
+                let combined = [];
+                if (Array.isArray(data1)) combined.push(...data1);
+                if (Array.isArray(data2)) combined.push(...data2);
+                combined = combined.filter(d => d.nama === finalName);
                 const uniqueIds = new Set();
                 let data = combined.filter(d => {
                     if (uniqueIds.has(d.id)) return false;
