@@ -398,7 +398,7 @@
         // Mengambil daftar nama guru/karyawan dari js/config.js (agar terhubung ke JS)
         const DAFTAR_NAMA_KARYAWAN = [...new Set([
             "Rifi", // Nama yang mungkin tidak ada di daftar program
-            ...Object.values(CONFIG.GURU_BY_PROGRAM).flat()
+            ...Object.values(CONFIG.GURU_BY_PROGRAM || {}).reduce((acc, val) => acc.concat(val), [])
         ])];
         // ========================================================
 
