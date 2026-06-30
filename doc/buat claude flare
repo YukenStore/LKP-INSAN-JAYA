@@ -13,7 +13,8 @@ const ADMIN_EMAILS = [
   'uthiuthi1130@gmail.com',
   'rantiagustini@gmail.com',
   'elsasidamawarniut@gmail.com',
-  'zilisaje@gmail.com'
+  'zilisaje@gmail.com',
+  'calonmaou@gmail.com'
 ];
 
 // Email pimpinan (bisa edit absensi karyawan lain)
@@ -21,7 +22,8 @@ const LEADER_EMAILS = [
   'elsasidamawarniut@gmail.com',
   'zilisaje@gmail.com',
   'yumenoboken@gmail.com',
-  'lpkinsanjaya@gmail.com'
+  'lpkinsanjaya@gmail.com',
+  'calonmaou@gmail.com'
 ];
 
 export default {
@@ -336,6 +338,7 @@ export default {
             penghasilan_wali TEXT,
             tahun_lahir_wali TEXT,
             program TEXT,
+            kelas TEXT,
             waktu_belajar TEXT,
             no_handphone TEXT,
             status TEXT DEFAULT 'Belum Lunas',
@@ -344,6 +347,7 @@ export default {
         `).run();
         
         // Coba tambahkan kolom baru jika belum ada (ignore error jika sudah ada)
+        try { await env.DB.prepare(`ALTER TABLE pendaftaran_online ADD COLUMN kelas TEXT`).run(); } catch(e) {}
         try { await env.DB.prepare(`ALTER TABLE absensi ADD COLUMN status_spp TEXT DEFAULT 'Belum Lunas'`).run(); } catch(e) {}
         try { await env.DB.prepare(`ALTER TABLE absensi ADD COLUMN format_absen INTEGER DEFAULT 12`).run(); } catch(e) {}
         try { await env.DB.prepare(`ALTER TABLE absensi_detail ADD COLUMN tanggal TEXT`).run(); } catch(e) {}
@@ -418,15 +422,15 @@ export default {
             nama_lengkap, jenis_kelamin, nisn, nik, tempat_lahir, tanggal_lahir, agama, alamat, kewarganegaraan, 
             penerima_kps, no_kps, nama_ibu, pekerjaan_ibu, penghasilan_ibu, tahun_lahir_ibu, nama_ayah, 
             pekerjaan_ayah, penghasilan_ayah, tahun_lahir_ayah, nama_wali, pekerjaan_wali, penghasilan_wali, 
-            tahun_lahir_wali, program, waktu_belajar, no_handphone, status
-          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Belum Lunas')
+            tahun_lahir_wali, program, kelas, waktu_belajar, no_handphone, status
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Belum Lunas')
         `).bind(
           data.nama_lengkap || "", data.jenis_kelamin || "", data.nisn || "", data.nik || "", data.tempat_lahir || "",
           data.tanggal_lahir || "", data.agama || "", data.alamat || "", data.kewarganegaraan || "", data.penerima_kps || "",
           data.no_kps || "", data.nama_ibu || "", data.pekerjaan_ibu || "", data.penghasilan_ibu || "", data.tahun_lahir_ibu || "",
           data.nama_ayah || "", data.pekerjaan_ayah || "", data.penghasilan_ayah || "", data.tahun_lahir_ayah || "",
           data.nama_wali || "", data.pekerjaan_wali || "", data.penghasilan_wali || "", data.tahun_lahir_wali || "",
-          data.program || "", data.waktu_belajar || "", data.no_handphone || ""
+          data.program || "", data.kelas || "", data.waktu_belajar || "", data.no_handphone || ""
         ).run();
         return Response.json({ success: true, message: "Pendaftaran berhasil dikirim!" }, { headers: corsHeaders });
       }
