@@ -452,6 +452,8 @@
             }
         }
 
+        let currentSiswaSPP = 'Belum Lunas';
+
         function onSiswaChange() {
             const siswaId = document.getElementById('inpSiswa').value;
             if (siswaId) {
@@ -476,32 +478,40 @@
             document.getElementById('containerSimpan').classList.add('flex');
         }
 
-        function loadSiswaData(siswaId) {
-            // Cek apakah ada data di localStorage
-            const savedData = localStorage.getItem(`lkp_absensi_siswa_${siswaId}`);
-            if (savedData) {
-                const data = JSON.parse(savedData);
+        async function loadSiswaData(siswaId) {
+            const tbody = document.getElementById('bodyAbsensiVertikal');
+            tbody.innerHTML = '<tr><td colspan="3" class="text-center py-8 text-slate-400">Mengambil data absensi dari server...</td></tr>';
+            
+            try {
+                const res = await fetchWithAuth(`${API_URL}/api/get-absensi-siswa?siswa_id=${siswaId}`);
+                const data = await res.json();
+                
                 const formatSelect = document.getElementById('inpFormatAbsen');
-                formatSelect.value = data.formatAbsen || '12';
-                formatSelect.dataset.oldValue = data.formatAbsen || '12'; // store old value for change confirmation
+                formatSelect.value = data.format_absen || '12';
+                formatSelect.dataset.oldValue = data.format_absen || '12';
+                
+                currentSiswaSPP = data.status_spp || 'Belum Lunas';
                 
                 if (isSuperAdmin()) {
                     const sppSelect = document.getElementById('inpStatusSPP');
-                    sppSelect.value = data.statusSPP || 'Belum Lunas';
+                    sppSelect.value = currentSiswaSPP;
                     applySPPColor(sppSelect);
                 }
-                renderTabelAbsensi(data.pertemuan || {});
-            } else {
-                // Default values
-                const formatSelect = document.getElementById('inpFormatAbsen');
-                formatSelect.value = '12';
-                formatSelect.dataset.oldValue = '12';
                 
-                if (isSuperAdmin()) {
-                    const sppSelect = document.getElementById('inpStatusSPP');
-                    sppSelect.value = 'Belum Lunas';
-                    applySPPColor(sppSelect);
+                let pertemuanObj = {};
+                if (data.pertemuan && data.pertemuan.length > 0) {
+                    data.pertemuan.forEach(p => {
+                        pertemuanObj[p.pertemuan_ke] = { tanggal: p.tanggal, status: p.status };
+                    });
                 }
+                
+                // Hapus data lokal jika ada, agar bersih
+                localStorage.removeItem(`lkp_absensi_siswa_${siswaId}`);
+                
+                renderTabelAbsensi(pertemuanObj);
+            } catch (error) {
+                console.error("Gagal load absensi:", error);
+                alert("Gagal mengambil data absensi dari server.");
                 renderTabelAbsensi({});
             }
         }
@@ -571,13 +581,7 @@
             const isReadingForm = existingPertemuanData === null;
             let dataPertemuanToUse = existingPertemuanData || {};
             
-            if (isReadingForm) {
                 const siswaId = document.getElementById('inpSiswa').value;
-                let savedPertemuan = {};
-                if (siswaId) {
-                    const savedData = localStorage.getItem(`lkp_absensi_siswa_${siswaId}`);
-                    if (savedData) savedPertemuan = JSON.parse(savedData).pertemuan || {};
-                }
 
                 // Ambil state dari input tanggal & select status saat ini sebelum merender ulang
                 for(let i=1; i<=12; i++){
@@ -585,8 +589,6 @@
                     const inpStatus = document.getElementById(`status_p${i}`);
                     if(inpTgl && inpStatus) {
                         dataPertemuanToUse[i] = { tanggal: inpTgl.value, status: inpStatus.value };
-                    } else if (savedPertemuan[i]) {
-                        dataPertemuanToUse[i] = savedPertemuan[i]; // Restore hidden data from localstorage
                     }
                 }
             }
@@ -637,45 +639,31 @@
                 const dateEl = document.getElementById(`tanggal_p${i}`);
                 checkTanggalEmpty(dateEl);
             }
-        }
 
-        function simpanAbsensi() {
+        async function simpanAbsensi() {
             const siswaId = document.getElementById('inpSiswa').value;
-            if (!siswaId) return alert('Pilih siswa terlebih dahulu!');
+            if (!siswaId) return;
 
             const formatAbsen = document.getElementById('inpFormatAbsen').value;
-            let statusSPP = "Belum Lunas";
-            
-            if(isSuperAdmin()) {
+            let statusSPP = currentSiswaSPP;
+            if (isSuperAdmin()) {
                 statusSPP = document.getElementById('inpStatusSPP').value;
-            } else {
-                // Keep the old SPP status if Guru is saving
-                const savedData = localStorage.getItem(`lkp_absensi_siswa_${siswaId}`);
-                if(savedData) {
-                    statusSPP = JSON.parse(savedData).statusSPP || "Belum Lunas";
+            }
+
+            let pertemuanData = [];
+            for (let i = 1; i <= formatAbsen; i++) {
+                const tgl = document.getElementById(`tanggal_p${i}`)?.value || '';
+                const sts = document.getElementById(`status_p${i}`)?.value || '';
+                if (tgl || sts) {
+                    pertemuanData.push({ ke: i, tanggal: tgl, status: sts });
                 }
             }
 
-            const pertemuan = {};
-            const jml = parseInt(formatAbsen);
-            let hasEmptyDate = false;
-            
-            for (let i = 1; i <= jml; i++) {
-                const tgl = document.getElementById(`tanggal_p${i}`).value;
-                const sts = document.getElementById(`status_p${i}`).value;
-                pertemuan[i] = {
-                    tanggal: tgl,
-                    status: sts
-                };
-                // Optional: You could warn them about empty dates before saving if you wanted, but we'll let them save partial for now.
-            }
-
             const payload = {
-                siswaId,
-                formatAbsen,
-                statusSPP,
-                pertemuan,
-                lastUpdated: new Date().toISOString()
+                siswa_id: siswaId,
+                format_absen: parseInt(formatAbsen),
+                status_spp: statusSPP,
+                pertemuan: pertemuanData
             };
 
             const btnSimpan = document.getElementById('btnSimpanPerubahan');
@@ -684,30 +672,33 @@
             btnSimpan.innerHTML = `<svg class="w-5 h-5 animate-spin mr-2" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Menyimpan...`;
 
             try {
-                localStorage.setItem(`lkp_absensi_siswa_${siswaId}`, JSON.stringify(payload));
+                const res = await fetchWithAuth(`${API_URL}/api/save-absensi-siswa`, {
+                    method: 'POST',
+                    body: JSON.stringify(payload)
+                });
                 
-                setTimeout(() => {
-                    btnSimpan.innerHTML = `<svg class="w-5 h-5 mr-2 text-green-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Berhasil Disimpan!`;
-                    btnSimpan.classList.remove('bg-violet-600', 'hover:bg-violet-700');
-                    btnSimpan.classList.add('bg-green-600', 'hover:bg-green-700');
+                if (!res.ok) throw new Error("Gagal menyimpan ke server");
+                
+                btnSimpan.innerHTML = `<svg class="w-5 h-5 mr-2 text-green-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Berhasil Disimpan!`;
+                btnSimpan.classList.remove('bg-violet-600', 'hover:bg-violet-700');
+                btnSimpan.classList.add('bg-green-600', 'hover:bg-green-700');
 
-                    setTimeout(() => {
-                        btnSimpan.innerHTML = originalText;
-                        btnSimpan.classList.add('bg-violet-600', 'hover:bg-violet-700');
-                        btnSimpan.classList.remove('bg-green-600', 'hover:bg-green-700');
-                        btnSimpan.disabled = false;
-                    }, 3000);
-                }, 500); // Simulate network delay
+                setTimeout(() => {
+                    btnSimpan.innerHTML = originalText;
+                    btnSimpan.classList.add('bg-violet-600', 'hover:bg-violet-700');
+                    btnSimpan.classList.remove('bg-green-600', 'hover:bg-green-700');
+                    btnSimpan.disabled = false;
+                }, 3000);
                 
             } catch (error) {
-                console.error("Gagal simpan lokal:", error);
-                alert("Gagal menyimpan data absensi.");
+                console.error("Gagal simpan:", error);
+                alert("Gagal menyimpan data absensi ke server.");
                 btnSimpan.disabled = false;
                 btnSimpan.innerHTML = originalText;
             }
         }
 
-        function resetAbsensi() {
+        async function resetAbsensi() {
             const siswaId = document.getElementById('inpSiswa').value;
             const inpSiswa = document.getElementById('inpSiswa');
             const namaSiswa = inpSiswa.options[inpSiswa.selectedIndex].text;
@@ -715,9 +706,23 @@
             if (!siswaId) return;
 
             if (confirm(`Apakah Anda yakin ingin MENGHAPUS (reset) seluruh data absensi dan SPP untuk siswa ${namaSiswa}?`)) {
-                localStorage.removeItem(`lkp_absensi_siswa_${siswaId}`);
-                loadSiswaData(siswaId); // Reload with empty state
-                alert('Data absensi berhasil di-reset.');
+                try {
+                    // Save empty payload to reset
+                    await fetchWithAuth(`${API_URL}/api/save-absensi-siswa`, {
+                        method: 'POST',
+                        body: JSON.stringify({
+                            siswa_id: siswaId,
+                            format_absen: 12,
+                            status_spp: 'Belum Lunas',
+                            pertemuan: []
+                        })
+                    });
+                    
+                    loadSiswaData(siswaId); // Reload empty state from server
+                    alert('Data absensi berhasil di-reset.');
+                } catch(e) {
+                    alert('Gagal mereset data absensi.');
+                }
             }
         }
         
