@@ -478,23 +478,27 @@
             
             <div class="space-y-4 mb-6 max-h-[60vh] overflow-y-auto custom-scrollbar pr-2 text-sm text-slate-700">
                 <div class="bg-blue-50 p-4 rounded-xl border border-blue-100">
-                    <h4 class="font-bold text-blue-800 mb-2 flex items-center gap-2"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg> Pengguna Android (Chrome)</h4>
-                    <ol class="list-decimal pl-4 space-y-1 text-xs">
-                        <li>Klik ikon <b>Gembok/Info</b> di samping alamat web di atas.</li>
-                        <li>Pilih menu <b>Izin (Permissions)</b>.</li>
-                        <li>Cari <b>Lokasi (Location)</b>, lalu ubah jadi <b>Izinkan (Allow)</b>.</li>
-                        <li>Lalu klik tombol <b>Muat Ulang Halaman</b> di bawah.</li>
+                    <h4 class="font-bold text-blue-800 mb-2 flex items-center gap-2">📱 Jika Menggunakan Aplikasi</h4>
+                    <p class="text-xs mb-2 text-blue-700">Karena ini versi aplikasi, pengaturan izin harus lewat Pengaturan HP:</p>
+                    <ol class="list-decimal pl-4 space-y-2 text-xs">
+                        <li><b>Android:</b> Tutup aplikasi ini. Tahan/Long-press icon aplikasi <b>LKP Insan Jaya</b> di layar HP Anda, pilih <b>Info Aplikasi (App Info)</b> (ikon i). Pilih menu <b>Izin (Permissions)</b> > <b>Lokasi</b> > pilih <b>Izinkan</b>.</li>
+                        <li><b>iPhone:</b> Buka <b>Pengaturan HP</b> > <b>Privasi & Keamanan</b> > <b>Layanan Lokasi</b> > cari <b>Situs Web Safari</b> > ubah jadi <b>Saat Menggunakan</b>.</li>
                     </ol>
                 </div>
 
+                <div class="flex items-center gap-2 my-1">
+                    <hr class="flex-1 border-slate-200">
+                    <span class="text-[10px] font-bold text-slate-400 uppercase">ATAU</span>
+                    <hr class="flex-1 border-slate-200">
+                </div>
+
                 <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
-                    <h4 class="font-bold text-slate-800 mb-2 flex items-center gap-2"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg> Pengguna iPhone (Safari)</h4>
-                    <ol class="list-decimal pl-4 space-y-1 text-xs">
-                        <li>Buka aplikasi <b>Pengaturan (Settings)</b> di iPhone.</li>
-                        <li>Cari dan buka <b>Privasi & Keamanan</b> > <b>Layanan Lokasi</b>.</li>
-                        <li>Pastikan Layanan Lokasi <b>Aktif</b>.</li>
-                        <li>Scroll ke bawah, pilih <b>Situs Web Safari</b>, ubah ke <b>Saat Menggunakan Aplikasi</b>.</li>
-                    </ol>
+                    <h4 class="font-bold text-slate-800 mb-2 flex items-center gap-2">🌐 Perbaiki Lewat Browser Normal</h4>
+                    <p class="text-xs mb-3 text-slate-600">Klik tombol di bawah untuk membuka sistem di browser normal. Setelah terbuka, klik ikon <b>Gembok 🔒</b> atau <b>aA</b> di samping link bagian atas, lalu izinkan Lokasi.</p>
+                    <button onclick="window.open('https://yukenstore.github.io/LKP-INSAN-JAYA/absensi-karyawan.html', '_blank')" class="w-full py-2.5 bg-slate-800 hover:bg-slate-900 text-white rounded-lg font-bold transition-all text-xs flex items-center justify-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+                        Buka di Browser (Chrome/Safari)
+                    </button>
                 </div>
             </div>
 
