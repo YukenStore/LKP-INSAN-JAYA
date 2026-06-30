@@ -1,6 +1,7 @@
+
 // Check Authentication & Page Access on Script Load
-const currentPage = window.location.pathname.split('/').pop() || 'index.html';
-const isLoginPage = currentPage === 'index.html' || currentPage === '';
+const currentPage = (window.location.pathname.split('/').pop() || 'index.html').replace('.html', '') + '.html';
+const isLoginPage = currentPage === 'index.html';
 const userEmail = localStorage.getItem('lkp_user_email');
 
 if (isLoginPage) {

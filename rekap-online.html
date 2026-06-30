@@ -318,47 +318,7 @@
             }
         }
 
-        // ================= FITUR TOMBOL INSTALL APLIKASI (PWA) =================
-        let deferredPrompt = null;
-        const btnInstallApp = document.getElementById('btnInstallApp');
-        const installText = document.getElementById('installText');
-        const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
-
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            if (!isStandalone) {
-                if (btnInstallApp) btnInstallApp.style.display = 'flex';
-                if (installText) installText.style.display = 'block';
-            }
-        });
-
-        if (btnInstallApp) {
-            btnInstallApp.addEventListener('click', async () => {
-                if (deferredPrompt !== null) {
-                    deferredPrompt.prompt();
-                    const { outcome } = await deferredPrompt.userChoice;
-                    if (outcome === 'accepted') {
-                        btnInstallApp.style.display = 'none';
-                        if (installText) installText.style.display = 'none';
-                    }
-                    deferredPrompt = null;
-                }
-            });
-        }
-
-        window.addEventListener('appinstalled', () => {
-            if (btnInstallApp) btnInstallApp.style.display = 'none';
-            if (installText) installText.style.display = 'none';
-        });
-
-        const iosInstallHint = document.getElementById('iosInstallHint');
-        const isIos = () => /iphone|ipad|ipod/.test(window.navigator.userAgent.toLowerCase());
-        const isInStandaloneMode = () => ('standalone' in window.navigator) && (window.navigator.standalone);
-
-        if (isIos() && !isInStandaloneMode()) {
-            if (iosInstallHint) iosInstallHint.style.display = 'block';
-        }
+        // PWA installer is handled globally by common.js
     </script>
 </body>
 </html>

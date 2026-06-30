@@ -778,10 +778,6 @@
                 document.querySelectorAll('[admin-only]').forEach(el => el.remove());
             }
         }
-                // Menghapus elemen yang ada tag admin-only (baik di Desktop maupun Mobile)
-                document.querySelectorAll('[admin-only]').forEach(el => el.remove());
-            }
-        }
 
         // Panggil saat DOM Load (walaupun nanti dipanggil lagi setiap render tabel)
         document.addEventListener("DOMContentLoaded", cekAksesAdmin);

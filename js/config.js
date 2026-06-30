@@ -1,21 +1,22 @@
 const CONFIG = {
     API_URL: 'https://absensi-api.yumenoboken.workers.dev',
     GOOGLE_CLIENT_ID: '103167988388-j5j4o83ieakv5o4rakv1v735btgp3ldp.apps.googleusercontent.com',
-    SUPER_ADMIN_EMAILS: ['lpkinsanjaya@gmail.com', 'yumenoboken@gmail.com'],
-    ADMIN_EMAILS: ['lpkinsanjaya@gmail.com', 'yumenoboken@gmail.com', 'elsasidamawarniut@gmail.com', 'zilisaje@gmail.com'],
+    SUPER_ADMIN_EMAILS: ['lpkinsanjaya@gmail.com', 'yumenoboken@gmail.com', 'calonmaou@gmail.com'],
+    ADMIN_EMAILS: ['lpkinsanjaya@gmail.com', 'yumenoboken@gmail.com', 'elsasidamawarniut@gmail.com', 'zilisaje@gmail.com', 'calonmaou@gmail.com'],
     GURU_EMAILS: [
-        'lpkinsanjaya@gmail.com', 
-        'yumenoboken@gmail.com', 
-        'mlbb080106@gmail.com', 
-        'tzaharasyaputri@gmail.com', 
-        'usniatun25@gmail.com', 
-        'ayunurhasanah1707@gmail.com', 
+        'lpkinsanjaya@gmail.com',
+        'yumenoboken@gmail.com',
+        'mlbb080106@gmail.com',
+        'tzaharasyaputri@gmail.com',
+        'usniatun25@gmail.com',
+        'ayunurhasanah1707@gmail.com',
         'edwinhamidihamidi@gmail.com',
         'shintadeslianty@gmail.com',
         'rantiagustini@gmail.com',
         'uthiuthi1130@gmail.com',
         'elsasidamawarniut@gmail.com',
-        'zilisaje@gmail.com'
+        'zilisaje@gmail.com',
+        'calonmaou@gmail.com'
     ],
     CLASSES_BY_PROGRAM: {
         "bimbel": ["Kelas 1", "Kelas 2", "Kelas 3", "Kelas 4", "Kelas 5", "Kelas 6"],
