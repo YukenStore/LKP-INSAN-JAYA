@@ -228,8 +228,12 @@
                                 <canvas id="canvas-snapshot"></canvas>
                             </div>
                             
-                            <div id="gps-status" class="w-full text-center p-3 bg-slate-100 rounded-xl mb-4 text-xs font-medium text-slate-600 flex flex-col gap-1">
-                                <span>📍 Memeriksa lokasi...</span>
+                            <div id="gps-status" class="w-full text-center p-4 bg-violet-50 rounded-xl mb-4 text-xs font-medium text-violet-800 flex flex-col gap-3 items-center border border-violet-100 shadow-inner">
+                                <span>📍 Sistem absensi membutuhkan verifikasi lokasi Anda.</span>
+                                <button onclick="checkGPS()" class="w-full py-2.5 bg-violet-600 hover:bg-violet-700 text-white rounded-lg font-bold transition-all flex items-center justify-center gap-2 shadow-sm">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                                    Izinkan Lokasi & Absen
+                                </button>
                             </div>
 
                             <!-- Buttons -->
@@ -466,6 +470,41 @@
         </div>
     </div>
 
+    <!-- MODAL GPS INSTRUCTIONS -->
+    <div id="modalGPS" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-[60] hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full p-6 flex flex-col transform scale-95 opacity-0 transition-all duration-300" id="modalGPSContent">
+            <h3 class="font-bricolage font-bold text-xl text-slate-800 mb-2">Cara Mengaktifkan GPS</h3>
+            <p class="text-xs text-slate-500 mb-4">Karena Anda sebelumnya menolak izin lokasi, browser menguncinya. Silakan ikuti langkah berikut sesuai HP Anda:</p>
+            
+            <div class="space-y-4 mb-6 max-h-[60vh] overflow-y-auto custom-scrollbar pr-2 text-sm text-slate-700">
+                <div class="bg-blue-50 p-4 rounded-xl border border-blue-100">
+                    <h4 class="font-bold text-blue-800 mb-2 flex items-center gap-2"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg> Pengguna Android (Chrome)</h4>
+                    <ol class="list-decimal pl-4 space-y-1 text-xs">
+                        <li>Klik ikon <b>Gembok/Info</b> di samping alamat web di atas.</li>
+                        <li>Pilih menu <b>Izin (Permissions)</b>.</li>
+                        <li>Cari <b>Lokasi (Location)</b>, lalu ubah jadi <b>Izinkan (Allow)</b>.</li>
+                        <li>Lalu klik tombol <b>Muat Ulang Halaman</b> di bawah.</li>
+                    </ol>
+                </div>
+
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                    <h4 class="font-bold text-slate-800 mb-2 flex items-center gap-2"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg> Pengguna iPhone (Safari)</h4>
+                    <ol class="list-decimal pl-4 space-y-1 text-xs">
+                        <li>Buka aplikasi <b>Pengaturan (Settings)</b> di iPhone.</li>
+                        <li>Cari dan buka <b>Privasi & Keamanan</b> > <b>Layanan Lokasi</b>.</li>
+                        <li>Pastikan Layanan Lokasi <b>Aktif</b>.</li>
+                        <li>Scroll ke bawah, pilih <b>Situs Web Safari</b>, ubah ke <b>Saat Menggunakan Aplikasi</b>.</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="flex flex-col gap-2">
+                <button onclick="window.location.reload()" class="w-full px-5 py-3 rounded-xl bg-violet-600 text-white font-bold hover:bg-violet-700 transition-colors text-sm text-center">Sudah Diizinkan? Muat Ulang Halaman</button>
+                <button onclick="closeModalGPS()" class="w-full px-5 py-3 rounded-xl bg-slate-100 text-slate-700 font-bold hover:bg-slate-200 transition-colors text-sm text-center">Tutup</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // CONFIG
         const API_URL = 'https://absensi-api.yumenoboken.workers.dev';
@@ -558,7 +597,13 @@
             }
 
             // Init
-            checkGPS();
+            if (navigator.permissions) {
+                navigator.permissions.query({ name: 'geolocation' }).then(function(result) {
+                    if (result.state === 'granted') {
+                        checkGPS(); // Auto load if permission already granted
+                    }
+                });
+            }
             loadMyHistory();
             if (isLeader) {
                 loadLeaderData();
@@ -633,6 +678,9 @@
 
         function checkGPS() {
             const statusEl = document.getElementById('gps-status');
+            statusEl.innerHTML = `<span class="flex items-center gap-2"><svg class="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg> ⏳ Sedang meminta lokasi...</span><span class="text-[10px]">Pilih "Allow/Izinkan" jika muncul popup</span>`;
+            statusEl.className = "w-full text-center p-3 bg-slate-100 border border-slate-200 rounded-xl mb-4 text-xs font-medium text-slate-600 flex flex-col gap-1 items-center";
+            
             if ("geolocation" in navigator) {
                 navigator.geolocation.getCurrentPosition(
                     (position) => {
@@ -656,15 +704,43 @@
                     },
                     (error) => {
                         let msg = "Gagal mengambil lokasi.";
-                        if (error.code === 1) msg = "Akses lokasi (GPS) ditolak oleh browser.";
-                        statusEl.innerHTML = `⚠️ ${msg}`;
-                        statusEl.className = "w-full text-center p-3 bg-yellow-50 border border-yellow-100 rounded-xl mb-4 text-xs font-bold text-yellow-700";
+                        if (error.code === 1) {
+                            msg = "Akses lokasi ditolak.";
+                            statusEl.innerHTML = `⚠️ ${msg}<br><span class="font-normal mt-1">Anda tidak dapat menekan Absen Masuk sebelum mengizinkan GPS.</span><button onclick="openModalGPS()" class="mt-3 w-full py-2.5 bg-amber-500 hover:bg-amber-600 text-white rounded-lg font-bold transition-all text-xs flex items-center justify-center gap-2 shadow-sm"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg> Cara Memperbaiki Izin Lokasi</button>`;
+                        } else if (error.code === 2) {
+                            msg = "Sinyal GPS tidak ditemukan/lemah.";
+                            statusEl.innerHTML = `⚠️ ${msg}<br><button onclick="checkGPS()" class="mt-2 px-4 py-2 bg-amber-100 hover:bg-amber-200 text-amber-800 rounded-lg font-bold text-xs transition-colors">Coba Lagi</button>`;
+                        } else {
+                            statusEl.innerHTML = `⚠️ ${msg}`;
+                        }
+                        
+                        statusEl.className = "w-full text-center p-4 bg-amber-50 border border-amber-200 rounded-xl mb-4 text-xs font-bold text-amber-800 flex flex-col gap-1";
+                        
+                        document.getElementById('absen-actions').classList.remove('hidden');
                     },
                     { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
                 );
             } else {
                 statusEl.innerHTML = `⚠️ Browser tidak mendukung GPS.`;
             }
+        }
+
+        function openModalGPS() {
+            const modal = document.getElementById('modalGPS');
+            const content = document.getElementById('modalGPSContent');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                content.classList.remove('scale-95', 'opacity-0');
+            }, 10);
+        }
+
+        function closeModalGPS() {
+            const modal = document.getElementById('modalGPS');
+            const content = document.getElementById('modalGPSContent');
+            content.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
         }
 
         // ==========================================
