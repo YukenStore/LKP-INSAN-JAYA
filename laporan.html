@@ -103,6 +103,8 @@
             /* Tinggi standar A4 */
             background: white;
             box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            -webkit-text-size-adjust: 100%;
+            text-size-adjust: 100%;
         }
 
         .vertical-text {
@@ -760,7 +762,7 @@
             const container = document.getElementById('barisContainer');
             container.innerHTML = '';
             rowData.forEach((row, idx) => {
-                let mapelInput = isBimbel ? `<input type="text" class="px-2 py-1.5 text-xs rounded border border-slate-200" placeholder="Mapel" value="${row.mapel || ''}" oninput="updateRow(${idx}, 'mapel', this.value)">` : '';
+                let mapelInput = isBimbel ? `<input type="text" class="px-2 py-1.5 text-xs rounded border border-slate-200" placeholder="Mapel" value="${row.mapel || ''}" oninput="updateRow(${idx}, 'mapel', this)">` : '';
                 container.innerHTML += `
                     <div class="bg-slate-100 p-3 rounded-lg border border-slate-200 relative">
                         <div class="absolute top-2 right-2 flex gap-2">
@@ -769,10 +771,10 @@
                         <p class="text-[10px] font-bold text-slate-400 mb-2">Baris ${idx + 1}</p>
                         <div class="grid ${isBimbel ? 'grid-cols-2' : 'grid-cols-1'} gap-2 mb-2">
                             ${mapelInput}
-                            <input type="text" class="px-2 py-1.5 text-xs rounded border border-slate-200" placeholder="Kondisi" value="${row.kondisi || ''}" oninput="updateRow(${idx}, 'kondisi', this.value)">
+                            <input type="text" class="px-2 py-1.5 text-xs rounded border border-slate-200" placeholder="Kondisi" value="${row.kondisi || ''}" oninput="updateRow(${idx}, 'kondisi', this)">
                         </div>
-                        <textarea class="w-full px-2 py-1.5 text-xs rounded border border-slate-200 mb-2" rows="2" placeholder="Materi yang diajarkan" oninput="updateRow(${idx}, 'materi', this.value)">${row.materi}</textarea>
-                        <textarea class="w-full px-2 py-1.5 text-xs rounded border border-slate-200" rows="2" placeholder="Hasil Pembelajaran" oninput="updateRow(${idx}, 'hasil', this.value)">${row.hasil}</textarea>
+                        <textarea class="w-full px-2 py-1.5 text-xs rounded border border-slate-200 mb-2" rows="2" placeholder="Materi yang diajarkan" oninput="updateRow(${idx}, 'materi', this)">${row.materi}</textarea>
+                        <textarea class="w-full px-2 py-1.5 text-xs rounded border border-slate-200" rows="2" placeholder="Hasil Pembelajaran" oninput="updateRow(${idx}, 'hasil', this)">${row.hasil}</textarea>
                     </div>
                 `;
             });
@@ -786,6 +788,15 @@
             rowData.push({ mapel: '', materi: '', kondisi: '', hasil: '' });
             renderInputBaris();
             updatePreview();
+
+            setTimeout(() => {
+                if (isTableOverflowing()) {
+                    alert("Kapasitas kertas A4 sudah penuh! Tidak bisa menambah baris lagi.");
+                    rowData.pop();
+                    renderInputBaris();
+                    updatePreview();
+                }
+            }, 10);
         }
 
         function hapusBaris(idx) {
@@ -794,9 +805,24 @@
             updatePreview();
         }
 
-        function updateRow(idx, field, value) {
-            rowData[idx][field] = value;
+        function isTableOverflowing() {
+            const wrapper = document.querySelector('.flex-1.flex.flex-col.min-h-0.overflow-hidden');
+            if (!wrapper) return false;
+            // Toleransi 2px agar pembulatan pixel di browser tidak memicu peringatan salah
+            return wrapper.scrollHeight > wrapper.clientHeight + 2;
+        }
+
+        function updateRow(idx, field, element) {
+            const oldValue = rowData[idx][field];
+            rowData[idx][field] = element.value;
             updatePreview();
+            
+            if (isTableOverflowing()) {
+                rowData[idx][field] = oldValue;
+                element.value = oldValue;
+                updatePreview();
+                alert("Batas maksimum A4 tercapai! Teks terlalu panjang.");
+            }
         }
 
         function updatePreview() {
