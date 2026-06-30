@@ -154,7 +154,7 @@
                                     <span class="text-xs font-semibold text-slate-400">Total Soal: <span id="runnerTotal">0</span></span>
                                 </div>
 
-                                <div id="runnerPertanyaan" class="text-slate-800 font-medium text-base mb-6 leading-relaxed">
+                                <div id="runnerPertanyaan" class="text-slate-800 font-medium text-base mb-6 leading-relaxed whitespace-pre-wrap">
                                     Sedang memuat pertanyaan...
                                 </div>
 
@@ -432,6 +432,17 @@
         let tryoutTimerInterval = null;
         let tryoutTimeRemaining = 0; // in seconds
 
+        // Helper to escape HTML characters for safety and XSS prevention
+        function escapeHtml(text) {
+            if (text === null || text === undefined) return '';
+            return String(text)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             loadCategories();
             checkAdminPanel();
@@ -446,6 +457,16 @@
 
         // Switch Halaman / Tab Utama
         function switchTab(tab) {
+            if (tryoutTimerInterval && tab !== 'tryout') {
+                if (!confirm("Tryout sedang berjalan. Pindah ke halaman lain akan membatalkan tryout Anda. Lanjutkan?")) {
+                    return;
+                } else {
+                    clearInterval(tryoutTimerInterval);
+                    tryoutTimerInterval = null;
+                    resetSetupTryout();
+                }
+            }
+
             const tabs = ['tryout', 'bank', 'manage'];
             tabs.forEach(t => {
                 const btn = document.getElementById(`tab${t.charAt(0).toUpperCase() + t.slice(1)}`);
@@ -564,6 +585,9 @@
                 if (res.ok) {
                     await loadCategories();
                     loadCategoriesForFilters();
+                } else {
+                    const err = await res.json();
+                    alert(err.error || "Gagal menghapus kategori");
                 }
             } catch (err) {
                 console.error(err);
@@ -583,6 +607,9 @@
             try {
                 // Fetch questions for this category
                 const res = await fetch(`${API_URL}/api/latihan-soal?kategori_id=${catId}`);
+                if (!res.ok) {
+                    throw new Error("Gagal mengambil kuis dari server");
+                }
                 const questions = await res.json();
 
                 if (questions.length === 0) {
@@ -621,7 +648,7 @@
                 if (tryoutTimeRemaining <= 0) {
                     clearInterval(tryoutTimerInterval);
                     alert("Waktu tryout Anda telah habis! Sistem akan mengumpulkan jawaban otomatis.");
-                    finishTryout();
+                    finishTryout(true);
                 }
             }, 1000);
         }
@@ -722,7 +749,11 @@
             }
         }
 
-        function finishTryout() {
+        function finishTryout(isAuto = false) {
+            if (!isAuto && !confirm("Apakah Anda yakin ingin menyelesaikan kuis dan mengumpulkan jawaban?")) {
+                return;
+            }
+
             if (tryoutTimerInterval) {
                 clearInterval(tryoutTimerInterval);
                 tryoutTimerInterval = null;
@@ -769,21 +800,21 @@
                             <span class="text-xs font-bold text-slate-500">Soal Nomor ${idx + 1}</span>
                             ${statusBadge}
                         </div>
-                        <p class="text-sm font-medium text-slate-800 leading-relaxed mb-4">${q.pertanyaan}</p>
+                        <p class="text-sm font-medium text-slate-800 leading-relaxed mb-4 whitespace-pre-wrap">${escapeHtml(q.pertanyaan)}</p>
                         
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs mb-4">
-                            <div class="p-2.5 rounded bg-white border border-slate-100"><span class="font-bold text-slate-400 mr-1.5">A</span> ${q.opsi_a}</div>
-                            <div class="p-2.5 rounded bg-white border border-slate-100"><span class="font-bold text-slate-400 mr-1.5">B</span> ${q.opsi_b}</div>
-                            <div class="p-2.5 rounded bg-white border border-slate-100"><span class="font-bold text-slate-400 mr-1.5">C</span> ${q.opsi_c}</div>
-                            <div class="p-2.5 rounded bg-white border border-slate-100"><span class="font-bold text-slate-400 mr-1.5">D</span> ${q.opsi_d}</div>
+                            <div class="p-2.5 rounded bg-white border border-slate-100"><span class="font-bold text-slate-400 mr-1.5">A</span> ${escapeHtml(q.opsi_a)}</div>
+                            <div class="p-2.5 rounded bg-white border border-slate-100"><span class="font-bold text-slate-400 mr-1.5">B</span> ${escapeHtml(q.opsi_b)}</div>
+                            <div class="p-2.5 rounded bg-white border border-slate-100"><span class="font-bold text-slate-400 mr-1.5">C</span> ${escapeHtml(q.opsi_c)}</div>
+                            <div class="p-2.5 rounded bg-white border border-slate-100"><span class="font-bold text-slate-400 mr-1.5">D</span> ${escapeHtml(q.opsi_d)}</div>
                         </div>
 
                         <div class="border-t border-dashed border-slate-200 pt-3 text-xs space-y-2">
-                            <div><span class="font-bold text-slate-500">Jawaban Anda:</span> <span class="font-bold ${isCorrect ? 'text-green-600' : 'text-red-600'}">${userAns}</span></div>
-                            <div><span class="font-bold text-slate-500">Kunci Jawaban:</span> <span class="font-bold text-green-600">${q.kunci_jawaban}</span></div>
+                            <div><span class="font-bold text-slate-500">Jawaban Anda:</span> <span class="font-bold ${isCorrect ? 'text-green-600' : 'text-red-600'}">${escapeHtml(userAns)}</span></div>
+                            <div><span class="font-bold text-slate-500">Kunci Jawaban:</span> <span class="font-bold text-green-600">${escapeHtml(q.kunci_jawaban)}</span></div>
                             <div class="mt-2 bg-white/70 p-3 rounded-lg border border-slate-200/50">
                                 <span class="block font-bold text-slate-600 mb-1">Penjelasan Pembahasan:</span>
-                                <span class="text-slate-500 leading-relaxed">${q.pembahasan || 'Tidak ada penjelasan pembahasan untuk soal ini.'}</span>
+                                <span class="text-slate-500 leading-relaxed whitespace-pre-wrap">${escapeHtml(q.pembahasan) || 'Tidak ada penjelasan pembahasan untuk soal ini.'}</span>
                             </div>
                         </div>
                     </div>
@@ -820,6 +851,9 @@
 
             try {
                 const res = await fetch(`${API_URL}/api/latihan-soal?kategori_id=${catId}`);
+                if (!res.ok) {
+                    throw new Error("Gagal mengambil bank soal dari server");
+                }
                 const data = await res.json();
 
                 if (data.length === 0) {
@@ -835,22 +869,22 @@
                     <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm bank-soal-item">
                         <div class="flex items-center justify-between border-b border-slate-100 pb-2 mb-3">
                             <span class="text-xs font-bold text-violet-600 uppercase tracking-wider">Soal Ke-${idx + 1}</span>
-                            <span class="text-[10px] bg-slate-100 px-2 py-0.5 rounded font-bold text-slate-500 uppercase">${q.nama_kategori}</span>
+                            <span class="text-[10px] bg-slate-100 px-2 py-0.5 rounded font-bold text-slate-500 uppercase">${escapeHtml(q.nama_kategori)}</span>
                         </div>
-                        <p class="text-sm font-medium text-slate-800 leading-relaxed mb-4 bank-pertanyaan">${q.pertanyaan}</p>
+                        <p class="text-sm font-medium text-slate-800 leading-relaxed mb-4 bank-pertanyaan whitespace-pre-wrap">${escapeHtml(q.pertanyaan)}</p>
                         
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs mb-4">
-                            <div class="p-2.5 rounded bg-slate-50 border border-slate-100"><span class="font-bold text-slate-400 mr-1">A.</span> ${q.opsi_a}</div>
-                            <div class="p-2.5 rounded bg-slate-50 border border-slate-100"><span class="font-bold text-slate-400 mr-1">B.</span> ${q.opsi_b}</div>
-                            <div class="p-2.5 rounded bg-slate-50 border border-slate-100"><span class="font-bold text-slate-400 mr-1">C.</span> ${q.opsi_c}</div>
-                            <div class="p-2.5 rounded bg-slate-50 border border-slate-100"><span class="font-bold text-slate-400 mr-1">D.</span> ${q.opsi_d}</div>
+                            <div class="p-2.5 rounded bg-slate-50 border border-slate-100"><span class="font-bold text-slate-400 mr-1">A.</span> ${escapeHtml(q.opsi_a)}</div>
+                            <div class="p-2.5 rounded bg-slate-50 border border-slate-100"><span class="font-bold text-slate-400 mr-1">B.</span> ${escapeHtml(q.opsi_b)}</div>
+                            <div class="p-2.5 rounded bg-slate-50 border border-slate-100"><span class="font-bold text-slate-400 mr-1">C.</span> ${escapeHtml(q.opsi_c)}</div>
+                            <div class="p-2.5 rounded bg-slate-50 border border-slate-100"><span class="font-bold text-slate-400 mr-1">D.</span> ${escapeHtml(q.opsi_d)}</div>
                         </div>
 
                         <div class="border-t border-dashed border-slate-200 pt-3 text-xs space-y-1">
-                            <div><span class="font-bold text-slate-500">Kunci Jawaban:</span> <span class="font-bold text-green-600">${q.kunci_jawaban}</span></div>
+                            <div><span class="font-bold text-slate-500">Kunci Jawaban:</span> <span class="font-bold text-green-600">${escapeHtml(q.kunci_jawaban)}</span></div>
                             <div class="bg-slate-50 p-2.5 rounded-lg border border-slate-100 mt-2">
                                 <span class="block font-bold text-slate-600 mb-1">Pembahasan:</span>
-                                <span class="text-slate-500 leading-relaxed">${q.pembahasan || 'Tidak ada pembahasan.'}</span>
+                                <span class="text-slate-500 leading-relaxed whitespace-pre-wrap">${escapeHtml(q.pembahasan) || 'Tidak ada pembahasan.'}</span>
                             </div>
                         </div>
                     </div>
@@ -916,6 +950,9 @@
                 if (catId) url += `?kategori_id=${catId}`;
 
                 const res = await fetch(url);
+                if (!res.ok) {
+                    throw new Error("Gagal mengambil daftar soal dari server");
+                }
                 const data = await res.json();
                 manageQuestionsList = data;
 
@@ -927,13 +964,13 @@
                 tbody.innerHTML = data.map(q => `
                     <tr class="hover:bg-slate-50 transition-colors border-b border-slate-100">
                         <td class="p-3 align-top max-w-[300px]">
-                            <div class="line-clamp-2">${q.pertanyaan}</div>
+                            <div class="line-clamp-2 whitespace-pre-wrap">${escapeHtml(q.pertanyaan)}</div>
                         </td>
                         <td class="p-3 align-top font-semibold text-slate-500 capitalize">
-                            ${q.nama_kategori}
+                            ${escapeHtml(q.nama_kategori)}
                         </td>
                         <td class="p-3 align-top text-center font-bold text-violet-700">
-                            ${q.kunci_jawaban}
+                            ${escapeHtml(q.kunci_jawaban)}
                         </td>
                         <td class="p-3 align-top">
                             <div class="flex justify-center items-center gap-3">
@@ -1058,6 +1095,9 @@
 
                 if (res.ok) {
                     loadManageSoal();
+                } else {
+                    const err = await res.json();
+                    alert(err.error || "Gagal menghapus soal");
                 }
             } catch (err) {
                 console.error(err);
