@@ -122,6 +122,9 @@
         .print-table td {
             border: 1px solid black;
             padding: 8px;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            word-break: break-word;
         }
     </style>
 </head>
@@ -316,20 +319,11 @@
                             <option value="">Pilih Siswa...</option>
                         </select>
                     </div>
-                    <div class="grid grid-cols-2 gap-3">
-                        <div>
-                            <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Bulan Laporan</label>
-                            <input type="text" id="inpBulan" placeholder="Contoh: Juli-Agustus" value="JUNI"
-                                class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:border-violet-500 uppercase"
-                                oninput="updatePreview()">
-                        </div>
-                        <div>
-                            <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Tanggal
-                                Cetak</label>
-                            <input type="date" id="inpTanggal"
-                                class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:border-violet-500"
-                                onchange="updatePreview()">
-                        </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Tanggal Cetak</label>
+                        <input type="date" id="inpTanggal"
+                            class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:border-violet-500"
+                            onchange="updatePreview()">
                     </div>
 
                     <div class="pt-4 border-t border-slate-200">
@@ -438,27 +432,26 @@
                         <!-- TABEL NILAI -->
                         <div class="flex-1 min-h-0 relative border-b border-black overflow-hidden">
                             <div id="tableScrollWrapper" class="absolute inset-0">
-                                <table class="w-full border-collapse print-table text-[14px] text-center min-h-full table-fixed !border-b-0">
+                                <table class="w-full border-collapse print-table text-[14px] text-center h-full table-fixed !border-b-0">
                                     <thead>
-                                    <tr id="prevTableHeader" class="bg-[#5b9bd5] text-black font-bold">
-                                        <th class="bg-[#92d050] w-[5%] !border-b-0 p-0"></th>
-                                        <th class="border-black w-[5%] p-2">NO</th>
-                                        <th class="border-black w-[16%] p-2">MAPEL</th>
-                                        <th class="border-black w-[25%] p-2">MATERI YANG DIAJARKAN</th>
-                                        <th class="border-black w-[10%] p-2">KONDISI</th>
-                                        <th class="border-black w-[24%] p-2">HASIL PEMBELAJARAN</th>
-                                        <th class="border-black w-[15%] p-2">CATATAN</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="prevTableBody">
-                                    <!-- Data Tabel diinjeksi via JS -->
-                                </tbody>
-                            </table>
+                                        <tr id="prevTableHeader" class="bg-[#5b9bd5] text-black font-bold">
+                                            <th class="border-black w-[7%] p-2">NO</th>
+                                            <th class="border-black w-[16%] p-2">MAPEL</th>
+                                            <th class="border-black w-[25%] p-2">MATERI YANG DIAJARKAN</th>
+                                            <th class="border-black w-[12%] p-2">KONDISI</th>
+                                            <th class="border-black w-[24%] p-2">HASIL PEMBELAJARAN</th>
+                                            <th class="border-black w-[16%] p-2">CATATAN</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="prevTableBody">
+                                        <!-- Data Tabel diinjeksi via JS -->
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
 
                         <!-- TTD FOOTER -->
-                        <div class="flex justify-end text-[14px] flex-shrink-0 pt-8">
+                        <div id="report-footer" class="mt-auto flex justify-end text-[14px] flex-shrink-0 pt-8">
                             <div class="text-center w-64">
                                 <p>Muara Enim, &nbsp; <span id="prevTanggal">09 Juni 2026</span></p>
                                 <p>Instruktur,</p>
@@ -685,7 +678,6 @@
                     
                     if (data.draft_data) {
                         const parsed = data.draft_data;
-                        document.getElementById('inpBulan').value = parsed.bulan || 'JUNI';
                         if (parsed.tanggal) document.getElementById('inpTanggal').value = parsed.tanggal;
                         document.getElementById('inpCatatan').value = parsed.catatan || '';
                         rowData = parsed.rows && parsed.rows.length > 0 ? parsed.rows : [{ mapel: '', materi: '', kondisi: '', hasil: '' }];
@@ -710,7 +702,6 @@
             }
 
             const dataToSave = {
-                bulan: document.getElementById('inpBulan').value,
                 tanggal: document.getElementById('inpTanggal').value,
                 catatan: document.getElementById('inpCatatan').value,
                 rows: rowData
@@ -810,9 +801,13 @@
 
         function isTableOverflowing() {
             const wrapper = document.getElementById('tableScrollWrapper');
-            if (!wrapper) return false;
-            // Toleransi 2px agar pembulatan pixel di browser tidak memicu peringatan salah
-            return wrapper.scrollHeight > wrapper.clientHeight + 2;
+            const table = wrapper ? wrapper.querySelector('table') : null;
+            if (!wrapper || !table) return false;
+
+            // Bandingkan scrollHeight vs clientHeight wrapper
+            // scrollHeight = tinggi konten sebenarnya, clientHeight = ruang yang tersedia
+            // Toleransi 22px ≈ 1 baris teks (14px font + 8px padding)
+            return wrapper.scrollHeight > wrapper.clientHeight + 22;
         }
 
         function updateRow(idx, field, element) {
@@ -846,10 +841,6 @@
             }
             document.getElementById('prevTanggal').innerText = formattedDate;
 
-            let txtBulan = document.getElementById('inpBulan').value || 'BULAN';
-            txtBulan = txtBulan.replace(/\s+/g, '');
-            let bulanFormatted = `BULAN ${txtBulan}`;
-
             let txtCatatan = document.getElementById('inpCatatan').value || '';
             txtCatatan = txtCatatan.replace(/\n/g, '<br>');
 
@@ -857,42 +848,43 @@
             const theadTr = document.getElementById('prevTableHeader');
             if (isBimbel) {
                 theadTr.innerHTML = `
-                    <th class="bg-[#92d050] w-[5%] !border-b-0 p-0"></th>
-                    <th class="border-black w-[5%] p-2">NO</th>
-                    <th class="border-black w-[13%] p-2">MAPEL</th>
-                    <th class="border-black w-[24%] p-2">MATERI YANG DIAJARKAN</th>
+                    <th class="border-black w-[7%] p-2">NO</th>
+                    <th class="border-black w-[16%] p-2">MAPEL</th>
+                    <th class="border-black w-[25%] p-2">MATERI YANG DIAJARKAN</th>
                     <th class="border-black w-[12%] p-2">KONDISI</th>
-                    <th class="border-black w-[23%] p-2">HASIL PEMBELAJARAN</th>
-                    <th class="border-black w-[18%] p-2">CATATAN</th>
+                    <th class="border-black w-[24%] p-2">HASIL PEMBELAJARAN</th>
+                    <th class="border-black w-[16%] p-2">CATATAN</th>
                 `;
             } else {
                 theadTr.innerHTML = `
-                    <th class="bg-[#92d050] w-[5%] !border-b-0 p-0"></th>
-                    <th class="border-black w-[5%] p-2">NO</th>
-                    <th class="border-black w-[30%] p-2">MATERI YANG DIAJARKAN</th>
+                    <th class="border-black w-[7%] p-2">NO</th>
+                    <th class="border-black w-[35%] p-2">MATERI YANG DIAJARKAN</th>
                     <th class="border-black w-[12%] p-2">KONDISI</th>
                     <th class="border-black w-[30%] p-2">HASIL PEMBELAJARAN</th>
-                    <th class="border-black w-[18%] p-2">CATATAN</th>
+                    <th class="border-black w-[16%] p-2">CATATAN</th>
                 `;
             }
 
             const tbody = document.getElementById('prevTableBody');
             tbody.innerHTML = '';
 
+            // Baris kosong untuk stretch tabel penuh ke bawah halaman A4
+            let emptyCells = isBimbel ?
+                `<td class="border-black !border-t-0 !border-b-0 p-0 text-[0px] h-0"></td>
+                 <td class="border-black !border-t-0 !border-b-0 p-0 text-[0px] h-0"></td>
+                 <td class="border-black !border-t-0 !border-b-0 p-0 text-[0px] h-0"></td>
+                 <td class="border-black !border-t-0 !border-b-0 p-0 text-[0px] h-0"></td>
+                 <td class="border-black !border-t-0 !border-b-0 p-0 text-[0px] h-0"></td>
+                 <td class="border-black !border-t-0 !border-b-0 p-0 text-[0px] h-0"></td>` :
+                `<td class="border-black !border-t-0 !border-b-0 p-0 text-[0px] h-0"></td>
+                 <td class="border-black !border-t-0 !border-b-0 p-0 text-[0px] h-0"></td>
+                 <td class="border-black !border-t-0 !border-b-0 p-0 text-[0px] h-0"></td>
+                 <td class="border-black !border-t-0 !border-b-0 p-0 text-[0px] h-0"></td>
+                 <td class="border-black !border-t-0 !border-b-0 p-0 text-[0px] h-0"></td>`;
+
             rowData.forEach((row, idx) => {
                 let html = `<tr>`;
-
-                // Hapus border bawah di baris terakhir agar menyatu mulus dgn kolom kosong
                 let btmBorder = (idx === rowData.length - 1) ? '!border-b-0' : '';
-
-                // Kolom hijau (Bulan) & Catatan di-merge di baris pertama
-                if (idx === 0) {
-                    html += `<td rowspan="${rowData.length + 1}" class="bg-[#92d050] font-bold text-[16px] font-sans !border-t-0 align-middle">
-                        <div style="height: 100%; display: flex; align-items: center; justify-content: center;">
-                            <div style="writing-mode: vertical-rl; transform: rotate(180deg); letter-spacing: 0.5em;" class="mx-auto whitespace-nowrap">${bulanFormatted}</div>
-                        </div>
-                    </td>`;
-                }
 
                 html += `
                     <td class="border-black align-top text-center p-2 ${btmBorder}">${idx + 1}</td>
@@ -910,23 +902,13 @@
                 tbody.innerHTML += html;
             });
 
-            // Baris kosong untuk ngisi sisa space (stretch full 1 halaman A4 ke bawah)
-            let emptyCells = isBimbel ?
-                `<td class="border-black !border-t-0 !border-b-0 p-0 text-[0px] h-0"></td>
-                 <td class="border-black !border-t-0 !border-b-0 p-0 text-[0px] h-0"></td>
-                 <td class="border-black !border-t-0 !border-b-0 p-0 text-[0px] h-0"></td>
-                 <td class="border-black !border-t-0 !border-b-0 p-0 text-[0px] h-0"></td>
-                 <td class="border-black !border-t-0 !border-b-0 p-0 text-[0px] h-0"></td>` :
-                `<td class="border-black !border-t-0 !border-b-0 p-0 text-[0px] h-0"></td>
-                 <td class="border-black !border-t-0 !border-b-0 p-0 text-[0px] h-0"></td>
-                 <td class="border-black !border-t-0 !border-b-0 p-0 text-[0px] h-0"></td>
-                 <td class="border-black !border-t-0 !border-b-0 p-0 text-[0px] h-0"></td>`;
-
+            // Tambahkan baris kosong stretch
             tbody.innerHTML += `
                 <tr class="h-full">
                     ${emptyCells}
                 </tr>
             `;
+
         }
 
         // ================= FUNGSI EXPORT KE JPG =================
