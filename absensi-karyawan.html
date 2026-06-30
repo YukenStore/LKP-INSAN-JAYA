@@ -599,7 +599,10 @@
 
             // Role based UI
             if (isLeader) {
-                document.getElementById('leaderTabs').classList.remove('hidden');
+                // Admin/Pimpinan langsung diarahkan ke Pantau Karyawan dan disembunyikan panel Absen Saya
+                document.getElementById('sectionSelf').classList.add('hidden');
+                document.getElementById('sectionLeader').classList.remove('hidden');
+                document.getElementById('leaderTabs').classList.add('hidden'); // Sembunyikan tab switcher
             }
 
             // Init
@@ -1351,6 +1354,11 @@
                 if (existing.length > 0) {
                     newSesi = Math.max(...existing.map(d => d.sesi)) + 1;
                 }
+            }
+
+            if (newSesi > 2) {
+                alert(`Karyawan ${nama} sudah mencapai maksimal 2 sesi hari ini!`);
+                return;
             }
 
             try {
