@@ -13,14 +13,9 @@
     <!-- 1. MESIN GOOGLE (Punya rumah sendiri) -->
     <script src="https://accounts.google.com/gsi/client" async defer></script>
 
-    <!-- 2. SATPAM HALAMAN LOGIN (Punya rumah sendiri) -->
-    <script>
-        setTimeout(() => {
-            if (localStorage.getItem('lkp_user_email')) {
-                window.location.href = 'dashboard.html';
-            }
-        }, 100); // Tunggu 0.1 detik biar browser sempat baca memory
-    </script>
+    <!-- Konfigurasi & Script Bersama -->
+    <script src="js/config.js"></script>
+    <script src="js/common.js"></script>
 
     <style>
         body {
@@ -129,8 +124,7 @@
         // ======================================================================
         window.onload = function () {
             google.accounts.id.initialize({
-                // PENTING: Ganti tulisan di bawah dengan Client ID dari Google Cloud Console milikmu!
-                client_id: "103167988388-j5j4o83ieakv5o4rakv1v735btgp3ldp.apps.googleusercontent.com",
+                client_id: CONFIG.GOOGLE_CLIENT_ID,
                 callback: handleCredentialResponse,
                 auto_select: false, // Set true jika ingin otomatis login tanpa klik kalau user cuma punya 1 akun Google
             });
