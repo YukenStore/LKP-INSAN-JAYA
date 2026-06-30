@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Absensi Karyawan - LKP Insan Jaya</title>
+
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#7c3aed">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        if (!localStorage.getItem('lkp_user_email')) {
+            window.location.href = 'index.html';
+        }
+    </script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Bricolage+Grotesque:wght@700&display=swap" rel="stylesheet">
+
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .font-bricolage { font-family: 'Bricolage Grotesque', sans-serif; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+        @keyframes blob {
+            0% { transform: translate(0px, 0px) scale(1); }
+            33% { transform: translate(30px, -50px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.9); }
+            100% { transform: translate(0px, 0px) scale(1); }
+        }
+        .animate-blob { animation: blob 7s infinite; }
+        .animation-delay-2000 { animation-delay: 2s; }
+        .animation-delay-4000 { animation-delay: 4s; }
+        
+        #video-container {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+            border-radius: 1rem;
+            overflow: hidden;
+            background: #000;
+        }
+        #camera-feed {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        #canvas-snapshot {
+            display: none;
+        }
+    </style>
+</head>
+
+<body class="bg-slate-50 text-slate-800 antialiased overflow-hidden flex h-[100dvh] relative">
+
+    <div id="sidebarOverlay" class="fixed inset-0 bg-slate-900/50 z-40 hidden transition-opacity opacity-0 md:hidden"></div>
+
+    <aside id="sidebar" class="fixed inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col w-64 h-full bg-white border-r border-slate-200 z-50 flex-shrink-0 shadow-2xl md:shadow-none">
+        <div class="h-16 flex items-center justify-between px-6 border-b border-slate-100">
+            <div class="flex items-center gap-1">
+                <div class="w-12 h-12 rounded-xl bg-white flex items-center justify-center overflow-hidden">
+                    <img src="Logo Insan Jaya.png" alt="Logo Insan Jaya" class="w-full h-full object-contain" onerror="this.src='https://via.placeholder.com/150'" />
+                </div>
+                <div class="flex flex-col justify-center">
+                    <span class="font-bricolage font-bold text-sm text-slate-900 leading-tight">LKP</span>
+                    <span class="font-bricolage font-bold text-sm text-violet-600 leading-tight">INSAN JAYA</span>
+                </div>
+            </div>
+            <button id="closeSidebarBtn" class="md:hidden p-2 -mr-2 text-slate-400 hover:text-red-500 rounded-lg bg-slate-50 transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+            </button>
+        </div>
+
+        <nav class="flex-1 overflow-y-auto custom-scrollbar py-4 px-3 space-y-1">
+            <p class="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2 mt-1">Menu Utama</p>
+            
+            <a href="rekap-online.html" id="navRekapOnline" style="display: none;" class="flex justify-between items-center px-3 py-2.5 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-medium text-sm transition-colors">
+                <div class="flex items-center gap-3">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                    Pendaftaran Online
+                </div>
+                <span id="badgeNotifMenu" class="hidden bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">0</span>
+            </a>
+            <a href="pendaftaran.html" id="navPendaftaran"
+                class="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-medium text-sm transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+                Pendaftaran Baru
+            </a>
+            <a href="absensi siswa.html"
+                class="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-medium text-sm transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                </svg>
+                Absensi Siswa
+            </a>
+            <a href="absensi-karyawan.html"
+                class="flex items-center gap-3 px-3 py-2.5 bg-violet-50 text-violet-700 rounded-xl font-semibold text-sm transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Absensi Karyawan
+            </a>
+            <a href="dashboard.html"
+                class="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-medium text-sm transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                </svg>
+                Data Siswa Aktif
+            </a>
+
+            <p class="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2 mt-6">Akademik</p>
+            <a href="laporan.html"
+                class="flex items-center gap-3 px-3 py-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-medium text-sm transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                Laporan Hasil Belajar
+            </a>
+            <a href="#" class="flex items-center gap-3 px-3 py-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-medium text-sm transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
+                Latihan Soal
+            </a>
+        </nav>
+
+        <button onclick="refreshAplikasi()"
+            class="flex items-center justify-center gap-2 w-full px-4 py-2.5 mb-3 text-violet-700 bg-violet-50 hover:bg-violet-100 border border-violet-100 rounded-xl font-bold text-sm transition-colors active:scale-[0.98]">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+            Segarkan Aplikasi
+        </button>
+        <div class="p-4 border-t border-slate-100 mt-auto bg-white">
+            <p id="installText" style="display: none;"
+                class="text-[10px] text-slate-500 font-medium tracking-wider mt-4 mb-2 text-center">Silahkan install
+                aplikasi untuk pengalaman yang lebih baik!</p>
+            <button id="btnInstallApp" style="display: none;"
+                class="flex items-center justify-center gap-2 w-full px-4 py-2.5 mb-4 text-white bg-slate-800 hover:bg-slate-900 rounded-xl font-bold text-sm transition-colors shadow-md active:scale-[0.98]">
+                <svg class="w-5 h-5 text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                </svg>
+                Install Aplikasi
+            </button>
+            <div id="iosInstallHint" style="display: none;"
+                class="text-[11px] text-slate-600 font-medium text-center mt-2 mb-4 bg-blue-50/80 p-3 rounded-xl border border-blue-100">
+                🍎 <b>Khusus Pengguna iPhone:</b><br>
+                Tap tombol <svg class="inline w-4 h-4 mx-1 text-blue-600" fill="none" stroke="currentColor"
+                    viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                </svg> (Bagikan) di bawah Safari, lalu pilih <br><b>"Add to Home Screen"</b> ➕
+            </div>
+
+            <div class="flex items-center gap-3 mb-4 px-2">
+                <div
+                    class="w-10 h-10 rounded-full bg-violet-100 overflow-hidden flex-shrink-0 border border-violet-200">
+                    <img id="userProfilePic" src="https://ui-avatars.com/api/?name=User&background=c7d2fe&color=4f46e5"
+                        alt="Profile" class="w-full h-full object-cover">
+                </div>
+                <div class="overflow-hidden">
+                    <p id="userNameDisplay" class="text-sm font-bold text-slate-800 truncate">Memuat...</p>
+                    <p id="userEmailDisplay" class="text-[10px] font-medium text-slate-500 truncate">Memuat email...</p>
+                </div>
+            </div>
+            <a href="index.html" onclick="localStorage.removeItem('lkp_user_email')" class="flex items-center justify-center gap-2 w-full px-4 py-2.5 text-red-600 bg-red-50 hover:bg-red-100 rounded-xl font-bold text-sm transition-colors border border-red-100">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+                Keluar
+            </a>
+        </div>
+    </aside>
+
+    <main class="flex-1 flex flex-col h-full bg-slate-50/50 relative overflow-hidden">
+        <div class="hidden md:block absolute top-0 right-0 w-96 h-96 bg-violet-200/40 rounded-full mix-blend-multiply filter blur-3xl opacity-60 animate-blob pointer-events-none z-0"></div>
+        <div class="hidden md:block absolute -bottom-8 left-10 w-72 h-72 bg-fuchsia-200/40 rounded-full mix-blend-multiply filter blur-3xl opacity-60 animate-blob animation-delay-2000 pointer-events-none z-0"></div>
+
+        <header class="md:hidden h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 z-50 flex-shrink-0 relative">
+            <div class="flex items-center gap-2">
+                <div class="w-9 h-9 rounded-xl bg-white flex items-center justify-center overflow-hidden border">
+                    <img src="Logo Insan Jaya.png" class="w-full h-full object-contain">
+                </div>
+                <div class="flex items-center gap-1">
+                    <span class="font-bricolage font-bold text-base text-slate-900">LKP</span>
+                    <span class="font-bricolage font-bold text-base text-violet-600">INSAN JAYA</span>
+                </div>
+            </div>
+            <button id="mobileMenuBtn" class="p-2 text-slate-600 hover:text-violet-600 hover:bg-slate-50 rounded-lg transition-colors">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
+            </button>
+        </header>
+
+        <div class="flex-1 overflow-y-auto p-4 md:p-6 pb-8 relative z-10 custom-scrollbar">
+            <div class="max-w-6xl mx-auto">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 md:mb-8 pt-2">
+                    <div>
+                        <h1 class="font-bricolage text-2xl md:text-3xl font-bold text-slate-900 tracking-tight">Absensi Karyawan</h1>
+                        <p class="text-sm text-slate-500 mt-1 max-w-lg">Sistem presensi dengan verifikasi lokasi (GPS) dan foto selfie.</p>
+                    </div>
+                    
+                    <!-- Tab Switcher (Visible only for leaders) -->
+                    <div id="leaderTabs" class="hidden flex bg-slate-200/50 p-1 rounded-xl">
+                        <button onclick="switchTab('self')" id="tabSelf" class="flex-1 md:flex-none px-4 py-2 bg-white text-violet-700 shadow-sm rounded-lg text-sm font-bold transition-all">Absen Saya</button>
+                        <button onclick="switchTab('leader')" id="tabLeader" class="flex-1 md:flex-none px-4 py-2 text-slate-500 hover:text-slate-700 rounded-lg text-sm font-bold transition-all">Pantau Karyawan</button>
+                    </div>
+                </div>
+
+                <!-- ALERT MESSAGES -->
+                <div id="alertContainer" class="hidden mb-6 p-4 rounded-xl text-sm font-medium flex items-start gap-3">
+                    <!-- Alert content injected via JS -->
+                </div>
+
+                <!-- SECTION: SELF SERVICE (ABSEN SAYA) -->
+                <div id="sectionSelf">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                        <!-- CAMERA & GPS CARD -->
+                        <div class="lg:col-span-1 bg-white/90 backdrop-blur-sm p-5 md:p-6 rounded-2xl border border-slate-200/60 shadow-xl shadow-violet-100/20 flex flex-col items-center">
+                            <h2 class="text-base font-bold text-slate-800 mb-4 w-full border-b border-slate-100 pb-2">Panel Absensi</h2>
+                            
+                            <div id="video-container" class="mb-4 hidden">
+                                <video id="camera-feed" autoplay playsinline></video>
+                                <canvas id="canvas-snapshot"></canvas>
+                            </div>
+                            
+                            <div id="gps-status" class="w-full text-center p-3 bg-slate-100 rounded-xl mb-4 text-xs font-medium text-slate-600 flex flex-col gap-1">
+                                <span>📍 Memeriksa lokasi...</span>
+                            </div>
+
+                            <!-- Buttons -->
+                            <div id="absen-actions" class="w-full flex flex-col gap-3 hidden">
+                                <button onclick="startAbsen('Masuk')" class="w-full py-3 bg-violet-600 hover:bg-violet-700 text-white rounded-xl font-bold shadow-md transition-all flex items-center justify-center gap-2">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" /></svg>
+                                    Absen Masuk
+                                </button>
+                                <button onclick="startAbsen('Pulang')" class="w-full py-3 bg-teal-600 hover:bg-teal-700 text-white rounded-xl font-bold shadow-md transition-all flex items-center justify-center gap-2">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+                                    Absen Pulang
+                                </button>
+                                
+                                <div class="mt-2 text-left w-full border-t border-slate-100 pt-3">
+                                    <label class="block text-xs font-bold text-slate-500 mb-1">Status Kehadiran</label>
+                                    <select id="inpStatusKehadiran" class="w-full p-2 border border-slate-200 rounded-lg text-sm bg-slate-50 focus:border-violet-500 outline-none">
+                                        <option value="Hadir">Hadir</option>
+                                        <option value="Izin">Izin</option>
+                                        <option value="Sakit">Sakit</option>
+                                    </select>
+                                    <input type="text" id="inpKeterangan" placeholder="Keterangan (Wajib jika Izin/Sakit)" class="mt-2 w-full p-2 border border-slate-200 rounded-lg text-sm bg-slate-50 focus:border-violet-500 outline-none">
+                                </div>
+                            </div>
+                            
+                            <div id="camera-actions" class="w-full flex gap-2 hidden">
+                                <button onclick="cancelAbsen()" class="flex-1 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-xl font-bold transition-all text-sm">Batal</button>
+                                <button onclick="captureAndSubmit()" class="flex-1 py-2 bg-violet-600 hover:bg-violet-700 text-white rounded-xl font-bold transition-all text-sm flex items-center justify-center gap-1">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                                    Foto & Kirim
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- RIWAYAT & REKAP CARD -->
+                        <div class="lg:col-span-2 flex flex-col gap-6">
+                            <!-- Summary / Rekap -->
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm">
+                                    <p class="text-[10px] font-bold text-slate-400 uppercase">Total Hadir</p>
+                                    <p id="rekapHadir" class="text-2xl font-bricolage text-green-600 mt-1">0</p>
+                                </div>
+                                <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm">
+                                    <p class="text-[10px] font-bold text-slate-400 uppercase">Total Izin</p>
+                                    <p id="rekapIzin" class="text-2xl font-bricolage text-yellow-600 mt-1">0</p>
+                                </div>
+                                <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm">
+                                    <p class="text-[10px] font-bold text-slate-400 uppercase">Total Sakit</p>
+                                    <p id="rekapSakit" class="text-2xl font-bricolage text-orange-600 mt-1">0</p>
+                                </div>
+                                <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm">
+                                    <p class="text-[10px] font-bold text-slate-400 uppercase">Total Alpha</p>
+                                    <p id="rekapAlpha" class="text-2xl font-bricolage text-red-600 mt-1">0</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Table Riwayat -->
+                            <div class="bg-white/90 backdrop-blur-sm rounded-2xl border border-slate-200/60 shadow-xl shadow-slate-200/40 overflow-hidden flex-1">
+                                <div class="p-4 border-b border-slate-100 flex justify-between items-center">
+                                    <h3 class="font-bold text-slate-800 text-sm">Riwayat Bulan Ini</h3>
+                                    <input type="month" id="inpBulanRiwayat" onchange="loadMyHistory()" class="text-xs p-1.5 border border-slate-200 rounded-lg outline-none focus:border-violet-500">
+                                </div>
+                                <div class="overflow-x-auto">
+                                    <table class="w-full text-left border-collapse">
+                                        <thead class="bg-slate-50 border-b border-slate-200">
+                                            <tr>
+                                                <th class="p-3 text-[10px] font-bold text-slate-500 uppercase">Tanggal</th>
+                                                <th class="p-3 text-[10px] font-bold text-slate-500 uppercase text-center">Sesi</th>
+                                                <th class="p-3 text-[10px] font-bold text-slate-500 uppercase text-center">Masuk</th>
+                                                <th class="p-3 text-[10px] font-bold text-slate-500 uppercase text-center">Pulang</th>
+                                                <th class="p-3 text-[10px] font-bold text-slate-500 uppercase text-center">Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="myHistoryBody" class="text-sm divide-y divide-slate-100 bg-white">
+                                            <tr><td colspan="5" class="p-4 text-center text-slate-500 text-xs">Memuat data...</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION: LEADER (PANTAU KARYAWAN) -->
+                <div id="sectionLeader" class="hidden">
+                    
+                    <div class="flex flex-col md:flex-row gap-4 mb-6">
+                        <div class="flex-1 bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
+                            <div>
+                                <p class="text-[10px] font-bold text-slate-400 uppercase">Tanggal Pantauan</p>
+                                <input type="date" id="inpLeaderDate" onchange="loadLeaderData()" class="mt-1 font-bold text-slate-700 outline-none border-b border-slate-200 focus:border-violet-500 bg-transparent">
+                            </div>
+                            <button onclick="loadLeaderData()" class="p-2 bg-violet-50 text-violet-600 rounded-lg hover:bg-violet-100 transition-colors">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+                            </button>
+                        </div>
+                        <div class="flex-1 bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm">
+                            <p class="text-[10px] font-bold text-slate-400 uppercase">Rekap Bulanan</p>
+                            <input type="month" id="inpLeaderMonth" onchange="loadLeaderRecap()" class="mt-1 font-bold text-slate-700 outline-none border-b border-slate-200 focus:border-violet-500 bg-transparent w-full">
+                        </div>
+                    </div>
+
+                    <div class="bg-white/90 backdrop-blur-sm rounded-2xl border border-slate-200/60 shadow-xl shadow-slate-200/40 overflow-hidden flex-1 mb-8">
+                        <div class="p-4 border-b border-slate-100 bg-slate-50 flex justify-between items-center">
+                            <h3 class="font-bold text-slate-800 text-sm">Data Absensi (Harian)</h3>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse">
+                                <thead class="bg-white border-b border-slate-200">
+                                    <tr>
+                                        <th class="p-3 text-[10px] font-bold text-slate-500 uppercase">Nama Karyawan</th>
+                                        <th class="p-3 text-[10px] font-bold text-slate-500 uppercase text-center">Sesi</th>
+                                        <th class="p-3 text-[10px] font-bold text-slate-500 uppercase text-center">Masuk</th>
+                                        <th class="p-3 text-[10px] font-bold text-slate-500 uppercase text-center">Pulang</th>
+                                        <th class="p-3 text-[10px] font-bold text-slate-500 uppercase text-center">Status</th>
+                                        <th class="p-3 text-[10px] font-bold text-slate-500 uppercase text-center">Keterangan</th>
+                                        <th class="p-3 text-[10px] font-bold text-slate-500 uppercase text-center">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="leaderDailyBody" class="text-sm divide-y divide-slate-100 bg-white">
+                                    <tr><td colspan="7" class="p-4 text-center text-slate-500 text-xs">Pilih tanggal untuk melihat data</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="bg-white/90 backdrop-blur-sm rounded-2xl border border-slate-200/60 shadow-xl shadow-slate-200/40 overflow-hidden flex-1">
+                        <div class="p-4 border-b border-slate-100 bg-slate-50">
+                            <h3 class="font-bold text-slate-800 text-sm">Rekap Bulanan Karyawan</h3>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse">
+                                <thead class="bg-white border-b border-slate-200">
+                                    <tr>
+                                        <th class="p-3 text-[10px] font-bold text-slate-500 uppercase">Nama Karyawan</th>
+                                        <th class="p-3 text-[10px] font-bold text-green-600 uppercase text-center">Hadir</th>
+                                        <th class="p-3 text-[10px] font-bold text-yellow-600 uppercase text-center">Izin</th>
+                                        <th class="p-3 text-[10px] font-bold text-orange-600 uppercase text-center">Sakit</th>
+                                        <th class="p-3 text-[10px] font-bold text-red-600 uppercase text-center">Alpha</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="leaderRecapBody" class="text-sm divide-y divide-slate-100 bg-white">
+                                    <tr><td colspan="5" class="p-4 text-center text-slate-500 text-xs">Pilih bulan untuk melihat rekap</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- MODAL EDIT ABSENSI -->
+    <div id="modalEdit" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-[60] hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl shadow-2xl max-w-sm w-full p-6 flex flex-col transform scale-95 opacity-0 transition-all duration-300" id="modalEditContent">
+            <h3 class="font-bricolage font-bold text-xl text-slate-800 mb-4">Edit Absensi</h3>
+            <input type="hidden" id="editId">
+            
+            <div class="mb-4">
+                <label class="block text-xs font-bold text-slate-500 mb-1">Status Kehadiran</label>
+                <select id="editStatus" class="w-full p-2.5 border border-slate-200 rounded-xl text-sm bg-slate-50 outline-none focus:border-violet-500">
+                    <option value="Hadir">Hadir</option>
+                    <option value="Izin">Izin</option>
+                    <option value="Sakit">Sakit</option>
+                    <option value="Alpha">Alpha</option>
+                </select>
+            </div>
+            
+            <div class="mb-6">
+                <label class="block text-xs font-bold text-slate-500 mb-1">Catatan Pimpinan (Wajib)</label>
+                <textarea id="editNote" rows="3" class="w-full p-2.5 border border-slate-200 rounded-xl text-sm bg-slate-50 outline-none focus:border-violet-500" placeholder="Alasan perubahan status..."></textarea>
+            </div>
+
+            <div class="flex justify-end gap-3">
+                <button onclick="closeModalEdit()" class="px-5 py-2.5 rounded-xl bg-slate-100 text-slate-700 font-bold hover:bg-slate-200 transition-colors text-sm">Batal</button>
+                <button onclick="saveEdit()" class="px-5 py-2.5 rounded-xl bg-violet-600 text-white font-bold hover:bg-violet-700 transition-colors text-sm">Simpan</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // CONFIG
+        const API_URL = 'https://absensi-api.yumenoboken.workers.dev';
+        const LEADER_EMAILS = ['elsasidamawarniut@gmail.com', 'zilisaje@gmail.com', 'lpkinsanjaya@gmail.com', 'yumenoboken@gmail.com'];
+        
+        // GPS Target (LKP Insan Jaya)
+        const TARGET_LAT = -3.66719;
+        const TARGET_LNG = 103.77442;
+        const MAX_RADIUS_METERS = 50;
+
+        // USER INFO
+        const userEmail = localStorage.getItem('lkp_user_email');
+        const userName = localStorage.getItem('lkp_user_name');
+        
+        // STATE
+        let userLocation = null;
+        let stream = null;
+        let currentSesi = 1;
+        let currentAbsenId = null;
+        let isLeader = LEADER_EMAILS.includes(userEmail);
+        let currentAction = ''; // 'Masuk' or 'Pulang'
+        let isWithinRadius = false;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Setup Profile Info
+            document.getElementById('userNameDisplay').textContent = userName || 'Admin LKP';
+            document.getElementById('userEmailDisplay').textContent = userEmail || '';
+            const userPic = localStorage.getItem('lkp_user_picture');
+            if (userPic) document.getElementById('userProfilePic').src = userPic;
+
+            const adminEmails = ['lpkinsanjaya@gmail.com', 'yumenoboken@gmail.com', 'elsasidamawarniut@gmail.com', 'zilisaje@gmail.com'];
+            const navPendaftaran = document.getElementById('navPendaftaran');
+            const navRekapOnline = document.getElementById('navRekapOnline');
+            
+            if (userEmail && adminEmails.includes(userEmail)) {
+                if (navRekapOnline) navRekapOnline.style.display = 'flex';
+                fetch('https://absensi-api.yumenoboken.workers.dev/api/pendaftaran-online/count')
+                    .then(res => res.json())
+                    .then(data => {
+                        if(data.count > 0) {
+                            const badge = document.getElementById('badgeNotifMenu');
+                            if(badge) {
+                                badge.textContent = data.count;
+                                badge.classList.remove('hidden');
+                            }
+                        }
+                    }).catch(e => console.log('Gagal ambil notifikasi'));
+            } else {
+                if (navPendaftaran) {
+                    navPendaftaran.classList.remove('flex');
+                    navPendaftaran.classList.add('hidden');
+                }
+            }
+
+            // Setup Date/Month Inputs
+            const today = new Date().toISOString().slice(0, 10);
+            const thisMonth = new Date().toISOString().slice(0, 7);
+            document.getElementById('inpBulanRiwayat').value = thisMonth;
+            document.getElementById('inpLeaderDate').value = today;
+            document.getElementById('inpLeaderMonth').value = thisMonth;
+
+            // Role based UI
+            if (isLeader) {
+                document.getElementById('leaderTabs').classList.remove('hidden');
+            }
+
+            // Init
+            checkGPS();
+            loadMyHistory();
+            if (isLeader) {
+                loadLeaderData();
+                loadLeaderRecap();
+            }
+
+            // Mobile Menu
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            const closeSidebarBtn = document.getElementById('closeSidebarBtn');
+            const sidebar = document.getElementById('sidebar');
+            const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+            function toggleSidebar() {
+                sidebar.classList.toggle('-translate-x-full');
+                sidebarOverlay.classList.toggle('hidden');
+                setTimeout(() => {
+                    sidebarOverlay.classList.toggle('opacity-0');
+                }, 10);
+            }
+
+            mobileMenuBtn.addEventListener('click', toggleSidebar);
+            closeSidebarBtn.addEventListener('click', toggleSidebar);
+            sidebarOverlay.addEventListener('click', toggleSidebar);
+        });
+
+        function switchTab(tab) {
+            if (tab === 'self') {
+                document.getElementById('sectionSelf').classList.remove('hidden');
+                document.getElementById('sectionLeader').classList.add('hidden');
+                document.getElementById('tabSelf').className = "flex-1 md:flex-none px-4 py-2 bg-white text-violet-700 shadow-sm rounded-lg text-sm font-bold transition-all";
+                document.getElementById('tabLeader').className = "flex-1 md:flex-none px-4 py-2 text-slate-500 hover:text-slate-700 rounded-lg text-sm font-bold transition-all";
+            } else {
+                document.getElementById('sectionSelf').classList.add('hidden');
+                document.getElementById('sectionLeader').classList.remove('hidden');
+                document.getElementById('tabLeader').className = "flex-1 md:flex-none px-4 py-2 bg-white text-violet-700 shadow-sm rounded-lg text-sm font-bold transition-all";
+                document.getElementById('tabSelf').className = "flex-1 md:flex-none px-4 py-2 text-slate-500 hover:text-slate-700 rounded-lg text-sm font-bold transition-all";
+            }
+        }
+
+        function showAlert(msg, isError = false) {
+            const container = document.getElementById('alertContainer');
+            container.classList.remove('hidden', 'bg-red-50', 'text-red-700', 'border-red-200', 'bg-green-50', 'text-green-700', 'border-green-200');
+            container.classList.add(isError ? 'bg-red-50' : 'bg-green-50');
+            container.classList.add(isError ? 'text-red-700' : 'text-green-700');
+            container.classList.add('border');
+            container.classList.add(isError ? 'border-red-200' : 'border-green-200');
+            
+            const icon = isError ? 
+                `<svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>` :
+                `<svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`;
+            
+            container.innerHTML = `${icon} <div>${msg}</div>`;
+            setTimeout(() => { container.classList.add('hidden'); }, 5000);
+        }
+
+        // ==========================================
+        // GPS MODULE
+        // ==========================================
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371e3; // Earth radius in meters
+            const φ1 = lat1 * Math.PI/180;
+            const φ2 = lat2 * Math.PI/180;
+            const Δφ = (lat2-lat1) * Math.PI/180;
+            const Δλ = (lon2-lon1) * Math.PI/180;
+
+            const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
+                      Math.cos(φ1) * Math.cos(φ2) *
+                      Math.sin(Δλ/2) * Math.sin(Δλ/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            return R * c; // Distance in meters
+        }
+
+        function checkGPS() {
+            const statusEl = document.getElementById('gps-status');
+            if ("geolocation" in navigator) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        userLocation = {
+                            lat: position.coords.latitude,
+                            lng: position.coords.longitude,
+                            accuracy: position.coords.accuracy
+                        };
+                        const dist = calculateDistance(userLocation.lat, userLocation.lng, TARGET_LAT, TARGET_LNG);
+                        isWithinRadius = dist <= MAX_RADIUS_METERS;
+                        
+                        if (isWithinRadius) {
+                            statusEl.innerHTML = `✅ Lokasi LKP Terverifikasi (Jarak: ${Math.round(dist)}m)<br><span class="text-[10px] text-slate-400">Anda dapat melakukan Absen Hadir.</span>`;
+                            statusEl.className = "w-full text-center p-3 bg-green-50 border border-green-100 rounded-xl mb-4 text-xs font-bold text-green-700 flex flex-col gap-1";
+                        } else {
+                            statusEl.innerHTML = `⚠️ Anda berada di luar area LKP (Jarak: ${Math.round(dist)}m).<br><span class="text-[10px] text-slate-400">Absen Hadir dikunci. Hanya bisa Izin/Sakit.</span>`;
+                            statusEl.className = "w-full text-center p-3 bg-yellow-50 border border-yellow-100 rounded-xl mb-4 text-xs font-bold text-yellow-700 flex flex-col gap-1";
+                        }
+                        // Selalu tampilkan panel agar karyawan bisa memilih Izin/Sakit
+                        document.getElementById('absen-actions').classList.remove('hidden');
+                    },
+                    (error) => {
+                        let msg = "Gagal mengambil lokasi.";
+                        if (error.code === 1) msg = "Akses lokasi (GPS) ditolak oleh browser.";
+                        statusEl.innerHTML = `⚠️ ${msg}`;
+                        statusEl.className = "w-full text-center p-3 bg-yellow-50 border border-yellow-100 rounded-xl mb-4 text-xs font-bold text-yellow-700";
+                    },
+                    { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+                );
+            } else {
+                statusEl.innerHTML = `⚠️ Browser tidak mendukung GPS.`;
+            }
+        }
+
+        // ==========================================
+        // CAMERA MODULE
+        // ==========================================
+        async function startAbsen(action) {
+            currentAction = action;
+            const status = document.getElementById('inpStatusKehadiran').value;
+            const ket = document.getElementById('inpKeterangan').value;
+            
+            if (status === 'Hadir' && !isWithinRadius) {
+                alert("Anda tidak dapat absen Hadir karena berada di luar area LKP (Maks 50m). Silakan pilih Izin/Sakit atau mendekat ke lokasi.");
+                return;
+            }
+
+            if ((status === 'Izin' || status === 'Sakit') && !ket && action === 'Masuk') {
+                alert("Keterangan wajib diisi untuk status Izin/Sakit saat absen masuk!");
+                return;
+            }
+
+            document.getElementById('absen-actions').classList.add('hidden');
+            document.getElementById('gps-status').classList.add('hidden');
+            const videoContainer = document.getElementById('video-container');
+            const cameraFeed = document.getElementById('camera-feed');
+            
+            videoContainer.classList.remove('hidden');
+            
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { facingMode: "user" }, // Kamera depan
+                    audio: false 
+                });
+                cameraFeed.srcObject = stream;
+                document.getElementById('camera-actions').classList.remove('hidden');
+            } catch (err) {
+                alert("Gagal mengakses kamera: " + err.message);
+                cancelAbsen();
+            }
+        }
+
+        function cancelAbsen() {
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+                stream = null;
+            }
+            document.getElementById('video-container').classList.add('hidden');
+            document.getElementById('camera-actions').classList.add('hidden');
+            document.getElementById('absen-actions').classList.remove('hidden');
+            document.getElementById('gps-status').classList.remove('hidden');
+        }
+
+        async function captureAndSubmit() {
+            const video = document.getElementById('camera-feed');
+            const canvas = document.getElementById('canvas-snapshot');
+            const ctx = canvas.getContext('2d');
+
+            // Set canvas size to match video
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            
+            // Draw image to canvas
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            
+            // Get base64 (compress as JPEG)
+            const base64Data = canvas.toDataURL('image/jpeg', 0.6);
+            
+            // Stop camera
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+                stream = null;
+            }
+            
+            // UI Loading
+            document.getElementById('camera-actions').innerHTML = `<p class="text-xs font-bold text-violet-600 text-center w-full py-2">Mengirim data...</p>`;
+
+            try {
+                // 1. Upload Foto ke R2
+                const uploadRes = await fetch(`${API_URL}/api/upload-foto-absensi`, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'X-Admin-Email': userEmail
+                    },
+                    body: JSON.stringify({ base64_data: base64Data })
+                });
+                const uploadData = await uploadRes.json();
+                
+                if (!uploadRes.ok) throw new Error(uploadData.error || "Gagal upload foto");
+                const fotoKey = uploadData.key;
+
+                // 2. Submit Absensi
+                const today = new Date();
+                const jam = today.toTimeString().slice(0,5);
+                const tgl = today.toISOString().slice(0, 10);
+                
+                const status = document.getElementById('inpStatusKehadiran').value;
+                const ket = document.getElementById('inpKeterangan').value;
+
+                let payload = {
+                    email: userEmail,
+                    nama: userName,
+                    tanggal: tgl,
+                    sesi: currentSesi, // from state
+                    status: status,
+                    keterangan: ket
+                };
+
+                if (currentAction === 'Masuk') {
+                    payload.jam_masuk = jam;
+                    payload.foto_masuk_key = fotoKey;
+                    payload.lat_masuk = userLocation.lat;
+                    payload.lng_masuk = userLocation.lng;
+                } else {
+                    payload.jam_pulang = jam;
+                    payload.foto_pulang_key = fotoKey;
+                    payload.lat_pulang = userLocation.lat;
+                    payload.lng_pulang = userLocation.lng;
+                }
+
+                const res = await fetch(`${API_URL}/api/absensi-karyawan`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Admin-Email': userEmail
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await res.json();
+                if(res.ok) {
+                    showAlert(`Absen ${currentAction} berhasil dikirim!`);
+                    loadMyHistory(); // Reload table
+                    document.getElementById('inpKeterangan').value = "";
+                } else {
+                    throw new Error(data.message || "Gagal absen");
+                }
+
+            } catch (err) {
+                showAlert(err.message, true);
+            }
+
+            // Reset UI
+            cancelAbsen();
+            // Restore actions HTML
+            document.getElementById('camera-actions').innerHTML = `
+                <button onclick="cancelAbsen()" class="flex-1 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-xl font-bold transition-all text-sm">Batal</button>
+                <button onclick="captureAndSubmit()" class="flex-1 py-2 bg-violet-600 hover:bg-violet-700 text-white rounded-xl font-bold transition-all text-sm flex items-center justify-center gap-1">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                    Foto & Kirim
+                </button>
+            `;
+        }
+
+        // ==========================================
+        // HISTORY MODULE (SELF)
+        // ==========================================
+        function getBadgeClass(status) {
+            if(status === 'Hadir') return 'bg-green-100 text-green-700 border-green-200';
+            if(status === 'Izin') return 'bg-yellow-100 text-yellow-700 border-yellow-200';
+            if(status === 'Sakit') return 'bg-orange-100 text-orange-700 border-orange-200';
+            if(status === 'Alpha') return 'bg-red-100 text-red-700 border-red-200';
+            return 'bg-slate-100 text-slate-700 border-slate-200';
+        }
+
+        async function loadMyHistory() {
+            const bulan = document.getElementById('inpBulanRiwayat').value;
+            const tbody = document.getElementById('myHistoryBody');
+            tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-500 text-xs">Memuat data...</td></tr>`;
+
+            try {
+                const res = await fetch(`${API_URL}/api/absensi-karyawan?email=${encodeURIComponent(userEmail)}&bulan=${bulan}`, {
+                    headers: { 'X-Admin-Email': userEmail }
+                });
+                const data = await res.json();
+                
+                // Hitung Rekap
+                let hadir=0, izin=0, sakit=0, alpha=0;
+                
+                if (data.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-500 text-xs">Belum ada absen di bulan ini.</td></tr>`;
+                    currentSesi = 1; // Reset to session 1 if no history
+                } else {
+                    // Update sesi aktif untuk hari ini
+                    const todayStr = new Date().toISOString().slice(0, 10);
+                    const todayData = data.filter(d => d.tanggal === todayStr);
+                    
+                    if (todayData.length > 0) {
+                        const lastSesi = todayData[0]; // because ordered DESC
+                        if (lastSesi.jam_pulang) {
+                            // Sudah pulang di sesi terakhir, siapkan sesi baru
+                            currentSesi = lastSesi.sesi + 1;
+                        } else {
+                            // Belum pulang di sesi terakhir, lanjut sesi itu
+                            currentSesi = lastSesi.sesi;
+                        }
+                    } else {
+                        currentSesi = 1;
+                    }
+
+                    // Render Tabel
+                    tbody.innerHTML = data.map(d => {
+                        if(d.status === 'Hadir') hadir++;
+                        else if(d.status === 'Izin') izin++;
+                        else if(d.status === 'Sakit') sakit++;
+                        else if(d.status === 'Alpha') alpha++;
+
+                        let note = d.keterangan ? `<br><span class="text-[9px] text-slate-400 font-normal">Ket: ${d.keterangan}</span>` : '';
+                        let editNote = d.edit_note ? `<br><span class="text-[9px] text-red-400 font-bold">⚠️ Diedit: ${d.edit_note}</span>` : '';
+
+                        return `
+                        <tr class="hover:bg-slate-50/50">
+                            <td class="p-3 font-medium text-slate-700 whitespace-nowrap">${d.tanggal}</td>
+                            <td class="p-3 text-center text-slate-500">${d.sesi}</td>
+                            <td class="p-3 text-center text-slate-700 font-bold">${d.jam_masuk || '-'}</td>
+                            <td class="p-3 text-center text-slate-700 font-bold">${d.jam_pulang || '-'}</td>
+                            <td class="p-3 text-center">
+                                <span class="px-2 py-1 rounded-lg text-[10px] font-bold border whitespace-nowrap ${getBadgeClass(d.status)}">
+                                    ${d.status}
+                                </span>
+                                ${note}
+                                ${editNote}
+                            </td>
+                        </tr>`;
+                    }).join('');
+                }
+
+                // Update Rekap UI
+                document.getElementById('rekapHadir').textContent = hadir;
+                document.getElementById('rekapIzin').textContent = izin;
+                document.getElementById('rekapSakit').textContent = sakit;
+                document.getElementById('rekapAlpha').textContent = alpha;
+
+            } catch (err) {
+                tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-red-500 text-xs"> memuat riwayat.</td></tr>`;
+            }Gagal
+        }
+
+        // ==========================================
+        // LEADER MODULE
+        // ==========================================
+        async function loadLeaderData() {
+            if (!isLeader) return;
+            const tanggal = document.getElementById('inpLeaderDate').value;
+            const tbody = document.getElementById('leaderDailyBody');
+            tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-500 text-xs">Memuat data...</td></tr>`;
+
+            try {
+                const res = await fetch(`${API_URL}/api/absensi-karyawan/hari-ini?tanggal=${tanggal}`, {
+                    headers: { 'X-Admin-Email': userEmail }
+                });
+                const data = await res.json();
+
+                if (data.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="7" class="p-4 text-center text-slate-500 text-xs">Belum ada data absensi di tanggal ini.</td></tr>`;
+                    return;
+                }
+
+                tbody.innerHTML = data.map(d => {
+                    let photoIn = d.foto_masuk_key ? `<a href="${API_URL}/api/foto-absensi/${d.foto_masuk_key}" target="_blank" class="text-violet-600 hover:underline">📸</a>` : '';
+                    let photoOut = d.foto_pulang_key ? `<a href="${API_URL}/api/foto-absensi/${d.foto_pulang_key}" target="_blank" class="text-violet-600 hover:underline">📸</a>` : '';
+                    let note = d.keterangan ? d.keterangan : '-';
+                    let editNote = d.edit_note ? `<br><span class="text-[9px] text-red-400 font-bold">⚠️ Diedit: ${d.edit_note}</span>` : '';
+
+                    return `
+                    <tr class="hover:bg-slate-50/50">
+                        <td class="p-3">
+                            <div class="font-bold text-slate-800 text-xs">${d.nama}</div>
+                            <div class="text-[10px] text-slate-500">${d.email}</div>
+                        </td>
+                        <td class="p-3 text-center text-slate-500 text-xs font-bold">${d.sesi}</td>
+                        <td class="p-3 text-center text-slate-700 text-xs font-bold">${d.jam_masuk || '-'} ${photoIn}</td>
+                        <td class="p-3 text-center text-slate-700 text-xs font-bold">${d.jam_pulang || '-'} ${photoOut}</td>
+                        <td class="p-3 text-center">
+                            <span class="px-2 py-1 rounded-lg text-[10px] font-bold border whitespace-nowrap ${getBadgeClass(d.status)}">
+                                ${d.status}
+                            </span>
+                            ${editNote}
+                        </td>
+                        <td class="p-3 text-center text-[10px] text-slate-500 max-w-[120px] truncate" title="${note}">${note}</td>
+                        <td class="p-3 text-center relative">
+                            <button onclick="toggleMenu(${d.id}, event)" class="w-8 h-8 rounded-lg hover:bg-slate-200 flex items-center justify-center mx-auto transition-colors text-slate-600 font-bold">
+                                ⋮
+                            </button>
+                            <div id="menu-${d.id}" class="hidden fixed bg-white border border-slate-200 rounded-xl shadow-xl z-[9999] min-w-[120px] overflow-hidden text-left">
+                                <button onclick="openEdit(${d.id}, '${d.status}')" class="w-full text-left px-4 py-2.5 hover:bg-slate-50 text-slate-700 font-medium text-[11px] border-b border-slate-100">
+                                    ✏️ Edit
+                                </button>
+                                <button onclick="deleteData(${d.id})" class="w-full text-left px-4 py-2.5 hover:bg-red-50 text-red-600 font-medium text-[11px]">
+                                    🗑️ Hapus
+                                </button>
+                            </div>
+                        </td>
+                    </tr>`;
+                }).join('');
+
+            } catch(err) {
+                tbody.innerHTML = `<tr><td colspan="7" class="p-4 text-center text-red-500 text-xs">Gagal memuat data.</td></tr>`;
+            }
+        }
+
+        async function loadLeaderRecap() {
+            if (!isLeader) return;
+            const bulan = document.getElementById('inpLeaderMonth').value;
+            const tbody = document.getElementById('leaderRecapBody');
+            tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-500 text-xs">Memuat rekap...</td></tr>`;
+
+            try {
+                const res = await fetch(`${API_URL}/api/absensi-karyawan/rekap?bulan=${bulan}`, {
+                    headers: { 'X-Admin-Email': userEmail }
+                });
+                const data = await res.json();
+
+                if (data.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-500 text-xs">Belum ada rekap di bulan ini.</td></tr>`;
+                    return;
+                }
+
+                tbody.innerHTML = data.map(d => `
+                    <tr class="hover:bg-slate-50/50">
+                        <td class="p-3">
+                            <div class="font-bold text-slate-800 text-xs">${d.nama}</div>
+                            <div class="text-[10px] text-slate-500">${d.email}</div>
+                        </td>
+                        <td class="p-3 text-center font-bold text-green-600 bg-green-50/30">${d.total_hadir}</td>
+                        <td class="p-3 text-center font-bold text-yellow-600 bg-yellow-50/30">${d.total_izin}</td>
+                        <td class="p-3 text-center font-bold text-orange-600 bg-orange-50/30">${d.total_sakit}</td>
+                        <td class="p-3 text-center font-bold text-red-600 bg-red-50/30">${d.total_alpha}</td>
+                    </tr>
+                `).join('');
+
+            } catch(err) {
+                tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-red-500 text-xs">Gagal memuat rekap.</td></tr>`;
+            }
+        }
+
+        // ==========================================
+        // EDIT MODAL (LEADER)
+        // ==========================================
+        function openEdit(id, currentStatus) {
+            currentAbsenId = id;
+            document.getElementById('editStatus').value = currentStatus;
+            document.getElementById('editNote').value = "";
+            
+            const modal = document.getElementById('modalEdit');
+            const content = document.getElementById('modalEditContent');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                content.classList.remove('scale-95', 'opacity-0');
+            }, 10);
+        }
+
+        function closeModalEdit() {
+            const modal = document.getElementById('modalEdit');
+            const content = document.getElementById('modalEditContent');
+            content.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        async function saveEdit() {
+            const status = document.getElementById('editStatus').value;
+            const note = document.getElementById('editNote').value.trim();
+
+            if (!note) {
+                alert("Catatan perubahan wajib diisi!");
+                return;
+            }
+
+            try {
+                const res = await fetch(`${API_URL}/api/absensi-karyawan/${currentAbsenId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Admin-Email': userEmail
+                    },
+                    body: JSON.stringify({ status: status, edit_note: note })
+                });
+
+                const data = await res.json();
+                if (res.ok) {
+                    closeModalEdit();
+                    loadLeaderData();
+                    loadLeaderRecap();
+                } else {
+                    alert(data.message || "Gagal menyimpan edit.");
+                }
+            } catch (err) {
+                alert("Terjadi kesalahan jaringan.");
+            }
+        }
+
+
+
+        async function deleteData(id) {
+            if (!confirm("Apakah Anda yakin ingin menghapus data absensi ini?")) return;
+
+            try {
+                const res = await fetch(`${API_URL}/api/absensi-karyawan/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'X-Admin-Email': userEmail }
+                });
+
+                const data = await res.json();
+                if (res.ok) {
+                    loadLeaderData();
+                    loadLeaderRecap();
+                } else {
+                    alert(data.message || "Gagal menghapus data.");
+                }
+            } catch (err) {
+                alert("Terjadi kesalahan jaringan.");
+            }
+        }
+
+        // ================= FITUR TAMPILAN DAN PWA =================
+        async function refreshAplikasi() {
+            const btn = document.querySelector('button[onclick="refreshAplikasi()"]');
+            if (btn) btn.innerHTML = 'Menyegarkan Penuh... ⏳';
+
+            try {
+                if ('caches' in window) {
+                    const cacheNames = await caches.keys();
+                    await Promise.all(cacheNames.map(name => caches.delete(name)));
+                }
+                if ('serviceWorker' in navigator) {
+                    const registrations = await navigator.serviceWorker.getRegistrations();
+                    for (let reg of registrations) await reg.unregister();
+                }
+                setTimeout(() => { window.location.href = 'index.html?update=' + new Date().getTime(); }, 300);
+            } catch (error) {
+                console.error('Gagal refresh total:', error);
+                window.location.reload();
+            }
+        }
+
+        // PWA Install Logic
+        let deferredPrompt = null;
+        const btnInstallApp = document.getElementById('btnInstallApp');
+        const installText = document.getElementById('installText');
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            if (!isStandalone) {
+                if (btnInstallApp) btnInstallApp.style.display = 'flex';
+                if (installText) installText.style.display = 'block';
+            }
+        });
+
+        if (btnInstallApp) {
+            btnInstallApp.addEventListener('click', async () => {
+                if (deferredPrompt !== null) {
+                    deferredPrompt.prompt();
+                    const { outcome } = await deferredPrompt.userChoice;
+                    if (outcome === 'accepted') {
+                        btnInstallApp.style.display = 'none';
+                        if (installText) installText.style.display = 'none';
+                    }
+                    deferredPrompt = null;
+                }
+            });
+        }
+
+        window.addEventListener('appinstalled', () => {
+            if (btnInstallApp) btnInstallApp.style.display = 'none';
+            if (installText) installText.style.display = 'none';
+        });
+
+        const iosInstallHint = document.getElementById('iosInstallHint');
+        const isIos = () => /iphone|ipad|ipod/.test(window.navigator.userAgent.toLowerCase());
+        const isInStandaloneMode = () => ('standalone' in window.navigator) && (window.navigator.standalone);
+
+        if (isIos() && !isInStandaloneMode()) {
+            if (iosInstallHint) iosInstallHint.style.display = 'block';
+        }
+
+        // ================= MENUS & UI ACTIONS =================
+        function toggleMenu(id, event) {
+            document.querySelectorAll('[id^="menu-"]').forEach(menu => {
+                if (menu.id !== `menu-${id}`) menu.classList.add('hidden');
+            });
+
+            const menu = document.getElementById(`menu-${id}`);
+            const button = event.currentTarget;
+            const rect = button.getBoundingClientRect();
+
+            menu.classList.toggle('hidden');
+
+            if (!menu.classList.contains('hidden')) {
+                const menuHeight = menu.offsetHeight;
+                const spaceBelow = window.innerHeight - rect.bottom;
+
+                if (spaceBelow < (menuHeight + 20)) {
+                    menu.style.top = `${rect.top - menuHeight - 5}px`;
+                } else {
+                    menu.style.top = `${rect.bottom + 5}px`;
+                }
+                menu.style.left = `${rect.left - 80}px`;
+            }
+        }
+
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('[onclick^="toggleMenu"]') && !e.target.closest('[id^="menu-"]')) {
+                document.querySelectorAll('[id^="menu-"]').forEach(menu => menu.classList.add('hidden'));
+            }
+        });
+    </script>
+</body>
+</html>
