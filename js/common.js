@@ -165,7 +165,7 @@ function injectSidebar() {
             <div class="h-16 flex items-center justify-between px-6 border-b border-slate-100">
                 <div class="flex items-center gap-1">
                     <div class="w-12 h-12 rounded-xl bg-white flex items-center justify-center overflow-hidden">
-                        <img src="Logo Insan Jaya.png" alt="Logo Insan Jaya" class="w-full h-full object-contain" onerror="this.src='https://via.placeholder.com/150'" />
+                        <img src="image/Logo Insan Jaya.png" alt="Logo Insan Jaya" class="w-full h-full object-contain" onerror="this.src='https://via.placeholder.com/150'" />
                     </div>
                     <div class="flex flex-col justify-center">
                         <span class="font-bricolage font-bold text-sm text-slate-900 leading-tight">LKP</span>
@@ -196,7 +196,7 @@ function injectSidebar() {
                 </a>
                 ` : ''}
                 
-                <a href="absensi siswa.html" class="${getLinkClass('absensi siswa.html')}">
+                <a href="absensi-siswa.html" class="${getLinkClass('absensi-siswa.html')}">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
                     </svg>

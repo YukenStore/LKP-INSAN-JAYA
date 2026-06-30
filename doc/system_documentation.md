@@ -37,7 +37,7 @@ Project ini sangat minimalis, menggunakan struktur multi-page aplikasi statis ta
 LKP-INSAN-JAYA/
 ├── index.html              # Halaman masuk (Login) dengan Google OAuth 2.0
 ├── dashboard.html          # Dashboard utama (Daftar & Edit Data Siswa)
-├── absensi siswa.html      # Form pencatatan absensi dan status SPP
+├── absensi-siswa.html      # Form pencatatan absensi dan status SPP
 ├── absensi-karyawan.html   # Panel absensi mandiri karyawan (GPS/Selfie) & pantau pimpinan
 ├── pendaftaran.html        # Form pendaftaran siswa & kelas baru secara manual (offline)
 ├── rekap-online.html       # Rekapitulasi & persetujuan pendaftar yang mendaftar online
@@ -45,11 +45,12 @@ LKP-INSAN-JAYA/
 ├── js/
 │   ├── config.js           # Berkas konfigurasi global (URL API, Peran, Program, dll)
 │   └── common.js           # Script helper bersama (layout, auth check, service worker installer)
+├── image/
+│   ├── Logo Insan Jaya.png # Logo LKP resolusi tinggi untuk tampilan web
+│   ├── icon-192.png        # Ikon PWA untuk tampilan di perangkat seluler (192px)
+│   └── icon-512.png        # Ikon PWA untuk tampilan di perangkat seluler (512px)
 ├── manifest.json           # File konfigurasi PWA (ikon, nama aplikasi, tema warna)
 ├── sw.js                   # Service Worker (syarat agar PWA bisa diinstal)
-├── Logo Insan Jaya.png     # Logo LKP resolusi tinggi untuk tampilan web
-├── icon-192.png            # Ikon PWA untuk tampilan di perangkat seluler (192px)
-└── icon-512.png            # Ikon PWA untuk tampilan di perangkat seluler (512px)
 ```
 
 ---
@@ -72,7 +73,7 @@ LKP-INSAN-JAYA/
 *   **Responsif Seluler**: Data ditampilkan dalam format tabel pada desktop dan format kartu geser (collapsible cards) pada perangkat mobile.
 *   **Menu Aksi (Hanya Admin)**: Menyediakan tombol aksi berupa titik tiga (⋮) untuk mengedit profil siswa (Nama, Kelas, Instruktur, Program, Jadwal) atau menghapusnya secara permanen dari server.
 
-### C. Sistem Pencatatan Absensi & SPP (`absensi siswa.html`)
+### C. Sistem Pencatatan Absensi & SPP (`absensi-siswa.html`)
 *   **Cascading Dropdown**: Guru harus memilih *Program Belajar* -> *Instruktur* -> *Nama Siswa* berturut-turut untuk membuka data absensi siswa bersangkutan.
 *   **Format Absensi**: Mendukung dua opsi format pembelajaran: **8 pertemuan** (kursus pendek) atau **12 pertemuan** (reguler bulanan).
 *   **Indikator Kehadiran**: Setiap pertemuan dapat diatur tanggal belajarnya dan status kehadirannya: *Hadir* (Hijau), *Izin* (Kuning), atau *Alfa* (Merah).

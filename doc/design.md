@@ -38,7 +38,7 @@ graph TD
 *   Menangani logika pencarian dan filter bertingkat menggunakan fungsi JavaScript array (`filter()`).
 *   Menyediakan formulir modal untuk mengubah data profil siswa (dikirim via POST ke `/api/edit`) dan menghapus data siswa (dikirim via POST ke `/api/delete`).
 
-### C. Lembar Presensi Siswa (`absensi siswa.html`)
+### C. Lembar Presensi Siswa (`absensi-siswa.html`)
 *   Mengelompokkan data siswa secara dinamis dalam bentuk struktur objek JS: `Program` -> `Instruktur/Guru` -> `Nama Siswa`.
 *   Memiliki menu opsi *Format Absen* (8 atau 12 pertemuan) yang secara dinamis menambah/mengurangi baris tabel absensi secara real-time.
 *   Memuat riwayat kehadiran siswa yang dipilih dari `/api/get-absensi-siswa?siswa_id=...` dan menyimpannya kembali ke `/api/save-absensi-siswa` saat guru mengeklik tombol simpan.

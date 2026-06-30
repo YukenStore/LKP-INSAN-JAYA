@@ -13,7 +13,7 @@ Aplikasi ini menggunakan struktur multi-halaman statis (Jamstack) yang terintegr
 graph TD
     Login[Login: index.html] -->|Google Auth / Bypass| Dashboard[Dashboard: dashboard.html]
     
-    Dashboard -->|Sidebar Navigation| AbsensiSiswa[Absensi Siswa: absensi siswa.html]
+    Dashboard -->|Sidebar Navigation| AbsensiSiswa[Absensi Siswa: absensi-siswa.html]
     Dashboard -->|Sidebar Navigation| AbsensiKaryawan[Absensi Karyawan: absensi-karyawan.html]
     Dashboard -->|Sidebar Navigation| PendaftaranBaru[Pendaftaran Baru: pendaftaran.html]
     Dashboard -->|Sidebar Navigation| LaporanBelajar[Laporan Belajar: laporan.html]
@@ -39,7 +39,7 @@ graph TD
 | :--- | :--- | :--- | :--- |
 | `index.html` | Masuk (Login) | Publik | Button Google SSO, Logo LKP, Logo Developer Bypass (5x Klik). |
 | `dashboard.html` | Data Siswa Aktif | Semua Staf | Summary Cards (Total Siswa, Pendaftar Baru), Pencarian Nama, Filter (Program, Instruktur, Kelas), Tabel Siswa (Collapsible Card di HP), Aksi Sunting/Hapus (Hanya Admin). |
-| `absensi siswa.html` | Absensi Siswa | Semua Staf | Dropdown bertingkat (Program $\rightarrow$ Instruktur $\rightarrow$ Siswa), Tabel Pertemuan (8 atau 12 sesi), Input Tanggal & Status Kehadiran, Status SPP (Admin), Reset Absensi (Admin). |
+| `absensi-siswa.html` | Absensi Siswa | Semua Staf | Dropdown bertingkat (Program $\rightarrow$ Instruktur $\rightarrow$ Siswa), Tabel Pertemuan (8 atau 12 sesi), Input Tanggal & Status Kehadiran, Status SPP (Admin), Reset Absensi (Admin). |
 | `absensi-karyawan.html` | Absensi Karyawan | Semua Staf / Pimpinan | **Absen Saya**: Tombol GPS & Akses Kamera Selfie.<br>**Riwayat Saya**: Tabel riwayat bulanan.<br>**Pantau Karyawan (Pimpinan)**: Rekap harian, bulanan, Edit & Hapus absensi karyawan. |
 | `pendaftaran.html` | Pendaftaran Baru | Admin / Super Admin | Formulir data diri siswa, NISN, NIK, Detail Jadwal Belajar Kustom (Senin - Sabtu), Data Orang Tua / Wali. |
 | `rekap-online.html` | Pendaftaran Online | Admin / Super Admin | Daftar kiriman form online web publik, Verifikasi Pembayaran Formulir, Konfirmasi Menjadi Siswa Aktif, Hapus Pendaftaran. |
