@@ -418,11 +418,6 @@
             </div>
 
             <div class="mb-4">
-                <label class="block text-xs font-bold text-slate-500 mb-1">Email Karyawan</label>
-                <input type="email" id="addEmail" placeholder="Opsional, boleh dikosongkan..." class="w-full p-2.5 border border-slate-200 rounded-xl text-sm bg-slate-50 outline-none focus:border-violet-500">
-            </div>
-            
-            <div class="mb-4">
                 <label class="block text-xs font-bold text-slate-500 mb-1">Status Kehadiran</label>
                 <select id="addStatus" class="w-full p-2.5 border border-slate-200 rounded-xl text-sm bg-slate-50 outline-none focus:border-violet-500">
                     <option value="Alpha">Alpha</option>
@@ -818,6 +813,10 @@
             canvas.width = video.videoWidth;
             canvas.height = video.videoHeight;
             
+            // Balik (mirror) canvas agar hasil foto sama dengan preview
+            ctx.translate(canvas.width, 0);
+            ctx.scale(-1, 1);
+            
             // Draw image to canvas
             ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
             
@@ -1062,7 +1061,6 @@
                     <tr class="hover:bg-slate-50/50">
                         <td class="p-3">
                             <div class="font-bold text-slate-800 text-xs">${d.nama}</div>
-                            <div class="text-[10px] text-slate-500">${d.email}</div>
                         </td>
                         <td class="p-3 text-center text-slate-500 text-xs font-bold">${d.sesi}</td>
                         <td class="p-3 text-center text-slate-700 text-xs font-bold">${d.jam_masuk || '-'}</td>
@@ -1114,11 +1112,30 @@
                     return;
                 }
 
-                tbody.innerHTML = data.map(d => `
+                // Group by nama agar tidak ada nama yang double jika email berbeda
+                const grouped = {};
+                data.forEach(d => {
+                    if (!grouped[d.nama]) {
+                        grouped[d.nama] = {
+                            nama: d.nama,
+                            total_hadir: 0,
+                            total_izin: 0,
+                            total_sakit: 0,
+                            total_alpha: 0
+                        };
+                    }
+                    grouped[d.nama].total_hadir += parseInt(d.total_hadir || 0);
+                    grouped[d.nama].total_izin += parseInt(d.total_izin || 0);
+                    grouped[d.nama].total_sakit += parseInt(d.total_sakit || 0);
+                    grouped[d.nama].total_alpha += parseInt(d.total_alpha || 0);
+                });
+                
+                const finalData = Object.values(grouped);
+
+                tbody.innerHTML = finalData.map(d => `
                     <tr class="hover:bg-slate-50/50">
                         <td class="p-3">
                             <div class="font-bold text-slate-800 text-xs">${d.nama}</div>
-                            <div class="text-[10px] text-slate-500">${d.email}</div>
                         </td>
                         <td class="p-3 text-center font-bold text-green-600 bg-green-50/30">${d.total_hadir}</td>
                         <td class="p-3 text-center font-bold text-yellow-600 bg-yellow-50/30">${d.total_izin}</td>
@@ -1217,7 +1234,6 @@
             selectNama.innerHTML = '<option value="" disabled selected>Pilih nama...</option>' + 
                 DAFTAR_NAMA_KARYAWAN.map(nama => `<option value="${nama}">${nama}</option>`).join('');
                 
-            document.getElementById('addEmail').value = '';
             document.getElementById('addStatus').value = 'Alpha';
             document.getElementById('addNote').value = 'Ditambahkan manual oleh pimpinan';
 
@@ -1242,7 +1258,6 @@
 
         async function submitAdd() {
             const nama = document.getElementById('addNama').value;
-            const email = document.getElementById('addEmail').value || `manual_${Date.now()}@lkp.com`;
             const status = document.getElementById('addStatus').value;
             const ket = document.getElementById('addNote').value;
             const tanggal = document.getElementById('inpLeaderDate').value;
@@ -1260,7 +1275,7 @@
                         'X-Admin-Email': userEmail
                     },
                     body: JSON.stringify({
-                        email: email,
+                        email: nama.toLowerCase().replace(/[^a-z0-9]/g, '') + "@lkp.com",
                         nama: nama,
                         tanggal: tanggal,
                         sesi: 1,
