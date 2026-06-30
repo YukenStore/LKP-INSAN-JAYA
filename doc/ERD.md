@@ -84,7 +84,11 @@ erDiagram
         TEXT foto_pulang_key
         REAL lat_masuk
         REAL lng_masuk
+        REAL lat_pulang
+        REAL lng_pulang
         TEXT edited_by
+        TEXT edit_note
+        TEXT created_at
     }
 
     laporan_draft {
