@@ -909,15 +909,15 @@
 
             // Baris kosong untuk ngisi sisa space (stretch full 1 halaman A4 ke bawah)
             let emptyCells = isBimbel ?
-                `<td class="border-black !border-t-0">&nbsp;</td>
-                 <td class="border-black !border-t-0">&nbsp;</td>
-                 <td class="border-black !border-t-0">&nbsp;</td>
-                 <td class="border-black !border-t-0">&nbsp;</td>
-                 <td class="border-black !border-t-0">&nbsp;</td>` :
-                `<td class="border-black !border-t-0">&nbsp;</td>
-                 <td class="border-black !border-t-0">&nbsp;</td>
-                 <td class="border-black !border-t-0">&nbsp;</td>
-                 <td class="border-black !border-t-0">&nbsp;</td>`;
+                `<td class="border-black !border-t-0 !border-b-0 p-0 text-[0px] h-0"></td>
+                 <td class="border-black !border-t-0 !border-b-0 p-0 text-[0px] h-0"></td>
+                 <td class="border-black !border-t-0 !border-b-0 p-0 text-[0px] h-0"></td>
+                 <td class="border-black !border-t-0 !border-b-0 p-0 text-[0px] h-0"></td>
+                 <td class="border-black !border-t-0 !border-b-0 p-0 text-[0px] h-0"></td>` :
+                `<td class="border-black !border-t-0 !border-b-0 p-0 text-[0px] h-0"></td>
+                 <td class="border-black !border-t-0 !border-b-0 p-0 text-[0px] h-0"></td>
+                 <td class="border-black !border-t-0 !border-b-0 p-0 text-[0px] h-0"></td>
+                 <td class="border-black !border-t-0 !border-b-0 p-0 text-[0px] h-0"></td>`;
 
             tbody.innerHTML += `
                 <tr class="h-full">
