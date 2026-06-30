@@ -473,16 +473,16 @@
     <!-- MODAL GPS INSTRUCTIONS -->
     <div id="modalGPS" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-[60] hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full p-6 flex flex-col transform scale-95 opacity-0 transition-all duration-300" id="modalGPSContent">
-            <h3 class="font-bricolage font-bold text-xl text-slate-800 mb-2">Cara Mengaktifkan GPS</h3>
-            <p class="text-xs text-slate-500 mb-4">Karena Anda sebelumnya menolak izin lokasi, browser menguncinya. Silakan ikuti langkah berikut sesuai HP Anda:</p>
+            <h3 class="font-bricolage font-bold text-xl text-slate-800 mb-2">Cara Mengaktifkan Izin</h3>
+            <p class="text-xs text-slate-500 mb-4">Karena Anda sebelumnya menolak izin <b>Lokasi/Kamera</b>, browser menguncinya. Silakan ikuti langkah berikut sesuai HP Anda:</p>
             
             <div class="space-y-4 mb-6 max-h-[60vh] overflow-y-auto custom-scrollbar pr-2 text-sm text-slate-700">
                 <div class="bg-blue-50 p-4 rounded-xl border border-blue-100">
                     <h4 class="font-bold text-blue-800 mb-2 flex items-center gap-2">📱 Jika Menggunakan Aplikasi</h4>
                     <p class="text-xs mb-2 text-blue-700">Karena ini versi aplikasi, pengaturan izin harus lewat Pengaturan HP:</p>
                     <ol class="list-decimal pl-4 space-y-2 text-xs">
-                        <li><b>Android:</b> Tutup aplikasi ini. Tahan/Long-press icon aplikasi <b>LKP Insan Jaya</b> di layar HP Anda, pilih <b>Info Aplikasi (App Info)</b> (ikon i). Pilih menu <b>Izin (Permissions)</b> > <b>Lokasi</b> > pilih <b>Izinkan</b>.</li>
-                        <li><b>iPhone:</b> Buka <b>Pengaturan HP</b> > <b>Privasi & Keamanan</b> > <b>Layanan Lokasi</b> > cari <b>Situs Web Safari</b> > ubah jadi <b>Saat Menggunakan</b>.</li>
+                        <li><b>Android:</b> Tutup aplikasi ini. Tahan/Long-press icon aplikasi <b>LKP Insan Jaya</b> di layar HP Anda, pilih <b>Info Aplikasi (App Info)</b> (ikon i). Pilih menu <b>Izin (Permissions)</b> > <b>Lokasi & Kamera</b> > pilih <b>Izinkan</b>.</li>
+                        <li><b>iPhone:</b> Buka <b>Pengaturan HP</b> > <b>Privasi & Keamanan</b> > <b>Layanan Lokasi / Kamera</b> > cari <b>Situs Web Safari</b> > ubah jadi <b>Saat Menggunakan / Izinkan</b>.</li>
                     </ol>
                 </div>
 
@@ -494,7 +494,7 @@
 
                 <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
                     <h4 class="font-bold text-slate-800 mb-2 flex items-center gap-2">🌐 Perbaiki Lewat Browser Normal</h4>
-                    <p class="text-xs mb-3 text-slate-600">Klik tombol di bawah untuk membuka sistem di browser normal. Setelah terbuka, klik ikon <b>Gembok 🔒</b> atau <b>aA</b> di samping link bagian atas, lalu izinkan Lokasi.</p>
+                    <p class="text-xs mb-3 text-slate-600">Klik tombol di bawah untuk membuka sistem di browser normal. Setelah terbuka, klik ikon <b>Gembok 🔒</b> atau <b>aA</b> di samping link bagian atas, lalu izinkan Lokasi & Kamera.</p>
                     <button onclick="window.open('https://yukenstore.github.io/LKP-INSAN-JAYA/absensi-karyawan.html', '_blank')" class="w-full py-2.5 bg-slate-800 hover:bg-slate-900 text-white rounded-lg font-bold transition-all text-xs flex items-center justify-center gap-2">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
                         Buka di Browser (Chrome/Safari)
@@ -787,7 +787,11 @@
                 cameraFeed.srcObject = stream;
                 document.getElementById('camera-actions').classList.remove('hidden');
             } catch (err) {
-                alert("Gagal mengakses kamera: " + err.message);
+                if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+                    openModalGPS();
+                } else {
+                    alert("Gagal mengakses kamera: " + err.message);
+                }
                 cancelAbsen();
             }
         }
