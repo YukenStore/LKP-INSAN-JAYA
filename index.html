@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - LKP Insan Jaya</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Bricolage+Grotesque:opsz,wght@12..96,700&display=swap"
+        rel="stylesheet">
+        
+    <!-- 1. MESIN GOOGLE (Punya rumah sendiri) -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+    <!-- 2. SATPAM HALAMAN LOGIN (Punya rumah sendiri) -->
+    <script>
+        setTimeout(() => {
+            if (localStorage.getItem('lkp_user_email')) {
+                window.location.href = 'dashboard.html';
+            }
+        }, 100); // Tunggu 0.1 detik biar browser sempat baca memory
+    </script>
+
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        .font-bricolage {
+            font-family: 'Bricolage Grotesque', sans-serif;
+        }
+    </style>
+</head>
+
+<body
+    class="bg-slate-50 text-slate-800 antialiased min-h-screen flex items-center justify-center relative overflow-hidden p-4">
+
+    <div
+        class="absolute top-[-10%] left-[-10%] w-96 h-96 bg-violet-300/40 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob">
+    </div>
+    <div
+        class="absolute top-[20%] right-[-10%] w-96 h-96 bg-fuchsia-300/40 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob animation-delay-2000">
+    </div>
+    <div
+        class="absolute bottom-[-20%] left-[20%] w-96 h-96 bg-indigo-300/40 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob animation-delay-4000">
+    </div>
+
+    <div id="loginCard"
+        class="w-full max-w-md bg-white/80 backdrop-blur-xl rounded-[2rem] shadow-2xl border border-white/50 p-8 sm:p-10 relative z-10 transition-all duration-300">
+
+        <div class="text-center mb-8">
+            <div
+                class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-white shadow-sm border border-slate-100 overflow-hidden mb-4">
+                <img src="Logo Insan Jaya.png" alt="Logo Insan Jaya" class="w-full h-full object-contain"
+                    onerror="this.src='https://via.placeholder.com/150'" />
+            </div>
+            <h1 class="font-bricolage text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">Selamat Datang!</h1>
+            <p class="text-sm text-slate-500 mt-2 font-medium">Masuk menggunakan akun Google Anda untuk mengakses sistem
+                akademik <span class="text-violet-600 font-bold">LKP Insan Jaya</span>.</p>
+        </div>
+
+        <div class="flex flex-col items-center justify-center space-y-4">
+
+            <div id="googleBtnContainer" class="w-full flex justify-center min-h-[40px]"></div>
+
+            <div id="statusMsg" class="hidden w-full text-xs font-bold text-center p-3 rounded-xl transition-all"></div>
+
+        </div>
+
+        <div class="mt-8 pt-6 border-t border-slate-100 text-center">
+            <p class="text-[10px] text-slate-400 font-medium tracking-wider uppercase mt-4">© 2026 LKP Insan Jaya. All
+                rights reserved.</p>
+        </div>
+
+    </div>
+
+    <script>
+        // ======================================================================
+        // FUNGSI CALLBACK KETIKA USER BERHASIL LOGIN GOOGLE DI FRONTEND
+        // ======================================================================
+        function handleCredentialResponse(response) {
+            const statusMsg = document.getElementById('statusMsg');
+            const googleBtn = document.getElementById('googleBtnContainer');
+
+            // Sembunyikan tombol Google saat memproses
+            googleBtn.classList.add('hidden');
+
+            // Tampilkan status loading
+            statusMsg.className = 'w-full text-xs font-bold text-center p-3 rounded-xl transition-all bg-violet-50 text-violet-600 border border-violet-100 flex justify-center items-center gap-2';
+            statusMsg.innerHTML = `
+                <svg class="animate-spin h-4 w-4 text-violet-600" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Memverifikasi akun Google Anda...
+            `;
+            statusMsg.classList.remove('hidden');
+
+            // --- DECODE JWT TOKEN GOOGLE ---
+            // Di tahap ini, Google mengirimkan Token JWT (JSON Web Token) yang berisi data user.
+            // Secara ideal, token ini dikirim ke Cloudflare Workers untuk divalidasi keamanannya.
+            // Untuk simulasi UI ini, kita decode tokennya langsung di browser.
+            const responsePayload = parseJwt(response.credential);
+
+            // SIMPAN DATA GOOGLE KE LOCAL STORAGE BROWSER
+            localStorage.setItem('lkp_user_name', responsePayload.name);
+            localStorage.setItem('lkp_user_email', responsePayload.email);
+            localStorage.setItem('lkp_user_picture', responsePayload.picture);
+
+            // Simulasi loading 1.5 detik seolah-olah mengecek database API
+            setTimeout(() => {
+                // Di sini nanti logika sesungguhnya: Mengecek apakah email ini terdaftar di DB lu
+                // Untuk sekarang, kita anggap semua yang login Google berhasil masuk
+
+                statusMsg.className = 'w-full text-xs font-bold text-center p-3 rounded-xl transition-all bg-emerald-50 text-emerald-600 border border-emerald-100 flex justify-center items-center gap-2';
+                statusMsg.innerHTML = `✅ Berhasil masuk sebagai ${responsePayload.name.split(' ')[0]}`;
+
+                // Redirect ke Dashboard
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 1000);
+
+            }, 1500);
+        }
+
+        // ======================================================================
+        // INISIALISASI GOOGLE IDENTITY SERVICES
+        // ======================================================================
+        window.onload = function () {
+            google.accounts.id.initialize({
+                // PENTING: Ganti tulisan di bawah dengan Client ID dari Google Cloud Console milikmu!
+                client_id: "103167988388-j5j4o83ieakv5o4rakv1v735btgp3ldp.apps.googleusercontent.com",
+                callback: handleCredentialResponse,
+                auto_select: false, // Set true jika ingin otomatis login tanpa klik kalau user cuma punya 1 akun Google
+            });
+
+            // Render tombol Google yang cantik secara otomatis
+            google.accounts.id.renderButton(
+                document.getElementById("googleBtnContainer"),
+                {
+                    theme: "outline",
+                    size: "large",
+                    shape: "pill",
+                    text: "signin_with",
+                    logo_alignment: "left",
+                    width: 300 // Menyesuaikan lebar tombol
+                }
+            );
+
+            // (Opsional) Mengaktifkan fitur "One Tap" pop-up di pojok kanan atas
+            google.accounts.id.prompt();
+        };
+
+        // Fungsi bantuan untuk membaca isi Token dari Google
+        function parseJwt(token) {
+            var base64Url = token.split('.')[1];
+            var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function (c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
+            return JSON.parse(jsonPayload);
+        }
+    </script>
+</body>
+
+</html>

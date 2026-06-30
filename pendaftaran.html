@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pendaftaran Baru</title>
+
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#7c3aed">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        // Cek apakah user sudah login. Kalau belum, tendang balik ke halaman login!
+        if (!localStorage.getItem('lkp_user_email')) {
+            window.location.href = 'index.html';
+        }
+    </script>
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js')
+                .then((reg) => {
+                    reg.update();
+                    console.log('Service Worker: Siap dan Selalu Update!');
+                })
+                .catch((err) => console.log('Service Worker Failed', err));
+        }
+    </script>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Bricolage+Grotesque:wght@700&display=swap"
+        rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        .font-bricolage {
+            font-family: 'Bricolage Grotesque', sans-serif;
+        }
+
+        /* Custom scrollbar tipis untuk sidebar (Opsional) */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+
+<body class="bg-slate-50 text-slate-800 antialiased overflow-hidden flex h-[100dvh] relative">
+
+    <div id="sidebarOverlay" class="fixed inset-0 bg-slate-900/50 z-40 hidden transition-opacity opacity-0 md:hidden">
+    </div>
+
+    <aside id="sidebar"
+        class="fixed inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col w-64 h-full bg-white border-r border-slate-200 z-50 flex-shrink-0 shadow-2xl md:shadow-none">
+        <div class="h-16 flex items-center justify-between px-6 border-b border-slate-100">
+            <div class="flex items-center gap-1">
+                <div class="w-12 h-12 rounded-xl bg-white flex items-center justify-center overflow-hidden">
+                    <img src="Logo Insan Jaya.png" alt="Logo Insan Jaya" class="w-full h-full object-contain"
+                        onerror="this.src='https://via.placeholder.com/150'" />
+                </div>
+                <div class="flex flex-col justify-center">
+                    <span class="font-bricolage font-bold text-sm text-slate-900 leading-tight">LKP</span>
+                    <span class="font-bricolage font-bold text-sm text-violet-600 leading-tight">INSAN JAYA</span>
+                </div>
+            </div>
+            <button id="closeSidebarBtn"
+                class="md:hidden p-2 -mr-2 text-slate-400 hover:text-red-500 rounded-lg bg-slate-50 transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+
+        <nav class="flex-1 overflow-y-auto custom-scrollbar py-4 px-3 space-y-1">
+            <p class="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2 mt-1">Menu Utama</p>
+            
+            <a href="rekap-online.html" id="navRekapOnline" style="display: none;" class="flex justify-between items-center px-3 py-2.5 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-medium text-sm transition-colors">
+                <div class="flex items-center gap-3">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                    Pendaftaran Online
+                </div>
+                <span id="badgeNotifMenu" class="hidden bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">0</span>
+            </a>
+            
+            <a href="pendaftaran.html" id="navPendaftaran"
+                class="flex items-center gap-3 px-3 py-2.5 bg-violet-50 text-violet-700 rounded-xl font-semibold text-sm transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+                Pendaftaran Baru
+            </a>
+            <a href="absensi siswa.html"
+                class="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-medium text-sm transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                </svg>
+                Absensi Siswa
+            </a>
+            <a href="absensi-karyawan.html"
+                class="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-medium text-sm transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Absensi Karyawan
+            </a>
+            <a href="dashboard.html"
+                class="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-medium text-sm transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                </svg>
+                Data Siswa Aktif
+            </a>
+
+            <p class="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2 mt-6">Akademik</p>
+            <a href="laporan.html"
+                class="flex items-center gap-3 px-3 py-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-medium text-sm transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                Laporan Hasil Belajar
+            </a>
+            <a href="#"
+                class="flex items-center gap-3 px-3 py-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-medium text-sm transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                </svg>
+                Latihan Soal
+            </a>
+        </nav>
+
+        <button onclick="refreshAplikasi()"
+            class="flex items-center justify-center gap-2 w-full px-4 py-2.5 mb-3 text-violet-700 bg-violet-50 hover:bg-violet-100 border border-violet-100 rounded-xl font-bold text-sm transition-colors active:scale-[0.98]">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+            Segarkan Aplikasi
+        </button>
+        <div class="p-4 border-t border-slate-100 mt-auto bg-white">
+            <p id="installText" style="display: none;"
+                class="text-[10px] text-slate-500 font-medium tracking-wider mt-4 mb-2 text-center">Silahkan install
+                aplikasi untuk pengalaman yang lebih baik!</p>
+            <button id="btnInstallApp" style="display: none;"
+                class="flex items-center justify-center gap-2 w-full px-4 py-2.5 mb-4 text-white bg-slate-800 hover:bg-slate-900 rounded-xl font-bold text-sm transition-colors shadow-md active:scale-[0.98]">
+                <svg class="w-5 h-5 text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                </svg>
+                Install Aplikasi
+            </button>
+            <div id="iosInstallHint" style="display: none;"
+                class="text-[11px] text-slate-600 font-medium text-center mt-2 mb-4 bg-blue-50/80 p-3 rounded-xl border border-blue-100">
+                🍎 <b>Khusus Pengguna iPhone:</b><br>
+                Tap tombol <svg class="inline w-4 h-4 mx-1 text-blue-600" fill="none" stroke="currentColor"
+                    viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                </svg> (Bagikan) di bawah Safari, lalu pilih <br><b>"Add to Home Screen"</b> ➕
+            </div>
+
+            <div class="flex items-center gap-3 mb-4 px-2">
+                <div
+                    class="w-10 h-10 rounded-full bg-violet-100 overflow-hidden flex-shrink-0 border border-violet-200">
+                    <img id="userProfilePic" src="https://ui-avatars.com/api/?name=User&background=c7d2fe&color=4f46e5"
+                        alt="Profile" class="w-full h-full object-cover">
+                </div>
+                <div class="overflow-hidden">
+                    <p id="userNameDisplay" class="text-sm font-bold text-slate-800 truncate">Memuat...</p>
+                    <p id="userEmailDisplay" class="text-[10px] font-medium text-slate-500 truncate">Memuat email...</p>
+                </div>
+            </div>
+            <a href="index.html" id="btnLogout"
+                class="flex items-center justify-center gap-2 w-full px-4 py-2.5 text-red-600 bg-red-50 hover:bg-red-100 rounded-xl font-bold text-sm transition-colors border border-red-100">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg>
+                Keluar
+            </a>
+        </div>
+    </aside>
+
+    <main class="flex-1 flex flex-col h-full relative overflow-hidden">
+        <header
+            class="md:hidden h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 z-10 flex-shrink-0">
+            <div class="flex items-center gap-2">
+                <div class="w-9 h-9 rounded-xl bg-white flex items-center justify-center overflow-hidden border">
+                    <img src="Logo Insan Jaya.png" class="w-full h-full object-contain">
+                </div>
+                <div class="flex items-center gap-1">
+                    <span class="font-bricolage font-bold text-base text-slate-900">LKP</span>
+                    <span class="font-bricolage font-bold text-base text-violet-600">INSAN JAYA</span>
+                </div>
+            </div>
+            <button id="mobileMenuBtn"
+                class="p-2 text-slate-600 hover:text-violet-600 hover:bg-slate-50 rounded-lg transition-colors">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+        </header>
+
+        <div class="flex-1 overflow-y-auto p-4 md:p-8 pb-32 md:pb-8">
+            <div class="max-w-2xl mx-auto">
+                <div class="mb-8">
+                    <h1 class="font-bricolage text-2xl md:text-3xl font-bold text-slate-900 tracking-tight">Pendaftaran
+                        Baru</h1>
+                    <p class="text-sm text-slate-500 mt-1">Gunakan form ini untuk pendaftaran program les siswa.</p>
+                </div>
+
+                <div id="adminFormContainer"
+                    class="hidden bg-white p-5 md:p-8 rounded-3xl shadow-sm border border-slate-200/60">
+                    <form id="formAbsensi" class="space-y-6">
+                        <div>
+                            <label
+                                class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-2">Nama
+                                Lengkap Siswa</label>
+                            <input type="text" name="nama_siswa" required placeholder="Nama lengkap siswa..."
+                                class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-violet-500 outline-none transition-all">
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label
+                                    class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-2">Program</label>
+                                <select id="program" name="program" required
+                                    class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-violet-500 appearance-none bg-no-repeat bg-[right_1rem_center] bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M5%207L10%2012L15%207%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%221.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%3C/svg%3E')]">
+                                    <option value="" disabled selected>Pilih program...</option>
+                                    <option value="bahasa arab">Bahasa Arab</option>
+                                    <option value="bahasa inggris">Bahasa Inggris</option>
+                                    <option value="bimbel">Bimbel</option>
+                                    <option value="calistung">Calistung</option>
+                                    <option value="komputer">Komputer</option>
+                                    <option value="menggambar & mewarnai">Menggambar & Mewarnai</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label
+                                    class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-2">Kelas</label>
+                                <select id="kelas" name="kelas" required
+                                    class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-violet-500 appearance-none bg-no-repeat bg-[right_1rem_center] bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M5%207L10%2012L15%207%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%221.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%3C/svg%3E')]">
+                                    <option value="" disabled selected>Pilih program dulu...</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label
+                                class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-2">Guru
+                                Pengajar</label>
+                            <select id="guru" name="guru" required
+                                class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-violet-500">
+                                <option value="" disabled selected>Pilih program dulu...</option>
+                            </select>
+                        </div>
+
+                        <div id="hariBelajarContainer">
+                            <label class="text-[11px] font-bold text-slate-500 uppercase mb-2 block">Hari Belajar (Maks
+                                3)</label>
+                            <div class="grid grid-cols-2 md:grid-cols-3 gap-2 text-sm">
+                                <label><input type="checkbox" name="hari" value="Senin"> Senin</label>
+                                <label><input type="checkbox" name="hari" value="Selasa"> Selasa</label>
+                                <label><input type="checkbox" name="hari" value="Rabu"> Rabu</label>
+                                <label><input type="checkbox" name="hari" value="Kamis"> Kamis</label>
+                                <label><input type="checkbox" name="hari" value="Jumat"> Jumat</label>
+                                <label><input type="checkbox" name="hari" value="Sabtu"> Sabtu</label>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-2">Jam
+                                Belajar</label>
+                            <select id="jam" name="jam" required
+                                class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-violet-500">
+                                <option value="" disabled selected>Pilih jam...</option>
+                                <option value="07.30-09.00">07.30 - 09.00</option>
+                                <option value="09.00-10.30">09.00 - 10.30</option>
+                                <option value="10.30-12.00">10.30 - 12.00</option>
+                                <option value="12.00-13.30">12.00 - 13.30</option>
+                                <option value="13.30-15.00">13.30 - 15.00</option>
+                                <option value="15.00-16.30">15.00 - 16.30</option>
+                                <option value="16.30-18.00">16.30 - 18.00</option>
+                                <option value="CUSTOM">Pilih jam sendiri...</option>
+                                <option value="CUSTOM_SCHEDULE">Pilih Jadwal Sendiri</option>
+                            </select>
+
+                            <div id="customJamContainer" class="hidden mt-4">
+                                <label
+                                    class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-3">Custom
+                                    Jam</label>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="text-xs text-slate-500 mb-1 block">Jam Masuk</label>
+                                        <input type="text" id="jamMasuk" maxlength="5" inputmode="numeric"
+                                            placeholder="15:30"
+                                            class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-violet-500">
+                                    </div>
+                                    <div>
+                                        <label class="text-xs text-slate-500 mb-1 block">Jam Keluar</label>
+                                        <input type="text" id="jamKeluar" maxlength="5" inputmode="numeric"
+                                            placeholder="17:00"
+                                            class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-violet-500">
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="jadwalCustomContainer" class="hidden"></div>
+                        </div>
+
+                        <button type="submit" id="btnSubmit"
+                            class="w-full bg-violet-600 hover:bg-violet-700 text-white font-bold py-4 rounded-xl transition-all shadow-lg shadow-violet-100 active:scale-[0.98] font-bricolage tracking-wide">
+                            Simpan Pendaftaran
+                        </button>
+                        <div id="notif"
+                            class="hidden text-center text-xs font-bold text-emerald-600 bg-emerald-50 py-3 rounded-xl border border-emerald-100">
+                            ✅ Berhasil Terkirim!
+                        </div>
+                    </form>
+                </div>
+
+
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // ================= SISTEM KEAMANAN PENDAFTARAN =================
+        function cekAksesPendaftaran() {
+            const currentUserEmail = localStorage.getItem('lkp_user_email');
+            const adminEmails = ['lpkinsanjaya@gmail.com', 'yumenoboken@gmail.com'];
+
+            if (!adminEmails.includes(currentUserEmail)) {
+                // Tendang user yang bukan admin langsung ke dashboard
+                alert("⛔ Akses Ditolak: Halaman ini khusus Admin.");
+                window.location.href = 'dashboard.html';
+                return;
+            }
+
+            // Kalau admin, tampilkan form pendaftaran
+            const adminForm = document.getElementById('adminFormContainer');
+            if (adminForm) adminForm.classList.remove('hidden');
+        }
+
+        document.addEventListener("DOMContentLoaded", cekAksesPendaftaran);
+
+
+        // ================= FITUR TAMPILAN PROFIL USER =================
+        document.addEventListener('DOMContentLoaded', () => {
+            const userName = localStorage.getItem('lkp_user_name') || 'Admin LKP';
+            const userEmail = localStorage.getItem('lkp_user_email') || 'admin@lkpinsanjaya.com';
+            const userPic = localStorage.getItem('lkp_user_picture');
+
+            const adminEmails = ['lpkinsanjaya@gmail.com', 'yumenoboken@gmail.com', 'elsasidamawarniut@gmail.com', 'zilisaje@gmail.com'];
+
+            // Sembunyikan menu Pendaftaran di sidebar jika bukan admin
+            const navPendaftaran = document.getElementById('navPendaftaran');
+            const navRekapOnline = document.getElementById('navRekapOnline');
+            
+            if (adminEmails.includes(userEmail)) {
+                if (navRekapOnline) navRekapOnline.style.display = 'flex';
+                // Fetch badge notifikasi pendaftaran online
+                fetch('https://absensi-api.yumenoboken.workers.dev/api/pendaftaran-online/count')
+                    .then(res => res.json())
+                    .then(data => {
+                        if(data.count > 0) {
+                            const badge = document.getElementById('badgeNotifMenu');
+                            if(badge) {
+                                badge.textContent = data.count;
+                                badge.classList.remove('hidden');
+                            }
+                        }
+                    }).catch(e => console.log('Gagal ambil notifikasi'));
+            } else {
+                if (navPendaftaran) {
+                    navPendaftaran.style.display = 'none';
+                }
+            }
+
+            document.getElementById('userNameDisplay').textContent = userName;
+            document.getElementById('userEmailDisplay').textContent = userEmail;
+
+            if (userPic) {
+                document.getElementById('userProfilePic').src = userPic;
+            } else {
+                document.getElementById('userProfilePic').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=c7d2fe&color=4f46e5`;
+            }
+
+            document.getElementById('btnLogout').addEventListener('click', (e) => {
+                if (!confirm('Apakah Anda yakin ingin keluar?')) {
+                    e.preventDefault();
+                } else {
+                    localStorage.removeItem('lkp_user_name');
+                    localStorage.removeItem('lkp_user_email');
+                    localStorage.removeItem('lkp_user_picture');
+                }
+            });
+        });
+
+        // ================= FITUR REFRESH PAKSA =================
+        async function refreshAplikasi() {
+            const btn = document.querySelector('button[onclick="refreshAplikasi()"]');
+            if (btn) btn.innerHTML = 'Menyegarkan Penuh... ⏳';
+
+            try {
+                if ('caches' in window) {
+                    const cacheNames = await caches.keys();
+                    await Promise.all(cacheNames.map(name => caches.delete(name)));
+                }
+                if ('serviceWorker' in navigator) {
+                    const registrations = await navigator.serviceWorker.getRegistrations();
+                    for (let reg of registrations) await reg.unregister();
+                }
+                setTimeout(() => { window.location.href = 'index.html?update=' + new Date().getTime(); }, 300);
+            } catch (error) {
+                console.error('Gagal refresh total:', error);
+                window.location.reload();
+            }
+        }
+
+        // ================= MOBILE SIDEBAR MENU LOGIC =================
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        const menuBtn = document.getElementById('mobileMenuBtn');
+        const closeBtn = document.getElementById('closeSidebarBtn');
+
+        function toggleSidebar() {
+            const isClosed = sidebar.classList.contains('-translate-x-full');
+            if (isClosed) {
+                sidebar.classList.remove('-translate-x-full');
+                overlay.classList.remove('hidden');
+                setTimeout(() => overlay.classList.remove('opacity-0'), 10);
+            } else {
+                sidebar.classList.add('-translate-x-full');
+                overlay.classList.add('opacity-0');
+                setTimeout(() => overlay.classList.add('hidden'), 300);
+            }
+        }
+
+        if (menuBtn) menuBtn.addEventListener('click', toggleSidebar);
+        if (closeBtn) closeBtn.addEventListener('click', toggleSidebar);
+        if (overlay) overlay.addEventListener('click', toggleSidebar);
+
+        const API_URL = 'https://absensi-api.yumenoboken.workers.dev';
+
+        // ================= FUNGSI FETCH DENGAN SATPAM (AUTH) =================
+        async function fetchWithAuth(url, options = {}) {
+            const userEmail = localStorage.getItem('lkp_user_email');
+
+            const headers = {
+                'X-Admin-Email': userEmail || '', // Bawa KTP ke server!
+                'Content-Type': 'application/json',
+                ...(options.headers || {})
+            };
+
+            const response = await fetch(url, { ...options, headers });
+
+            // Kalau 403 (Forbidden) -> Udah login, tapi nyoba fitur admin
+            if (response.status === 403) {
+                alert("⛔ Ditolak Server: Cuma Admin yang boleh menambah data ini!");
+                throw new Error("Forbidden: Bukan Admin");
+            }
+
+            // Kalau 401 (Unauthorized) -> Bener-bener belum login
+            if (response.status === 401) {
+                alert("⛔ Sesi tidak valid, silakan login ulang.");
+                localStorage.clear();
+                window.location.href = 'index.html';
+                throw new Error("Unauthorized");
+            }
+
+            return response;
+        }
+
+        const kelasByProgram = {
+            "bimbel": ["Kelas 1", "Kelas 2", "Kelas 3", "Kelas 4", "Kelas 5", "Kelas 6"],
+            "bahasa inggris": ["Beginner", "Intermediate", "Upper Intermediate", "Advanced"],
+            "bahasa arab": ["Iqra + B Arab Dasar"],
+            "komputer": ["MS Office"],
+            "calistung": ["Baca + Tulis + Hitung"],
+            "menggambar & mewarnai": ["Gambar + Warna"]
+        };
+
+        const guruByProgram = {
+            "bimbel": ["Muhammad Khalid", "Shinta Deslianty, S.Pd"],
+            "bahasa inggris": ["Ranti Agustini, S.Pd", "Tri Zahara, S.Pd"],
+            "calistung": ["Usniatun Sudiarsih, SH"],
+            "bahasa arab": ["Ayu Nurhasanah, S.Sos"],
+            "komputer": ["Normas Sari"],
+            "menggambar & mewarnai": ["Futria Tamasari S.Hum"]
+        };
+
+        function formatNama(nama) {
+            return nama.toLowerCase().replace(/\s+/g, ' ').trim().split(' ')
+                .map(word => word.split('-').map(part => part.charAt(0).toUpperCase() + part.slice(1)).join('-')).join(' ');
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const jadwalContainer = document.getElementById('jadwalCustomContainer');
+
+            jadwalContainer.innerHTML = `
+                <div class="mt-4 space-y-3">
+                    <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest">Jadwal Per Hari</label>
+                    ${["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"].map(hari => `
+                        <div class="jadwal-row flex items-center gap-2 sm:gap-3">
+                            <input type="checkbox" value="${hari}" class="jadwal-check w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0 rounded border-slate-300 text-violet-600 focus:ring-violet-500">
+                            <span class="w-14 sm:w-20 text-xs sm:text-sm font-medium text-slate-700 flex-shrink-0">${hari}</span>
+                            <input type="text" placeholder="15:30" maxlength="5" inputmode="numeric" class="jam-masuk jadwal-custom-jam flex-1 min-w-0 px-1 sm:px-3 py-2 border border-slate-200 rounded-lg text-center outline-none font-mono text-xs sm:text-sm">
+                            <span class="text-slate-400 flex-shrink-0">-</span>
+                            <input type="text" placeholder="17:00" maxlength="5" inputmode="numeric" class="jam-keluar jadwal-custom-jam flex-1 min-w-0 px-1 sm:px-3 py-2 border border-slate-200 rounded-lg text-center outline-none font-mono text-xs sm:text-sm">
+                        </div>
+                    `).join("")}
+                </div>
+            `;
+
+            const checkboxes = document.querySelectorAll('input[name="hari"]');
+            checkboxes.forEach(cb => {
+                cb.addEventListener('change', () => {
+                    const checked = document.querySelectorAll('input[name="hari"]:checked');
+                    if (checked.length > 3) {
+                        cb.checked = false;
+                        alert('Maksimal pilih 3 hari!');
+                    }
+                });
+            });
+
+            document.getElementById('program').addEventListener('change', (e) => {
+                const prog = e.target.value;
+                const kelasSelect = document.getElementById('kelas');
+                const guruSelect = document.getElementById('guru');
+
+                kelasSelect.innerHTML = '<option value="" disabled selected>Pilih kelas...</option>';
+                if (kelasByProgram[prog]) {
+                    kelasByProgram[prog].forEach(kelas => {
+                        kelasSelect.innerHTML += `<option value="${kelas}">${kelas}</option>`;
+                    });
+                }
+
+                guruSelect.innerHTML = '<option value="" disabled selected>Pilih guru...</option>';
+                if (guruByProgram[prog]) {
+                    guruByProgram[prog].forEach(guru => {
+                        guruSelect.innerHTML += `<option value="${guru}">${guru}</option>`;
+                    });
+                }
+            });
+
+            const jamSelect = document.getElementById('jam');
+            const customContainer = document.getElementById('customJamContainer');
+            const hariBelajarContainer = document.getElementById('hariBelajarContainer');
+
+            jamSelect.addEventListener('change', () => {
+                if (jamSelect.value === 'CUSTOM') {
+                    customContainer.classList.remove('hidden');
+                    jadwalContainer.classList.add('hidden');
+                    if (hariBelajarContainer) hariBelajarContainer.classList.remove('hidden');
+                } else if (jamSelect.value === 'CUSTOM_SCHEDULE') {
+                    customContainer.classList.add('hidden');
+                    jadwalContainer.classList.remove('hidden');
+                    if (hariBelajarContainer) hariBelajarContainer.classList.add('hidden');
+                } else {
+                    customContainer.classList.add('hidden');
+                    jadwalContainer.classList.add('hidden');
+                    if (hariBelajarContainer) hariBelajarContainer.classList.remove('hidden');
+                }
+            });
+
+            function autoFormatJam(input) {
+                input.addEventListener('input', () => {
+                    let value = input.value.replace(/\D/g, '').slice(0, 4);
+                    if (value.length >= 1 && parseInt(value[0]) > 2) value = '0' + value[0];
+                    if (value.length >= 2 && parseInt(value.slice(0, 2)) > 23) value = '23' + value.slice(2);
+                    if (value.length >= 3 && parseInt(value[2]) > 5) value = value.slice(0, 2) + '0' + value.slice(2);
+                    if (value.length >= 3) value = value.slice(0, 2) + ':' + value.slice(2);
+                    input.value = value;
+                });
+            }
+
+            autoFormatJam(document.getElementById('jamMasuk'));
+            autoFormatJam(document.getElementById('jamKeluar'));
+            document.querySelectorAll('.jadwal-custom-jam').forEach(autoFormatJam);
+
+            document.querySelector('[name="nama_siswa"]').addEventListener('blur', (e) => {
+                e.target.value = formatNama(e.target.value);
+            });
+
+            document.getElementById('formAbsensi').addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                const btn = document.getElementById('btnSubmit');
+                let jadwalFinal = "";
+                const data = Object.fromEntries(new FormData(e.target).entries());
+                data.nama_siswa = formatNama(data.nama_siswa);
+
+                if (data.jam !== 'CUSTOM_SCHEDULE') {
+                    const hariChecked = Array.from(document.querySelectorAll('input[name="hari"]:checked')).map(el => el.value);
+                    if (hariChecked.length === 0) {
+                        alert('Pilih minimal 1 hari!');
+                        return;
+                    }
+                    data.hari = hariChecked.join(', ');
+                }
+
+                if (data.jam === 'CUSTOM') {
+                    const masuk = document.getElementById('jamMasuk').value;
+                    const keluar = document.getElementById('jamKeluar').value;
+                    if (!masuk || !keluar) {
+                        alert('Isi jam masuk dan jam keluar!');
+                        return;
+                    }
+                    data.jam = `${masuk}-${keluar}`;
+                }
+
+                if (data.jam !== 'CUSTOM_SCHEDULE') {
+                    jadwalFinal = `${data.hari} (${data.jam})`;
+                    data.jadwal = jadwalFinal;
+                }
+
+                if ((data.jam || '').trim().toUpperCase() === 'CUSTOM_SCHEDULE') {
+                    const jadwal = [];
+                    document.querySelectorAll('.jadwal-row').forEach(row => {
+                        const check = row.querySelector('.jadwal-check');
+                        if (!check.checked) return;
+                        const masuk = row.querySelector('.jam-masuk').value;
+                        const keluar = row.querySelector('.jam-keluar').value;
+                        if (!masuk || !keluar) return;
+                        jadwal.push(`${check.value} (${masuk}-${keluar})`);
+                    });
+
+                    if (jadwal.length === 0) {
+                        alert('Pilih minimal 1 jadwal!');
+                        return;
+                    }
+                    jadwalFinal = jadwal.join(', ');
+                    data.jadwal = jadwalFinal;
+                    data.jam = jadwalFinal;
+                }
+
+                btn.disabled = true;
+                btn.innerText = 'Memproses...';
+
+                try {
+                    await fetchWithAuth(`${API_URL}/api/kelas`, {
+                        method: 'POST',
+                        body: JSON.stringify({
+                            program: data.program,
+                            nama_kelas: data.kelas,
+                            guru: data.guru,
+                            jadwal: jadwalFinal
+                        })
+                    });
+
+                    await fetchWithAuth(`${API_URL}/api/submit`, {
+                        method: 'POST',
+                        body: JSON.stringify(data)
+                    });
+
+                    document.getElementById('notif').classList.remove('hidden');
+                    e.target.reset();
+
+                    setTimeout(() => { location.reload(); }, 1500);
+
+                } catch (err) {
+                    console.log("Aksi simpan gagal:", err.message);
+                    btn.disabled = false;
+                    btn.innerText = 'Simpan Pendaftaran';
+                }
+            });
+        });
+
+        // ================= FITUR TOMBOL INSTALL APLIKASI (PWA) =================
+        let deferredPrompt = null;
+        const btnInstallApp = document.getElementById('btnInstallApp');
+        const installText = document.getElementById('installText');
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            if (!isStandalone) {
+                if (btnInstallApp) btnInstallApp.style.display = 'flex';
+                if (installText) installText.style.display = 'block';
+            }
+        });
+
+        if (btnInstallApp) {
+            btnInstallApp.addEventListener('click', async () => {
+                if (deferredPrompt !== null) {
+                    deferredPrompt.prompt();
+                    const { outcome } = await deferredPrompt.userChoice;
+                    if (outcome === 'accepted') {
+                        btnInstallApp.style.display = 'none';
+                        if (installText) installText.style.display = 'none';
+                    }
+                    deferredPrompt = null;
+                }
+            });
+        }
+
+        window.addEventListener('appinstalled', () => {
+            if (btnInstallApp) btnInstallApp.style.display = 'none';
+            if (installText) installText.style.display = 'none';
+        });
+
+        const iosInstallHint = document.getElementById('iosInstallHint');
+        const isIos = () => /iphone|ipad|ipod/.test(window.navigator.userAgent.toLowerCase());
+        const isInStandaloneMode = () => ('standalone' in window.navigator) && (window.navigator.standalone);
+
+        if (isIos() && !isInStandaloneMode()) {
+            if (iosInstallHint) iosInstallHint.style.display = 'block';
+        }
+    </script>
+</body>
+
+</html>
