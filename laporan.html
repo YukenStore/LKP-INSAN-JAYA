@@ -4,17 +4,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pendaftaran Baru</title>
+    <title>Laporan Hasil Belajar</title>
 
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#7c3aed">
 
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Tinos (metrically compatible with Times New Roman) -->
+    <link href="https://fonts.googleapis.com/css2?family=Tinos:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+    <!-- Library untuk Convert HTML ke JPG -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dom-to-image/2.6.0/dom-to-image.min.js"></script>
 
     <script>
-        // Cek apakah user sudah login. Kalau belum, tendang balik ke halaman login!
-        if (!localStorage.getItem('lkp_user_email')) {
+        const currentUserEmail = localStorage.getItem('lkp_user_email');
+        if (!currentUserEmail) {
             window.location.href = 'index.html';
+        } else {
+            // CUMA 2 EMAIL INI YANG BISA LIHAT MENU PENDAFTARAN
+            window.isSuperAdmin = function () {
+                const superAdminEmails = ['lpkinsanjaya@gmail.com', 'yumenoboken@gmail.com'];
+                return superAdminEmails.includes(currentUserEmail);
+            };
+
+            // GABUNGAN ADMIN DAN SEMUA GURU YANG BOLEH BUKA LAPORAN
+            window.isGuruOrAdmin = function () {
+                const allowedEmails = [
+                    'lpkinsanjaya@gmail.com',
+                    'yumenoboken@gmail.com',
+                    'mlbb080106@gmail.com',
+                    'tzaharasyaputri@gmail.com',
+                    'usniatun25@gmail.com',
+                    'ayunurhasanah1707@gmail.com',
+                    'edwinhamidihamidi@gmail.com',
+                    'shintadeslianty@gmail.com',
+                    'rantiagustini@gmail.com',
+                    'uthiuthi1130@gmail.com',
+                    'elsasidamawarniut@gmail.com',
+                    'zilisaje@gmail.com'
+                ];
+                return allowedEmails.includes(currentUserEmail);
+            };
+
+            // JIKA BUKAN GURU ATAU ADMIN, TENDANG KE DASHBOARD
+            if (!isGuruOrAdmin()) {
+                alert('Akses Ditolak! Hanya Admin dan Guru yang diizinkan membuat Laporan.');
+                window.location.href = 'dashboard.html';
+            }
         }
     </script>
 
@@ -29,9 +64,11 @@
         }
     </script>
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link
         href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Bricolage+Grotesque:wght@700&display=swap"
         rel="stylesheet">
+
     <style>
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
@@ -41,7 +78,10 @@
             font-family: 'Bricolage Grotesque', sans-serif;
         }
 
-        /* Custom scrollbar tipis untuk sidebar (Opsional) */
+        .font-times {
+            font-family: 'Tinos', 'Times New Roman', Times, serif;
+        }
+
         .custom-scrollbar::-webkit-scrollbar {
             width: 6px;
             height: 6px;
@@ -55,11 +95,43 @@
             background: #cbd5e1;
             border-radius: 3px;
         }
+
+        /* Style Khusus untuk Kertas A4 Preview */
+        .a4-container {
+            width: 794px;
+            /* Lebar standar A4 di 96dpi */
+            height: 1123px;
+            max-height: 1123px;
+            /* Tinggi standar A4 */
+            background: white;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            -webkit-text-size-adjust: 100%;
+            text-size-adjust: 100%;
+        }
+
+        .vertical-text {
+            writing-mode: vertical-rl;
+            text-orientation: upright;
+            text-transform: uppercase;
+            text-align: center;
+            letter-spacing: 0.2em;
+        }
+
+        /* Border custom untuk tabel cetak */
+        .print-table th,
+        .print-table td {
+            border: 1px solid black;
+            padding: 8px;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            word-break: break-word;
+        }
     </style>
 </head>
 
 <body class="bg-slate-50 text-slate-800 antialiased overflow-hidden flex h-[100dvh] relative">
 
+    <!-- SIDEBAR (Sama persis dengan halaman lain) -->
     <div id="sidebarOverlay" class="fixed inset-0 bg-slate-900/50 z-40 hidden transition-opacity opacity-0 md:hidden">
     </div>
 
@@ -96,7 +168,7 @@
             </a>
             
             <a href="pendaftaran.html" id="navPendaftaran"
-                class="flex items-center gap-3 px-3 py-2.5 bg-violet-50 text-violet-700 rounded-xl font-semibold text-sm transition-colors">
+                class="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-medium text-sm transition-colors">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
@@ -129,7 +201,7 @@
 
             <p class="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2 mt-6">Akademik</p>
             <a href="laporan.html"
-                class="flex items-center gap-3 px-3 py-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-medium text-sm transition-colors">
+                class="flex items-center gap-3 px-3 py-2.5 bg-violet-50 text-violet-700 rounded-xl font-semibold text-sm transition-colors">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -218,162 +290,207 @@
             </button>
         </header>
 
-        <div class="flex-1 overflow-y-auto p-4 md:p-8 pb-32 md:pb-8">
-            <div class="max-w-2xl mx-auto">
-                <div class="mb-8">
-                    <h1 class="font-bricolage text-2xl md:text-3xl font-bold text-slate-900 tracking-tight">Pendaftaran
-                        Baru</h1>
-                    <p class="text-sm text-slate-500 mt-1">Gunakan form ini untuk pendaftaran program les siswa.</p>
+        <!-- KONTEN UTAMA: Split Screen (Kiri Form, Kanan Preview) -->
+        <div class="flex-1 overflow-y-auto xl:overflow-hidden flex flex-col xl:flex-row scroll-smooth">
+
+            <!-- BAGIAN KIRI: Form Input -->
+            <div
+                class="w-full xl:w-[400px] flex-shrink-0 bg-white border-b xl:border-b-0 xl:border-r border-slate-200 xl:overflow-y-auto p-5 md:p-6 z-10">
+                <div class="mb-6">
+                    <h2 class="font-bricolage text-2xl font-bold text-slate-900">Buat Laporan</h2>
+                    <p class="text-xs text-slate-500 mt-1">Isi form ini, preview akan otomatis update.</p>
                 </div>
 
-                <div id="adminFormContainer"
-                    class="hidden bg-white p-5 md:p-8 rounded-3xl shadow-sm border border-slate-200/60">
-                    <form id="formAbsensi" class="space-y-6">
-                        <div>
-                            <label
-                                class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-2">Nama
-                                Lengkap Siswa</label>
-                            <input type="text" name="nama_siswa" required placeholder="Nama lengkap siswa..."
-                                class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-violet-500 outline-none transition-all">
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Program</label>
+                        <select id="inpProgram"
+                            class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:border-violet-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                            onchange="onProgramChange()">
+                            <option value="">Memuat Program...</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Nama Instruktur</label>
+                        <select id="inpGuru"
+                            class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:border-violet-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                            disabled onchange="onGuruChange()">
+                            <option value="">Pilih Instruktur...</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Nama Siswa</label>
+                        <select id="inpSiswa"
+                            class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:border-violet-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                            disabled onchange="onSiswaChange()">
+                            <option value="">Pilih Siswa...</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Tanggal Cetak</label>
+                        <input type="date" id="inpTanggal"
+                            class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:border-violet-500"
+                            onchange="updatePreview()">
+                    </div>
+
+                    <div class="pt-4 border-t border-slate-200">
+                        <div class="flex justify-between items-center mb-2">
+                            <label class="block text-[11px] font-bold text-slate-500 uppercase">Data Nilai (Maks
+                                4)</label>
+                            <button onclick="tambahBaris()"
+                                class="text-xs font-bold text-violet-600 bg-violet-50 px-2 py-1 rounded hover:bg-violet-100">+
+                                Tambah Baris</button>
                         </div>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <label
-                                    class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-2">Program</label>
-                                <select id="program" name="program" required
-                                    class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-violet-500 appearance-none bg-no-repeat bg-[right_1rem_center] bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M5%207L10%2012L15%207%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%221.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%3C/svg%3E')]">
-                                    <option value="" disabled selected>Pilih program...</option>
-                                    <option value="bahasa arab">Bahasa Arab</option>
-                                    <option value="bahasa inggris">Bahasa Inggris</option>
-                                    <option value="bimbel">Bimbel</option>
-                                    <option value="calistung">Calistung</option>
-                                    <option value="komputer">Komputer</option>
-                                    <option value="menggambar & mewarnai">Menggambar & Mewarnai</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label
-                                    class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-2">Kelas</label>
-                                <select id="kelas" name="kelas" required
-                                    class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-violet-500 appearance-none bg-no-repeat bg-[right_1rem_center] bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M5%207L10%2012L15%207%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%221.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%3C/svg%3E')]">
-                                    <option value="" disabled selected>Pilih program dulu...</option>
-                                </select>
-                            </div>
+                        <div id="barisContainer" class="space-y-3">
+                            <!-- Baris input digenerate via JS -->
                         </div>
+                    </div>
 
-                        <div>
-                            <label
-                                class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-2">Guru
-                                Pengajar</label>
-                            <select id="guru" name="guru" required
-                                class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-violet-500">
-                                <option value="" disabled selected>Pilih program dulu...</option>
-                            </select>
-                        </div>
-
-                        <div id="hariBelajarContainer">
-                            <label class="text-[11px] font-bold text-slate-500 uppercase mb-2 block">Hari Belajar (Maks
-                                3)</label>
-                            <div class="grid grid-cols-2 md:grid-cols-3 gap-2 text-sm">
-                                <label><input type="checkbox" name="hari" value="Senin"> Senin</label>
-                                <label><input type="checkbox" name="hari" value="Selasa"> Selasa</label>
-                                <label><input type="checkbox" name="hari" value="Rabu"> Rabu</label>
-                                <label><input type="checkbox" name="hari" value="Kamis"> Kamis</label>
-                                <label><input type="checkbox" name="hari" value="Jumat"> Jumat</label>
-                                <label><input type="checkbox" name="hari" value="Sabtu"> Sabtu</label>
-                            </div>
-                        </div>
-
-                        <div>
-                            <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-2">Jam
-                                Belajar</label>
-                            <select id="jam" name="jam" required
-                                class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-violet-500">
-                                <option value="" disabled selected>Pilih jam...</option>
-                                <option value="07.30-09.00">07.30 - 09.00</option>
-                                <option value="09.00-10.30">09.00 - 10.30</option>
-                                <option value="10.30-12.00">10.30 - 12.00</option>
-                                <option value="12.00-13.30">12.00 - 13.30</option>
-                                <option value="13.30-15.00">13.30 - 15.00</option>
-                                <option value="15.00-16.30">15.00 - 16.30</option>
-                                <option value="16.30-18.00">16.30 - 18.00</option>
-                                <option value="CUSTOM">Pilih jam sendiri...</option>
-                                <option value="CUSTOM_SCHEDULE">Pilih Jadwal Sendiri</option>
-                            </select>
-
-                            <div id="customJamContainer" class="hidden mt-4">
-                                <label
-                                    class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-3">Custom
-                                    Jam</label>
-                                <div class="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <label class="text-xs text-slate-500 mb-1 block">Jam Masuk</label>
-                                        <input type="text" id="jamMasuk" maxlength="5" inputmode="numeric"
-                                            placeholder="15:30"
-                                            class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-violet-500">
-                                    </div>
-                                    <div>
-                                        <label class="text-xs text-slate-500 mb-1 block">Jam Keluar</label>
-                                        <input type="text" id="jamKeluar" maxlength="5" inputmode="numeric"
-                                            placeholder="17:00"
-                                            class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-violet-500">
-                                    </div>
-                                </div>
-                            </div>
-                            <div id="jadwalCustomContainer" class="hidden"></div>
-                        </div>
-
-                        <button type="submit" id="btnSubmit"
-                            class="w-full bg-violet-600 hover:bg-violet-700 text-white font-bold py-4 rounded-xl transition-all shadow-lg shadow-violet-100 active:scale-[0.98] font-bricolage tracking-wide">
-                            Simpan Pendaftaran
+                    <div class="pt-2">
+                        <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Catatan Umum</label>
+                        <textarea id="inpCatatan" rows="4"
+                            class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:border-violet-500"
+                            placeholder="Siswa cukup aktif, namun..." oninput="updatePreview()"></textarea>
+                    </div>
+                    <div class="flex gap-2 mt-4">
+                        <button onclick="simpanLaporan()" id="btnSimpan"
+                            class="w-1/2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl transition-all shadow-lg active:scale-[0.98] flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-floppy-disk"></i> Simpan Draf
                         </button>
-                        <div id="notif"
-                            class="hidden text-center text-xs font-bold text-emerald-600 bg-emerald-50 py-3 rounded-xl border border-emerald-100">
-                            ✅ Berhasil Terkirim!
-                        </div>
-                    </form>
+                        <button onclick="downloadJPG()" id="btnDownload"
+                            class="w-1/2 bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl transition-all shadow-lg active:scale-[0.98] flex items-center justify-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                            </svg>
+                            Export JPG
+                        </button>
+                    </div>
+                    <a href="#previewSection"
+                        class="xl:hidden w-full mt-2 bg-slate-800 hover:bg-slate-900 text-slate-100 font-bold py-3 rounded-xl transition-all shadow-lg active:scale-[0.98] flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-eye"></i> Lihat Preview Laporan <i class="fa-solid fa-arrow-down"></i>
+                    </a>
                 </div>
+            </div>
 
+            <!-- BAGIAN KANAN: Live Preview Laporan -->
+            <div id="previewSection"
+                class="w-full xl:w-auto flex-shrink-0 xl:flex-1 min-h-[100vh] xl:min-h-0 bg-slate-200/50 xl:overflow-auto p-4 md:p-8 flex justify-center custom-scrollbar relative">
+
+                <!-- CONTAINER A4 (Scale supaya fit di layar kecil tapi pas dicetak resolusinya tinggi) -->
+                <div id="report-wrapper" class="origin-top transition-transform">
+                    <div id="report-container"
+                        class="a4-container p-10 font-times text-black relative bg-white mx-auto flex flex-col">
+
+                        <!-- HEADER KOP SURAT -->
+                        <div
+                            class="flex items-center justify-between border-b-[4px] border-double border-black pb-1 mb-4">
+                            <div class="w-[150px] flex justify-end items-center ml-10">
+                                <img src="Logo Insan Jaya.png"
+                                    class="w-[150px] h-[150px] flex-shrink-0 object-contain mr-[-60px] relative -top-3"
+                                    onerror="this.src='https://via.placeholder.com/150'">
+                            </div>
+                            <div class="flex-1 text-center text-black">
+                                <div class="italic text-[16px] font-bold mb-1">IT Generation, Education And Training
+                                    Center</div>
+                                <div class="text-[44px] font-bold text-[#1a3b86] tracking-wide leading-none mb-1"
+                                    style="font-family: serif;">INSAN JAYA</div>
+                                <div class="text-[12px] font-bold tracking-tight leading-snug mb-1">JL.SMB 2 (Depan
+                                    Gedung Serbaguna RS.HM.RABAIN /<br>Samping Bebek Goreng Slamet)</div>
+                                <div class="text-[12px] font-bold">EMAIL : lpkinsanjaya@gmail.com WA. 0821-8682-0447
+                                </div>
+                                <div class="text-[13px] font-bold mt-0.5">MUARA ENIM</div>
+                            </div>
+                            <div class="w-[50px]"></div> <!-- Spacer penyeimbang tengah -->
+                        </div>
+
+                        <!-- JUDUL -->
+                        <div class="text-center mb-6">
+                            <span class="font-bold underline text-[16px] tracking-wide">LAPORAN HASIL BELAJAR</span>
+                        </div>
+
+                        <!-- IDENTITAS -->
+                        <div class="flex justify-between text-[14px] mb-3">
+                            <div>
+                                <table class="border-none">
+                                    <tr>
+                                        <td class="pb-1 w-24">Nama Siswa/I</td>
+                                        <td class="pb-1 w-4">:</td>
+                                        <td class="pb-1" id="prevSiswa">Arsene Maliq Kurniawan</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Program</td>
+                                        <td>:</td>
+                                        <td id="prevProgram">Bimbel</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="mt-auto">
+                                <table class="border-none">
+                                    <tr>
+                                        <td class="w-28">Nama Instruktur</td>
+                                        <td class="w-4">:</td>
+                                        <td id="prevGuru">Muhammad Khalid</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- TABEL NILAI -->
+                        <div class="flex-1 min-h-0 relative border-b border-black overflow-hidden">
+                            <div id="tableScrollWrapper" class="absolute inset-0">
+                                <table class="w-full border-collapse print-table text-[14px] text-center h-full table-fixed !border-b-0">
+                                    <thead>
+                                        <tr id="prevTableHeader" class="bg-[#5b9bd5] text-black font-bold">
+                                            <th class="border-black w-[7%] p-2">NO</th>
+                                            <th class="border-black w-[16%] p-2">MAPEL</th>
+                                            <th class="border-black w-[25%] p-2">MATERI YANG DIAJARKAN</th>
+                                            <th class="border-black w-[12%] p-2">KONDISI</th>
+                                            <th class="border-black w-[24%] p-2">HASIL PEMBELAJARAN</th>
+                                            <th class="border-black w-[16%] p-2">CATATAN</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="prevTableBody">
+                                        <!-- Data Tabel diinjeksi via JS -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- TTD FOOTER -->
+                        <div id="report-footer" class="mt-auto flex justify-end text-[14px] flex-shrink-0 pt-8">
+                            <div class="text-center w-64">
+                                <p>Muara Enim, &nbsp; <span id="prevTanggal">09 Juni 2026</span></p>
+                                <p>Instruktur,</p>
+                                <br><br><br>
+                                <p id="prevTtdGuru">Muhammad Khalid</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
             </div>
         </div>
     </main>
 
     <script>
-        // ================= SISTEM KEAMANAN PENDAFTARAN =================
-        function cekAksesPendaftaran() {
+        // ================= SISTEM ROLE AKSES =================
+        function isSuperAdmin() {
             const currentUserEmail = localStorage.getItem('lkp_user_email');
-            const adminEmails = ['lpkinsanjaya@gmail.com', 'yumenoboken@gmail.com'];
-
-            if (!adminEmails.includes(currentUserEmail)) {
-                // Tendang user yang bukan admin langsung ke dashboard
-                alert("⛔ Akses Ditolak: Halaman ini khusus Admin.");
-                window.location.href = 'dashboard.html';
-                return;
-            }
-
-            // Kalau admin, tampilkan form pendaftaran
-            const adminForm = document.getElementById('adminFormContainer');
-            if (adminForm) adminForm.classList.remove('hidden');
+            const superAdminEmails = ['lpkinsanjaya@gmail.com', 'yumenoboken@gmail.com'];
+            return superAdminEmails.includes(currentUserEmail);
         }
 
-        document.addEventListener("DOMContentLoaded", cekAksesPendaftaran);
-
-
-        // ================= FITUR TAMPILAN PROFIL USER =================
+        // ================= INIT PROFIL & SIDEBAR =================
         document.addEventListener('DOMContentLoaded', () => {
             const userName = localStorage.getItem('lkp_user_name') || 'Admin LKP';
-            const userEmail = localStorage.getItem('lkp_user_email') || 'admin@lkpinsanjaya.com';
+            const userEmail = localStorage.getItem('lkp_user_email');
             const userPic = localStorage.getItem('lkp_user_picture');
 
-            const adminEmails = ['lpkinsanjaya@gmail.com', 'yumenoboken@gmail.com', 'elsasidamawarniut@gmail.com', 'zilisaje@gmail.com'];
-
-            // Sembunyikan menu Pendaftaran di sidebar jika bukan admin
             const navPendaftaran = document.getElementById('navPendaftaran');
             const navRekapOnline = document.getElementById('navRekapOnline');
             
-            if (adminEmails.includes(userEmail)) {
+            if (isSuperAdmin()) {
                 if (navRekapOnline) navRekapOnline.style.display = 'flex';
                 // Fetch badge notifikasi pendaftaran online
                 fetch('https://absensi-api.yumenoboken.workers.dev/api/pendaftaran-online/count')
@@ -389,60 +506,62 @@
                     }).catch(e => console.log('Gagal ambil notifikasi'));
             } else {
                 if (navPendaftaran) {
-                    navPendaftaran.style.display = 'none';
+                    navPendaftaran.classList.remove('flex');
+                    navPendaftaran.classList.add('hidden');
                 }
             }
 
             document.getElementById('userNameDisplay').textContent = userName;
-            document.getElementById('userEmailDisplay').textContent = userEmail;
-
-            if (userPic) {
-                document.getElementById('userProfilePic').src = userPic;
-            } else {
-                document.getElementById('userProfilePic').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=c7d2fe&color=4f46e5`;
-            }
+            document.getElementById('userEmailDisplay').textContent = userEmail || 'admin@lkpinsanjaya.com';
+            document.getElementById('userProfilePic').src = userPic || `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=c7d2fe&color=4f46e5`;
 
             document.getElementById('btnLogout').addEventListener('click', (e) => {
-                if (!confirm('Apakah Anda yakin ingin keluar?')) {
-                    e.preventDefault();
-                } else {
+                if (!confirm('Apakah Anda yakin ingin keluar?')) { e.preventDefault(); }
+                else {
                     localStorage.removeItem('lkp_user_name');
                     localStorage.removeItem('lkp_user_email');
                     localStorage.removeItem('lkp_user_picture');
                 }
             });
+
+            // Set Tanggal default ke hari ini
+            const today = new Date();
+            const yyyy = today.getFullYear();
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const dd = String(today.getDate()).padStart(2, '0');
+            document.getElementById('inpTanggal').value = `${yyyy}-${mm}-${dd}`;
+
+            renderInputBaris();
+            updatePreview();
         });
 
-        // ================= FITUR REFRESH PAKSA =================
-        async function refreshAplikasi() {
-            const btn = document.querySelector('button[onclick="refreshAplikasi()"]');
-            if (btn) btn.innerHTML = 'Menyegarkan Penuh... ⏳';
+        // ================= PREVIEW SCALING LOGIC =================
+        function adjustPreviewScale() {
+            const wrapper = document.getElementById('report-wrapper');
+            const parent = wrapper.parentElement;
 
-            try {
-                if ('caches' in window) {
-                    const cacheNames = await caches.keys();
-                    await Promise.all(cacheNames.map(name => caches.delete(name)));
-                }
-                if ('serviceWorker' in navigator) {
-                    const registrations = await navigator.serviceWorker.getRegistrations();
-                    for (let reg of registrations) await reg.unregister();
-                }
-                setTimeout(() => { window.location.href = 'index.html?update=' + new Date().getTime(); }, 300);
-            } catch (error) {
-                console.error('Gagal refresh total:', error);
-                window.location.reload();
+            const targetWidth = 794;
+            const availableWidth = parent.clientWidth - 32;
+
+            if (availableWidth < targetWidth) {
+                const scale = availableWidth / targetWidth;
+                wrapper.style.transform = `scale(${scale})`;
+                wrapper.style.transformOrigin = 'top center';
+                wrapper.style.marginBottom = `-${(1 - scale) * 1123}px`;
+            } else {
+                wrapper.style.transform = 'none';
+                wrapper.style.marginBottom = '0px';
             }
         }
 
-        // ================= MOBILE SIDEBAR MENU LOGIC =================
+        window.addEventListener('resize', adjustPreviewScale);
+        document.addEventListener('DOMContentLoaded', adjustPreviewScale);
+
+        // ================= MOBILE SIDEBAR LOGIC =================
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('sidebarOverlay');
-        const menuBtn = document.getElementById('mobileMenuBtn');
-        const closeBtn = document.getElementById('closeSidebarBtn');
-
         function toggleSidebar() {
-            const isClosed = sidebar.classList.contains('-translate-x-full');
-            if (isClosed) {
+            if (sidebar.classList.contains('-translate-x-full')) {
                 sidebar.classList.remove('-translate-x-full');
                 overlay.classList.remove('hidden');
                 setTimeout(() => overlay.classList.remove('opacity-0'), 10);
@@ -452,237 +571,402 @@
                 setTimeout(() => overlay.classList.add('hidden'), 300);
             }
         }
+        document.getElementById('mobileMenuBtn')?.addEventListener('click', toggleSidebar);
+        document.getElementById('closeSidebarBtn')?.addEventListener('click', toggleSidebar);
+        overlay?.addEventListener('click', toggleSidebar);
 
-        if (menuBtn) menuBtn.addEventListener('click', toggleSidebar);
-        if (closeBtn) closeBtn.addEventListener('click', toggleSidebar);
-        if (overlay) overlay.addEventListener('click', toggleSidebar);
+        // ================= CASCADING DROPDOWN LOGIC =================
+        const API = 'https://absensi-api.yumenoboken.workers.dev/api';
+        let allStudentsData = [];
 
-        const API_URL = 'https://absensi-api.yumenoboken.workers.dev';
+        const formatTitleCase = (str) => {
+            if (!str) return '';
+            return str.toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+        };
 
-        // ================= FUNGSI FETCH DENGAN SATPAM (AUTH) =================
         async function fetchWithAuth(url, options = {}) {
             const userEmail = localStorage.getItem('lkp_user_email');
-
             const headers = {
-                'X-Admin-Email': userEmail || '', // Bawa KTP ke server!
+                'X-Admin-Email': userEmail || '',
                 'Content-Type': 'application/json',
                 ...(options.headers || {})
             };
-
             const response = await fetch(url, { ...options, headers });
-
-            // Kalau 403 (Forbidden) -> Udah login, tapi nyoba fitur admin
-            if (response.status === 403) {
-                alert("⛔ Ditolak Server: Cuma Admin yang boleh menambah data ini!");
-                throw new Error("Forbidden: Bukan Admin");
-            }
-
-            // Kalau 401 (Unauthorized) -> Bener-bener belum login
             if (response.status === 401) {
                 alert("⛔ Sesi tidak valid, silakan login ulang.");
                 localStorage.clear();
                 window.location.href = 'index.html';
                 throw new Error("Unauthorized");
             }
-
             return response;
         }
 
-        const kelasByProgram = {
-            "bimbel": ["Kelas 1", "Kelas 2", "Kelas 3", "Kelas 4", "Kelas 5", "Kelas 6"],
-            "bahasa inggris": ["Beginner", "Intermediate", "Upper Intermediate", "Advanced"],
-            "bahasa arab": ["Iqra + B Arab Dasar"],
-            "komputer": ["MS Office"],
-            "calistung": ["Baca + Tulis + Hitung"],
-            "menggambar & mewarnai": ["Gambar + Warna"]
-        };
+        async function loadDataLaporan() {
+            try {
+                const res = await fetchWithAuth(`${API}/data`);
+                const data = await res.json();
+                allStudentsData = data;
 
-        const guruByProgram = {
-            "bimbel": ["Muhammad Khalid", "Shinta Deslianty, S.Pd"],
-            "bahasa inggris": ["Ranti Agustini, S.Pd", "Tri Zahara, S.Pd"],
-            "calistung": ["Usniatun Sudiarsih, SH"],
-            "bahasa arab": ["Ayu Nurhasanah, S.Sos"],
-            "komputer": ["Normas Sari"],
-            "menggambar & mewarnai": ["Futria Tamasari S.Hum"]
-        };
+                // Populate Program Dropdown
+                const programs = [...new Set(data.map(d => d.program))].filter(Boolean).sort();
+                const progSel = document.getElementById('inpProgram');
+                progSel.innerHTML = '<option value="">Pilih Program...</option>';
+                programs.forEach(p => {
+                    progSel.innerHTML += `<option value="${p}">${formatTitleCase(p)}</option>`;
+                });
 
-        function formatNama(nama) {
-            return nama.toLowerCase().replace(/\s+/g, ' ').trim().split(' ')
-                .map(word => word.split('-').map(part => part.charAt(0).toUpperCase() + part.slice(1)).join('-')).join(' ');
+                progSel.disabled = false;
+                progSel.classList.remove('disabled:cursor-not-allowed', 'disabled:opacity-50');
+            } catch (e) {
+                console.error("Gagal memuat data API", e);
+                document.getElementById('inpProgram').innerHTML = '<option value="">Gagal memuat data</option>';
+            }
         }
 
-        document.addEventListener("DOMContentLoaded", () => {
-            const jadwalContainer = document.getElementById('jadwalCustomContainer');
+        function onProgramChange() {
+            const progSel = document.getElementById('inpProgram');
+            const guruSel = document.getElementById('inpGuru');
+            const siswaSel = document.getElementById('inpSiswa');
 
-            jadwalContainer.innerHTML = `
-                <div class="mt-4 space-y-3">
-                    <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest">Jadwal Per Hari</label>
-                    ${["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"].map(hari => `
-                        <div class="jadwal-row flex items-center gap-2 sm:gap-3">
-                            <input type="checkbox" value="${hari}" class="jadwal-check w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0 rounded border-slate-300 text-violet-600 focus:ring-violet-500">
-                            <span class="w-14 sm:w-20 text-xs sm:text-sm font-medium text-slate-700 flex-shrink-0">${hari}</span>
-                            <input type="text" placeholder="15:30" maxlength="5" inputmode="numeric" class="jam-masuk jadwal-custom-jam flex-1 min-w-0 px-1 sm:px-3 py-2 border border-slate-200 rounded-lg text-center outline-none font-mono text-xs sm:text-sm">
-                            <span class="text-slate-400 flex-shrink-0">-</span>
-                            <input type="text" placeholder="17:00" maxlength="5" inputmode="numeric" class="jam-keluar jadwal-custom-jam flex-1 min-w-0 px-1 sm:px-3 py-2 border border-slate-200 rounded-lg text-center outline-none font-mono text-xs sm:text-sm">
-                        </div>
-                    `).join("")}
-                </div>
-            `;
+            const selectedProgram = progSel.value;
 
-            const checkboxes = document.querySelectorAll('input[name="hari"]');
-            checkboxes.forEach(cb => {
-                cb.addEventListener('change', () => {
-                    const checked = document.querySelectorAll('input[name="hari"]:checked');
-                    if (checked.length > 3) {
-                        cb.checked = false;
-                        alert('Maksimal pilih 3 hari!');
+            // Reset Dropdowns bawahnya
+            guruSel.innerHTML = '<option value="">Pilih Instruktur...</option>';
+            guruSel.disabled = true;
+            siswaSel.innerHTML = '<option value="">Pilih Siswa...</option>';
+            siswaSel.disabled = true;
+
+            if (selectedProgram) {
+                const gurus = [...new Set(allStudentsData.filter(d => d.program === selectedProgram).map(d => d.guru))].filter(Boolean).sort();
+                gurus.forEach(g => {
+                    guruSel.innerHTML += `<option value="${g}">${g}</option>`;
+                });
+                guruSel.disabled = false;
+            }
+            updatePreview();
+        }
+
+        function onGuruChange() {
+            const progSel = document.getElementById('inpProgram');
+            const guruSel = document.getElementById('inpGuru');
+            const siswaSel = document.getElementById('inpSiswa');
+
+            const selectedProgram = progSel.value;
+            const selectedGuru = guruSel.value;
+
+            // Reset Dropdown bawahnya
+            siswaSel.innerHTML = '<option value="">Pilih Siswa...</option>';
+            siswaSel.disabled = true;
+
+            if (selectedProgram && selectedGuru) {
+                const siswas = [...new Set(allStudentsData.filter(d => d.program === selectedProgram && d.guru === selectedGuru).map(d => d.nama_siswa))].filter(Boolean).sort();
+                siswas.forEach(s => {
+                    siswaSel.innerHTML += `<option value="${s}">${formatTitleCase(s)}</option>`;
+                });
+                siswaSel.disabled = false;
+            }
+            updatePreview();
+        }
+
+        async function onSiswaChange() {
+            const siswa = document.getElementById('inpSiswa').value;
+            
+            // Default reset
+            rowData = [{ mapel: '', materi: '', kondisi: '', hasil: '' }];
+            document.getElementById('inpCatatan').value = '';
+            
+            if (siswa) {
+                try {
+                    const btnSimpan = document.getElementById('btnSimpan');
+                    btnSimpan.innerHTML = 'Memuat Draf... ⏳';
+                    
+                    const res = await fetchWithAuth(`${API}/get-laporan-draft?siswa_id=${encodeURIComponent(siswa)}`);
+                    const data = await res.json();
+                    
+                    if (data.draft_data) {
+                        const parsed = data.draft_data;
+                        if (parsed.tanggal) document.getElementById('inpTanggal').value = parsed.tanggal;
+                        document.getElementById('inpCatatan').value = parsed.catatan || '';
+                        rowData = parsed.rows && parsed.rows.length > 0 ? parsed.rows : [{ mapel: '', materi: '', kondisi: '', hasil: '' }];
                     }
-                });
-            });
-
-            document.getElementById('program').addEventListener('change', (e) => {
-                const prog = e.target.value;
-                const kelasSelect = document.getElementById('kelas');
-                const guruSelect = document.getElementById('guru');
-
-                kelasSelect.innerHTML = '<option value="" disabled selected>Pilih kelas...</option>';
-                if (kelasByProgram[prog]) {
-                    kelasByProgram[prog].forEach(kelas => {
-                        kelasSelect.innerHTML += `<option value="${kelas}">${kelas}</option>`;
-                    });
+                    
+                    btnSimpan.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Simpan Draf';
+                } catch (e) {
+                    console.error("Gagal memuat draf", e);
+                    document.getElementById('btnSimpan').innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Simpan Draf';
                 }
-
-                guruSelect.innerHTML = '<option value="" disabled selected>Pilih guru...</option>';
-                if (guruByProgram[prog]) {
-                    guruByProgram[prog].forEach(guru => {
-                        guruSelect.innerHTML += `<option value="${guru}">${guru}</option>`;
-                    });
-                }
-            });
-
-            const jamSelect = document.getElementById('jam');
-            const customContainer = document.getElementById('customJamContainer');
-            const hariBelajarContainer = document.getElementById('hariBelajarContainer');
-
-            jamSelect.addEventListener('change', () => {
-                if (jamSelect.value === 'CUSTOM') {
-                    customContainer.classList.remove('hidden');
-                    jadwalContainer.classList.add('hidden');
-                    if (hariBelajarContainer) hariBelajarContainer.classList.remove('hidden');
-                } else if (jamSelect.value === 'CUSTOM_SCHEDULE') {
-                    customContainer.classList.add('hidden');
-                    jadwalContainer.classList.remove('hidden');
-                    if (hariBelajarContainer) hariBelajarContainer.classList.add('hidden');
-                } else {
-                    customContainer.classList.add('hidden');
-                    jadwalContainer.classList.add('hidden');
-                    if (hariBelajarContainer) hariBelajarContainer.classList.remove('hidden');
-                }
-            });
-
-            function autoFormatJam(input) {
-                input.addEventListener('input', () => {
-                    let value = input.value.replace(/\D/g, '').slice(0, 4);
-                    if (value.length >= 1 && parseInt(value[0]) > 2) value = '0' + value[0];
-                    if (value.length >= 2 && parseInt(value.slice(0, 2)) > 23) value = '23' + value.slice(2);
-                    if (value.length >= 3 && parseInt(value[2]) > 5) value = value.slice(0, 2) + '0' + value.slice(2);
-                    if (value.length >= 3) value = value.slice(0, 2) + ':' + value.slice(2);
-                    input.value = value;
-                });
             }
 
-            autoFormatJam(document.getElementById('jamMasuk'));
-            autoFormatJam(document.getElementById('jamKeluar'));
-            document.querySelectorAll('.jadwal-custom-jam').forEach(autoFormatJam);
+            renderInputBaris();
+            updatePreview();
+        }
 
-            document.querySelector('[name="nama_siswa"]').addEventListener('blur', (e) => {
-                e.target.value = formatNama(e.target.value);
-            });
+        async function simpanLaporan() {
+            const siswa = document.getElementById('inpSiswa').value;
+            if (!siswa) {
+                alert("Harap pilih nama siswa terlebih dahulu sebelum menyimpan!");
+                return;
+            }
 
-            document.getElementById('formAbsensi').addEventListener('submit', async (e) => {
-                e.preventDefault();
+            const dataToSave = {
+                tanggal: document.getElementById('inpTanggal').value,
+                catatan: document.getElementById('inpCatatan').value,
+                rows: rowData
+            };
 
-                const btn = document.getElementById('btnSubmit');
-                let jadwalFinal = "";
-                const data = Object.fromEntries(new FormData(e.target).entries());
-                data.nama_siswa = formatNama(data.nama_siswa);
+            const btn = document.getElementById('btnSimpan');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = 'Menyimpan... ⏳';
+            btn.disabled = true;
 
-                if (data.jam !== 'CUSTOM_SCHEDULE') {
-                    const hariChecked = Array.from(document.querySelectorAll('input[name="hari"]:checked')).map(el => el.value);
-                    if (hariChecked.length === 0) {
-                        alert('Pilih minimal 1 hari!');
-                        return;
-                    }
-                    data.hari = hariChecked.join(', ');
-                }
+            try {
+                const res = await fetchWithAuth(`${API}/save-laporan-draft`, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        siswa_id: siswa,
+                        draft_data: dataToSave
+                    })
+                });
 
-                if (data.jam === 'CUSTOM') {
-                    const masuk = document.getElementById('jamMasuk').value;
-                    const keluar = document.getElementById('jamKeluar').value;
-                    if (!masuk || !keluar) {
-                        alert('Isi jam masuk dan jam keluar!');
-                        return;
-                    }
-                    data.jam = `${masuk}-${keluar}`;
-                }
+                if (!res.ok) throw new Error("Gagal menyimpan draf");
 
-                if (data.jam !== 'CUSTOM_SCHEDULE') {
-                    jadwalFinal = `${data.hari} (${data.jam})`;
-                    data.jadwal = jadwalFinal;
-                }
+                // Animasi tombol simpan sukses
+                btn.innerHTML = '✅ Berhasil Disimpan!';
+                btn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+                btn.classList.add('bg-emerald-600', 'hover:bg-emerald-700');
 
-                if ((data.jam || '').trim().toUpperCase() === 'CUSTOM_SCHEDULE') {
-                    const jadwal = [];
-                    document.querySelectorAll('.jadwal-row').forEach(row => {
-                        const check = row.querySelector('.jadwal-check');
-                        if (!check.checked) return;
-                        const masuk = row.querySelector('.jam-masuk').value;
-                        const keluar = row.querySelector('.jam-keluar').value;
-                        if (!masuk || !keluar) return;
-                        jadwal.push(`${check.value} (${masuk}-${keluar})`);
-                    });
-
-                    if (jadwal.length === 0) {
-                        alert('Pilih minimal 1 jadwal!');
-                        return;
-                    }
-                    jadwalFinal = jadwal.join(', ');
-                    data.jadwal = jadwalFinal;
-                    data.jam = jadwalFinal;
-                }
-
-                btn.disabled = true;
-                btn.innerText = 'Memproses...';
-
-                try {
-                    await fetchWithAuth(`${API_URL}/api/kelas`, {
-                        method: 'POST',
-                        body: JSON.stringify({
-                            program: data.program,
-                            nama_kelas: data.kelas,
-                            guru: data.guru,
-                            jadwal: jadwalFinal
-                        })
-                    });
-
-                    await fetchWithAuth(`${API_URL}/api/submit`, {
-                        method: 'POST',
-                        body: JSON.stringify(data)
-                    });
-
-                    document.getElementById('notif').classList.remove('hidden');
-                    e.target.reset();
-
-                    setTimeout(() => { location.reload(); }, 1500);
-
-                } catch (err) {
-                    console.log("Aksi simpan gagal:", err.message);
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.classList.add('bg-blue-600', 'hover:bg-blue-700');
+                    btn.classList.remove('bg-emerald-600', 'hover:bg-emerald-700');
                     btn.disabled = false;
-                    btn.innerText = 'Simpan Pendaftaran';
-                }
-            });
-        });
+                }, 2000);
+            } catch (e) {
+                console.error(e);
+                alert("Gagal menyimpan draf ke server.");
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }
 
+        document.addEventListener('DOMContentLoaded', loadDataLaporan);
+
+        // ================= LOGIKA DATA LAPORAN =================
+        let rowData = [
+            { mapel: '', materi: '', kondisi: '', hasil: '' }
+        ];
+
+        function renderInputBaris() {
+            const valProgram = document.getElementById('inpProgram').value || '';
+            const isBimbel = valProgram.toLowerCase() === 'bimbel';
+
+            const container = document.getElementById('barisContainer');
+            container.innerHTML = '';
+            rowData.forEach((row, idx) => {
+                let mapelInput = isBimbel ? `<input type="text" class="px-2 py-1.5 text-xs rounded border border-slate-200" placeholder="Mapel" value="${row.mapel || ''}" oninput="updateRow(${idx}, 'mapel', this)">` : '';
+                container.innerHTML += `
+                    <div class="bg-slate-100 p-3 rounded-lg border border-slate-200 relative">
+                        <div class="absolute top-2 right-2 flex gap-2">
+                            ${rowData.length > 1 ? `<button onclick="hapusBaris(${idx})" class="text-red-500 hover:text-red-700 font-bold text-xs" title="Hapus">✕</button>` : ''}
+                        </div>
+                        <p class="text-[10px] font-bold text-slate-400 mb-2">Baris ${idx + 1}</p>
+                        <div class="grid ${isBimbel ? 'grid-cols-2' : 'grid-cols-1'} gap-2 mb-2">
+                            ${mapelInput}
+                            <input type="text" class="px-2 py-1.5 text-xs rounded border border-slate-200" placeholder="Kondisi" value="${row.kondisi || ''}" oninput="updateRow(${idx}, 'kondisi', this)">
+                        </div>
+                        <textarea class="w-full px-2 py-1.5 text-xs rounded border border-slate-200 mb-2" rows="2" placeholder="Materi yang diajarkan" oninput="updateRow(${idx}, 'materi', this)">${row.materi}</textarea>
+                        <textarea class="w-full px-2 py-1.5 text-xs rounded border border-slate-200" rows="2" placeholder="Hasil Pembelajaran" oninput="updateRow(${idx}, 'hasil', this)">${row.hasil}</textarea>
+                    </div>
+                `;
+            });
+        }
+
+        function tambahBaris() {
+            if (rowData.length >= 8) {
+                alert("Maksimal 8 baris biar muat di 1 halaman A4!");
+                return;
+            }
+            rowData.push({ mapel: '', materi: '', kondisi: '', hasil: '' });
+            renderInputBaris();
+            updatePreview();
+
+            setTimeout(() => {
+                if (isTableOverflowing()) {
+                    alert("Kapasitas kertas A4 sudah penuh! Tidak bisa menambah baris lagi.");
+                    rowData.pop();
+                    renderInputBaris();
+                    updatePreview();
+                }
+            }, 10);
+        }
+
+        function hapusBaris(idx) {
+            rowData.splice(idx, 1);
+            renderInputBaris();
+            updatePreview();
+        }
+
+        function isTableOverflowing() {
+            const wrapper = document.getElementById('tableScrollWrapper');
+            const table = wrapper ? wrapper.querySelector('table') : null;
+            if (!wrapper || !table) return false;
+
+            // Bandingkan scrollHeight vs clientHeight wrapper
+            // scrollHeight = tinggi konten sebenarnya, clientHeight = ruang yang tersedia
+            // Toleransi 22px ≈ 1 baris teks (14px font + 8px padding)
+            return wrapper.scrollHeight > wrapper.clientHeight + 22;
+        }
+
+        function updateRow(idx, field, element) {
+            const oldValue = rowData[idx][field];
+            rowData[idx][field] = element.value;
+            updatePreview();
+            
+            if (isTableOverflowing()) {
+                rowData[idx][field] = oldValue;
+                element.value = oldValue;
+                updatePreview();
+                alert("Batas maksimum A4 tercapai! Teks terlalu panjang.");
+            }
+        }
+
+        function updatePreview() {
+            const valSiswa = document.getElementById('inpSiswa').value;
+            const valProgram = document.getElementById('inpProgram').value;
+            document.getElementById('prevSiswa').innerText = valSiswa ? formatTitleCase(valSiswa) : '...';
+            document.getElementById('prevProgram').innerText = valProgram ? formatTitleCase(valProgram) : '...';
+            const guru = document.getElementById('inpGuru').value || '...';
+            document.getElementById('prevGuru').innerText = guru;
+            document.getElementById('prevTtdGuru').innerText = guru;
+
+            const rawDate = document.getElementById('inpTanggal').value;
+            let formattedDate = '...';
+            if (rawDate) {
+                const d = new Date(rawDate);
+                const options = { day: '2-digit', month: 'long', year: 'numeric' };
+                formattedDate = d.toLocaleDateString('id-ID', options);
+            }
+            document.getElementById('prevTanggal').innerText = formattedDate;
+
+            let txtCatatan = document.getElementById('inpCatatan').value || '';
+            txtCatatan = txtCatatan.replace(/\n/g, '<br>');
+
+            const isBimbel = (valProgram.toLowerCase() === 'bimbel');
+            const theadTr = document.getElementById('prevTableHeader');
+            if (isBimbel) {
+                theadTr.innerHTML = `
+                    <th class="border-black w-[7%] p-2">NO</th>
+                    <th class="border-black w-[16%] p-2">MAPEL</th>
+                    <th class="border-black w-[25%] p-2">MATERI YANG DIAJARKAN</th>
+                    <th class="border-black w-[12%] p-2">KONDISI</th>
+                    <th class="border-black w-[24%] p-2">HASIL PEMBELAJARAN</th>
+                    <th class="border-black w-[16%] p-2">CATATAN</th>
+                `;
+            } else {
+                theadTr.innerHTML = `
+                    <th class="border-black w-[7%] p-2">NO</th>
+                    <th class="border-black w-[35%] p-2">MATERI YANG DIAJARKAN</th>
+                    <th class="border-black w-[12%] p-2">KONDISI</th>
+                    <th class="border-black w-[30%] p-2">HASIL PEMBELAJARAN</th>
+                    <th class="border-black w-[16%] p-2">CATATAN</th>
+                `;
+            }
+
+            const tbody = document.getElementById('prevTableBody');
+            tbody.innerHTML = '';
+
+            // Baris kosong untuk stretch tabel penuh ke bawah halaman A4
+            let emptyCells = isBimbel ?
+                `<td class="border-black !border-t-0 !border-b-0 p-0 text-[0px] h-0"></td>
+                 <td class="border-black !border-t-0 !border-b-0 p-0 text-[0px] h-0"></td>
+                 <td class="border-black !border-t-0 !border-b-0 p-0 text-[0px] h-0"></td>
+                 <td class="border-black !border-t-0 !border-b-0 p-0 text-[0px] h-0"></td>
+                 <td class="border-black !border-t-0 !border-b-0 p-0 text-[0px] h-0"></td>
+                 <td class="border-black !border-t-0 !border-b-0 p-0 text-[0px] h-0"></td>` :
+                `<td class="border-black !border-t-0 !border-b-0 p-0 text-[0px] h-0"></td>
+                 <td class="border-black !border-t-0 !border-b-0 p-0 text-[0px] h-0"></td>
+                 <td class="border-black !border-t-0 !border-b-0 p-0 text-[0px] h-0"></td>
+                 <td class="border-black !border-t-0 !border-b-0 p-0 text-[0px] h-0"></td>
+                 <td class="border-black !border-t-0 !border-b-0 p-0 text-[0px] h-0"></td>`;
+
+            rowData.forEach((row, idx) => {
+                let html = `<tr>`;
+                let btmBorder = (idx === rowData.length - 1) ? '!border-b-0' : '';
+
+                html += `
+                    <td class="border-black align-top text-center p-2 ${btmBorder}">${idx + 1}</td>
+                    ${isBimbel ? `<td class="border-black text-left align-top p-2 ${btmBorder}">${row.mapel || ''}</td>` : ''}
+                    <td class="border-black text-left align-top p-2 ${btmBorder}">${row.materi ? row.materi.replace(/\n/g, '<br>') : ''}</td>
+                    <td class="border-black text-center align-top p-2 ${btmBorder}">${row.kondisi || ''}</td>
+                    <td class="border-black text-left align-top p-2 ${btmBorder}">${row.hasil ? row.hasil.replace(/\n/g, '<br>') : ''}</td>
+                `;
+
+                if (idx === 0) {
+                    html += `<td rowspan="${rowData.length + 1}" class="border-black text-left align-top p-2">${txtCatatan}</td>`;
+                }
+
+                html += `</tr>`;
+                tbody.innerHTML += html;
+            });
+
+            // Tambahkan baris kosong stretch
+            tbody.innerHTML += `
+                <tr class="h-full">
+                    ${emptyCells}
+                </tr>
+            `;
+
+        }
+
+        // ================= FUNGSI EXPORT KE JPG =================
+        function downloadJPG() {
+            const btn = document.getElementById('btnDownload');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = 'Mengekspor Laporan... ⏳';
+            btn.disabled = true;
+
+            const element = document.getElementById('report-container');
+            const namaSiswa = document.getElementById('inpSiswa').value || 'Siswa';
+
+            // Sedikit scroll ke atas biar render nggak kepotong
+            window.scrollTo(0, 0);
+
+            // Gunakan domtoimage agar teks dan spasi tidak tumpang tindih
+            domtoimage.toJpeg(element, { quality: 1.0, width: 794, height: 1123, bgcolor: '#ffffff' })
+                .then(function (dataUrl) {
+                    const link = document.createElement('a');
+                    link.download = `Laporan_Hasil_Belajar_${namaSiswa.replace(/\s+/g, '_')}.jpg`;
+                    link.href = dataUrl;
+                    link.click();
+
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                })
+                .catch(function (error) {
+                    console.error("Error generating JPG", error);
+                    alert("Gagal mengekspor laporan. Silakan coba lagi.");
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                });
+        }
+
+        // ================= FUNGSI SKALA PREVIEW RESPONSIVE =================
+        function adjustScale() {
+            const wrapper = document.getElementById('report-wrapper');
+            const container = wrapper.parentElement;
+
+            const availableWidth = container.clientWidth - 32; // p-4 = 16px kiri kanan
+            const originalWidth = 794; // Lebar standar kertas A4 dalam px
+
+            if (availableWidth < originalWidth) {
+                const scale = availableWidth / originalWidth;
+                wrapper.style.transform = `scale(${scale})`;
+            } else {
+                wrapper.style.transform = `scale(1)`;
+            }
+        }
+
+        window.addEventListener('resize', adjustScale);
         // ================= FITUR TOMBOL INSTALL APLIKASI (PWA) =================
         let deferredPrompt = null;
         const btnInstallApp = document.getElementById('btnInstallApp');
@@ -723,6 +1007,26 @@
 
         if (isIos() && !isInStandaloneMode()) {
             if (iosInstallHint) iosInstallHint.style.display = 'block';
+        }
+
+        async function refreshAplikasi() {
+            const btn = document.querySelector('button[onclick="refreshAplikasi()"]');
+            if (btn) btn.innerHTML = 'Menyegarkan Penuh... ⏳';
+
+            try {
+                if ('caches' in window) {
+                    const cacheNames = await caches.keys();
+                    await Promise.all(cacheNames.map(name => caches.delete(name)));
+                }
+                if ('serviceWorker' in navigator) {
+                    const registrations = await navigator.serviceWorker.getRegistrations();
+                    for (let reg of registrations) await reg.unregister();
+                }
+                setTimeout(() => { window.location.href = 'index.html?update=' + new Date().getTime(); }, 300);
+            } catch (error) {
+                console.error('Gagal refresh total:', error);
+                window.location.reload();
+            }
         }
     </script>
 </body>
