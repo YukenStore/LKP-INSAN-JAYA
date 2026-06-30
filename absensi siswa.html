@@ -574,16 +574,11 @@
 
         function renderTabelAbsensi(existingPertemuanData = null) {
             const formatAbsen = parseInt(document.getElementById('inpFormatAbsen').value);
-            const tbody = document.getElementById('bodyAbsensiVertikal');
-            tbody.innerHTML = '';
-            
             // Kalau dipanggil via onchange Format Absen, kita baca form state yg ada
             const isReadingForm = existingPertemuanData === null;
             let dataPertemuanToUse = existingPertemuanData || {};
             
             if (isReadingForm) {
-                const siswaId = document.getElementById('inpSiswa').value;
-
                 // Ambil state dari input tanggal & select status saat ini sebelum merender ulang
                 for(let i=1; i<=12; i++){
                     const inpTgl = document.getElementById(`tanggal_p${i}`);
@@ -593,6 +588,9 @@
                     }
                 }
             }
+
+            const tbody = document.getElementById('bodyAbsensiVertikal');
+            tbody.innerHTML = '';
 
             const disabledAttr = isGuruOrAdmin() ? '' : 'disabled';
             const selectCursor = isGuruOrAdmin() ? 'cursor-pointer' : 'cursor-not-allowed';
@@ -728,6 +726,26 @@
             }
         }
         
+        async function refreshAplikasi() {
+            const btn = document.querySelector('button[onclick="refreshAplikasi()"]');
+            if (btn) btn.innerHTML = 'Menyegarkan...';
+
+            try {
+                if ('caches' in window) {
+                    const cacheNames = await caches.keys();
+                    await Promise.all(cacheNames.map(name => caches.delete(name)));
+                }
+                if ('serviceWorker' in navigator) {
+                    const registrations = await navigator.serviceWorker.getRegistrations();
+                    for (let reg of registrations) await reg.unregister();
+                }
+                setTimeout(() => { window.location.reload(); }, 300);
+            } catch (error) {
+                console.error('Gagal refresh total:', error);
+                window.location.reload();
+            }
+        }
+
         // ================= FITUR TOMBOL INSTALL APLIKASI (PWA) =================
         let deferredPrompt = null;
         const btnInstallApp = document.getElementById('btnInstallApp');
