@@ -784,7 +784,7 @@
             const tbody = document.getElementById('myHistoryBody');
             
             const inpNama = document.getElementById('inpNamaKaryawan');
-            const finalName = (inpNama && inpNama.value) ? inpNama.value : (localStorage.getItem('lkp_karyawan_name_selected') || userName);
+            const finalName = (inpNama && inpNama.value) ? inpNama.value : (localStorage.getItem('lkp_karyawan_name_selected') || userName || "Karyawan");
             const targetEmail = finalName.toLowerCase().replace(/[^a-z0-9]/g, '') + "@lkp.com";
 
             tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-500 text-xs">Memuat data...</td></tr>`;
