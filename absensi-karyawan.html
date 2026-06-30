@@ -259,7 +259,7 @@
                                 </button>
                                 
                                 <div id="msgStatusAbsen" class="hidden w-full text-center p-3 bg-amber-50 text-amber-600 font-medium text-xs rounded-xl border border-amber-200">
-                                    ℹ️ Anda sedang terhitung <b>Izin/Sakit</b> hari ini. <br>Tidak perlu melakukan Absen Pulang.
+                                    ℹ️ Sesi sebelumnya tercatat <b>Izin/Sakit</b>. <br>Tidak perlu Absen Pulang. Silakan Absen Masuk untuk sesi selanjutnya (jika ada).
                                 </div>
                                 
                                 <div id="divStatusGroup" class="mt-2 text-left w-full border-t border-slate-100 pt-3">
@@ -774,6 +774,21 @@
                 return;
             }
 
+            if (action === 'Pulang') {
+                if (!confirm("Apakah Anda yakin ingin melakukan Absen Pulang sekarang?")) return;
+                
+                const btnPulang = document.getElementById('btnAbsenPulang');
+                const oriText = btnPulang.innerHTML;
+                btnPulang.innerHTML = "Mengirim...";
+                btnPulang.disabled = true;
+                
+                await captureAndSubmit(true);
+                
+                btnPulang.innerHTML = oriText;
+                btnPulang.disabled = false;
+                return;
+            }
+
             document.getElementById('absen-actions').classList.add('hidden');
             document.getElementById('gps-status').classList.add('hidden');
             const videoContainer = document.getElementById('video-container');
@@ -809,48 +824,58 @@
             document.getElementById('gps-status').classList.remove('hidden');
         }
 
-        async function captureAndSubmit() {
-            const video = document.getElementById('camera-feed');
-            const canvas = document.getElementById('canvas-snapshot');
-            const ctx = canvas.getContext('2d');
+        async function captureAndSubmit(bypassPhoto = false) {
+            let fotoKey = null;
 
-            // Set canvas size to match video
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            
-            // Balik (mirror) canvas agar hasil foto sama dengan preview
-            ctx.translate(canvas.width, 0);
-            ctx.scale(-1, 1);
-            
-            // Draw image to canvas
-            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-            
-            // Get base64 (compress as JPEG)
-            const base64Data = canvas.toDataURL('image/jpeg', 0.6);
-            
-            // Stop camera
-            if (stream) {
-                stream.getTracks().forEach(track => track.stop());
-                stream = null;
+            if (!bypassPhoto) {
+                const video = document.getElementById('camera-feed');
+                const canvas = document.getElementById('canvas-snapshot');
+                const ctx = canvas.getContext('2d');
+
+                // Set canvas size to match video
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                
+                // Balik (mirror) canvas agar hasil foto sama dengan preview
+                ctx.translate(canvas.width, 0);
+                ctx.scale(-1, 1);
+                
+                // Draw image to canvas
+                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                
+                // Get base64 (compress as JPEG)
+                const base64Data = canvas.toDataURL('image/jpeg', 0.6);
+                
+                // Stop camera
+                if (stream) {
+                    stream.getTracks().forEach(track => track.stop());
+                    stream = null;
+                }
+                
+                // UI Loading
+                document.getElementById('camera-actions').innerHTML = `<p class="text-xs font-bold text-violet-600 text-center w-full py-2">Mengirim data...</p>`;
+
+                try {
+                    // 1. Upload Foto ke R2
+                    const uploadRes = await fetch(`${API_URL}/api/upload-foto-absensi`, {
+                        method: 'POST',
+                        headers: { 
+                            'Content-Type': 'application/json',
+                            'X-Admin-Email': userEmail
+                        },
+                        body: JSON.stringify({ base64_data: base64Data })
+                    });
+                    const uploadData = await uploadRes.json();
+                    
+                    if (!uploadRes.ok) throw new Error(uploadData.error || "Gagal upload foto");
+                    fotoKey = uploadData.key;
+                } catch (err) {
+                    showAlert(err.message, true);
+                    return;
+                }
             }
-            
-            // UI Loading
-            document.getElementById('camera-actions').innerHTML = `<p class="text-xs font-bold text-violet-600 text-center w-full py-2">Mengirim data...</p>`;
 
             try {
-                // 1. Upload Foto ke R2
-                const uploadRes = await fetch(`${API_URL}/api/upload-foto-absensi`, {
-                    method: 'POST',
-                    headers: { 
-                        'Content-Type': 'application/json',
-                        'X-Admin-Email': userEmail
-                    },
-                    body: JSON.stringify({ base64_data: base64Data })
-                });
-                const uploadData = await uploadRes.json();
-                
-                if (!uploadRes.ok) throw new Error(uploadData.error || "Gagal upload foto");
-                const fotoKey = uploadData.key;
 
                 // 2. Submit Absensi
                 const today = new Date();
@@ -909,16 +934,18 @@
                 showAlert(err.message, true);
             }
 
-            // Reset UI
-            cancelAbsen();
-            // Restore actions HTML
-            document.getElementById('camera-actions').innerHTML = `
-                <button onclick="cancelAbsen()" class="flex-1 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-xl font-bold transition-all text-sm">Batal</button>
-                <button onclick="captureAndSubmit()" class="flex-1 py-2 bg-violet-600 hover:bg-violet-700 text-white rounded-xl font-bold transition-all text-sm flex items-center justify-center gap-1">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-                    Foto & Kirim
-                </button>
-            `;
+            if (!bypassPhoto) {
+                // Reset UI
+                cancelAbsen();
+                // Restore actions HTML
+                document.getElementById('camera-actions').innerHTML = `
+                    <button onclick="cancelAbsen()" class="flex-1 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-xl font-bold transition-all text-sm">Batal</button>
+                    <button onclick="captureAndSubmit()" class="flex-1 py-2 bg-violet-600 hover:bg-violet-700 text-white rounded-xl font-bold transition-all text-sm flex items-center justify-center gap-1">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                        Foto & Kirim
+                    </button>
+                `;
+            }
         }
 
         // ==========================================
@@ -990,20 +1017,38 @@
                     if (todayData.length > 0) {
                         const lastSesi = todayData[0]; // because ordered DESC
                         if (lastSesi.jam_pulang) {
-                            // Sudah pulang di sesi terakhir, siapkan sesi baru
-                            currentSesi = lastSesi.sesi + 1;
+                            if (lastSesi.sesi >= 2) {
+                                // Sudah 2 sesi selesai
+                                showMasuk = false;
+                                showPulang = false;
+                                showStatusGroup = false;
+                            } else {
+                                // Sudah pulang di sesi 1, siapkan sesi 2
+                                currentSesi = lastSesi.sesi + 1;
+                                showMasuk = true;
+                            }
                         } else {
-                            // Belum pulang di sesi terakhir, lanjut sesi itu
+                            // Belum pulang di sesi terakhir
                             currentSesi = lastSesi.sesi;
-                            showMasuk = false; // Karena sudah absen masuk
+                            showMasuk = false;
                             
                             if (lastSesi.status === 'Hadir') {
                                 showPulang = true; // Munculkan tombol pulang
                                 showStatusGroup = false; // Sembunyikan status & keterangan
                             } else {
-                                // Jika izin atau sakit
+                                // Jika izin atau sakit di sesi ini
                                 statusIzinSakit = true; // Munculkan notifikasi
-                                showStatusGroup = false; // Sembunyikan status
+                                showStatusGroup = false; // Sembunyikan status absen pulang
+
+                                if (lastSesi.sesi < 2) {
+                                    // Sesi 1 Izin/Sakit, siapkan Sesi 2
+                                    currentSesi = lastSesi.sesi + 1;
+                                    showMasuk = true;
+                                    showStatusGroup = true; // Munculkan untuk sesi 2
+                                } else {
+                                    // Sudah sesi 2 Izin/Sakit
+                                    showMasuk = false;
+                                }
                             }
                         }
                     } else {
@@ -1076,6 +1121,7 @@
                     headers: { 'X-Admin-Email': userEmail }
                 });
                 const data = await res.json();
+                window.leaderDailyData = data;
 
                 if (data.length === 0) {
                     tbody.innerHTML = `<tr><td colspan="7" class="p-4 text-center text-slate-500 text-xs">Belum ada data absensi di tanggal ini.</td></tr>`;
@@ -1299,6 +1345,14 @@
                 return;
             }
 
+            let newSesi = 1;
+            if (window.leaderDailyData) {
+                const existing = window.leaderDailyData.filter(d => d.nama === nama);
+                if (existing.length > 0) {
+                    newSesi = Math.max(...existing.map(d => d.sesi)) + 1;
+                }
+            }
+
             try {
                 const res = await fetch(`${API_URL}/api/absensi-karyawan`, {
                     method: 'POST',
@@ -1310,7 +1364,7 @@
                         email: nama.toLowerCase().replace(/[^a-z0-9]/g, '') + "@lkp.com",
                         nama: nama,
                         tanggal: tanggal,
-                        sesi: 1,
+                        sesi: newSesi,
                         status: status,
                         keterangan: ket,
                         is_leader_insert: true
