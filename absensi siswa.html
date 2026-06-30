@@ -341,11 +341,6 @@
         document.getElementById('closeSidebarBtn')?.addEventListener('click', toggleSidebar);
         overlay?.addEventListener('click', toggleSidebar);
 
-        function refreshAplikasi() {
-            localStorage.removeItem('lkp_absensi_data_cache');
-            window.location.reload(true);
-        }
-
         // ================= LOGIKA ABSENSI BARU (PER SISWA, LOCAL STORAGE) =================
         const API_URL = 'https://absensi-api.yumenoboken.workers.dev';
         let allData = [];
@@ -728,7 +723,7 @@
         
         async function refreshAplikasi() {
             const btn = document.querySelector('button[onclick="refreshAplikasi()"]');
-            if (btn) btn.innerHTML = 'Menyegarkan...';
+            if (btn) btn.innerHTML = 'Menyegarkan Penuh... ⏳';
 
             try {
                 if ('caches' in window) {
@@ -739,7 +734,7 @@
                     const registrations = await navigator.serviceWorker.getRegistrations();
                     for (let reg of registrations) await reg.unregister();
                 }
-                setTimeout(() => { window.location.reload(); }, 300);
+                setTimeout(() => { window.location.href = 'index.html?update=' + new Date().getTime(); }, 300);
             } catch (error) {
                 console.error('Gagal refresh total:', error);
                 window.location.reload();
