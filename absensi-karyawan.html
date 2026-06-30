@@ -395,18 +395,11 @@
         const MAX_RADIUS_METERS = 50;
 
         // ================= DAFTAR NAMA KARYAWAN =================
-        // Tambahkan atau edit daftar nama guru/karyawan di bawah ini:
-        const DAFTAR_NAMA_KARYAWAN = [
-            "Muhammad Khalid",
-            "Rifi",
-            "Shinta Deslianty, S.Pd",
-            "Ranti Agustini, S.Pd",
-            "Tri Zahara, S.Pd",
-            "Usniatun Sudiarsih, SH",
-            "Ayu Nurhasanah, S.Sos",
-            "Normas Sari",
-            "Futria Tamasari S.Hum",
-        ];
+        // Mengambil daftar nama guru/karyawan dari js/config.js (agar terhubung ke JS)
+        const DAFTAR_NAMA_KARYAWAN = [...new Set([
+            "Rifi", // Nama yang mungkin tidak ada di daftar program
+            ...Object.values(CONFIG.GURU_BY_PROGRAM).flat()
+        ])];
         // ========================================================
 
         // USER INFO
