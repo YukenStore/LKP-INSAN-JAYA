@@ -943,10 +943,32 @@
             tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-500 text-xs">Memuat data...</td></tr>`;
 
             try {
-                const res = await fetch(`${API_URL}/api/absensi-karyawan?email=${encodeURIComponent(targetEmail)}&bulan=${bulan}`, {
+                // Ambil data format baru (menggunakan targetEmail dari Nama)
+                const res1 = await fetch(`${API_URL}/api/absensi-karyawan?email=${encodeURIComponent(targetEmail)}&bulan=${bulan}`, {
                     headers: { 'X-Admin-Email': userEmail }
                 });
-                const data = await res.json();
+                const data1 = await res1.json();
+
+                // Ambil data lama (yang sebelumnya tersimpan pakai email Google yang sedang login)
+                const res2 = await fetch(`${API_URL}/api/absensi-karyawan?email=${encodeURIComponent(userEmail)}&bulan=${bulan}`, {
+                    headers: { 'X-Admin-Email': userEmail }
+                });
+                const data2 = await res2.json();
+
+                // Gabungkan data, filter HANYA untuk nama yang sedang dipilih, lalu hapus duplikat
+                let combined = [...data1, ...data2].filter(d => d.nama === finalName);
+                const uniqueIds = new Set();
+                let data = combined.filter(d => {
+                    if (uniqueIds.has(d.id)) return false;
+                    uniqueIds.add(d.id);
+                    return true;
+                });
+
+                // Urutkan ulang: tanggal terbaru di atas, lalu sesi terbesar
+                data.sort((a, b) => {
+                    if (a.tanggal !== b.tanggal) return new Date(b.tanggal) - new Date(a.tanggal);
+                    return b.sesi - a.sesi;
+                });
                 
                 // Hitung Rekap
                 let hadir=0, izin=0, sakit=0, alpha=0;
