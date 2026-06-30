@@ -559,6 +559,11 @@
                 if (savedNama && DAFTAR_NAMA_KARYAWAN.includes(savedNama)) {
                     inpNamaKaryawan.value = savedNama;
                 }
+
+                inpNamaKaryawan.addEventListener('change', (e) => {
+                    localStorage.setItem('lkp_karyawan_name_selected', e.target.value);
+                    loadMyHistory();
+                });
             }
 
             const adminEmails = ['lpkinsanjaya@gmail.com', 'yumenoboken@gmail.com', 'elsasidamawarniut@gmail.com', 'zilisaje@gmail.com'];
@@ -862,7 +867,7 @@
                 }
 
                 let payload = {
-                    email: userEmail,
+                    email: finalName.toLowerCase().replace(/[^a-z0-9]/g, '') + "@lkp.com",
                     nama: finalName,
                     tanggal: tgl,
                     sesi: currentSesi, // from state
@@ -930,10 +935,15 @@
         async function loadMyHistory() {
             const bulan = document.getElementById('inpBulanRiwayat').value;
             const tbody = document.getElementById('myHistoryBody');
+            
+            const inpNama = document.getElementById('inpNamaKaryawan');
+            const finalName = (inpNama && inpNama.value) ? inpNama.value : (localStorage.getItem('lkp_karyawan_name_selected') || userName);
+            const targetEmail = finalName.toLowerCase().replace(/[^a-z0-9]/g, '') + "@lkp.com";
+
             tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-500 text-xs">Memuat data...</td></tr>`;
 
             try {
-                const res = await fetch(`${API_URL}/api/absensi-karyawan?email=${encodeURIComponent(userEmail)}&bulan=${bulan}`, {
+                const res = await fetch(`${API_URL}/api/absensi-karyawan?email=${encodeURIComponent(targetEmail)}&bulan=${bulan}`, {
                     headers: { 'X-Admin-Email': userEmail }
                 });
                 const data = await res.json();
