@@ -342,7 +342,7 @@ export default {
             waktu_belajar TEXT,
             no_handphone TEXT,
             status TEXT DEFAULT 'Belum Lunas',
-            waktu_daftar DATETIME DEFAULT CURRENT_TIMESTAMP
+            waktu_daftar DATETIME DEFAULT (datetime('now', '+7 hours'))
           )
         `).run();
         
@@ -381,7 +381,7 @@ export default {
             lng_pulang REAL,
             edited_by TEXT,
             edit_note TEXT,
-            created_at TEXT DEFAULT (datetime('now'))
+            created_at TEXT DEFAULT (datetime('now', '+7 hours'))
           )
         `).run();
 
@@ -390,7 +390,7 @@ export default {
           CREATE TABLE IF NOT EXISTS latihan_kategori (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             nama_kategori TEXT UNIQUE NOT NULL,
-            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+            created_at DATETIME DEFAULT (datetime('now', '+7 hours'))
           )
         `).run();
 
@@ -406,7 +406,7 @@ export default {
             opsi_d TEXT NOT NULL,
             kunci_jawaban TEXT NOT NULL,
             pembahasan TEXT,
-            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            created_at DATETIME DEFAULT (datetime('now', '+7 hours')),
             FOREIGN KEY (kategori_id) REFERENCES latihan_kategori(id) ON DELETE CASCADE
           )
         `).run();
@@ -422,8 +422,8 @@ export default {
             nama_lengkap, jenis_kelamin, nisn, nik, tempat_lahir, tanggal_lahir, agama, alamat, kewarganegaraan, 
             penerima_kps, no_kps, nama_ibu, pekerjaan_ibu, penghasilan_ibu, tahun_lahir_ibu, nama_ayah, 
             pekerjaan_ayah, penghasilan_ayah, tahun_lahir_ayah, nama_wali, pekerjaan_wali, penghasilan_wali, 
-            tahun_lahir_wali, program, kelas, waktu_belajar, no_handphone, status
-          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Belum Lunas')
+            tahun_lahir_wali, program, kelas, waktu_belajar, no_handphone, status, waktu_daftar
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Belum Lunas', datetime('now', '+7 hours'))
         `).bind(
           data.nama_lengkap || "", data.jenis_kelamin || "", data.nisn || "", data.nik || "", data.tempat_lahir || "",
           data.tanggal_lahir || "", data.agama || "", data.alamat || "", data.kewarganegaraan || "", data.penerima_kps || "",

@@ -10,6 +10,8 @@
     <meta name="theme-color" content="#7c3aed">
 
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
 
     <!-- Konfigurasi & Script Bersama -->
     <script src="js/config.js"></script>
@@ -215,22 +217,18 @@
                 <!-- SECTION: LEADER (PANTAU KARYAWAN) -->
                 <div id="sectionLeader" class="hidden">
                     
-                    <div class="flex flex-col md:flex-row gap-4 mb-6">
-                        <div class="flex-1 bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
-                            <div>
-                                <p class="text-[10px] font-bold text-slate-400 uppercase">Tanggal Pantauan</p>
-                                <input type="date" id="inpLeaderDate" onchange="loadLeaderData()" class="mt-1 font-bold text-slate-700 outline-none border-b border-slate-200 focus:border-violet-500 bg-transparent">
-                            </div>
-                            <button onclick="loadLeaderData()" class="p-2 bg-violet-50 text-violet-600 rounded-lg hover:bg-violet-100 transition-colors">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
-                            </button>
+                    <!-- 1. INPUT TANGGAL PANTAUAN -->
+                    <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between mb-4">
+                        <div>
+                            <p class="text-[10px] font-bold text-slate-400 uppercase">Tanggal Pantauan</p>
+                            <input type="date" id="inpLeaderDate" onchange="loadLeaderData()" class="mt-1 font-bold text-slate-700 outline-none border-b border-slate-200 focus:border-violet-500 bg-transparent">
                         </div>
-                        <div class="flex-1 bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm">
-                            <p class="text-[10px] font-bold text-slate-400 uppercase">Rekap Bulanan</p>
-                            <input type="month" id="inpLeaderMonth" onchange="loadLeaderRecap()" class="mt-1 font-bold text-slate-700 outline-none border-b border-slate-200 focus:border-violet-500 bg-transparent w-full">
-                        </div>
+                        <button onclick="loadLeaderData()" class="p-2 bg-violet-50 text-violet-600 rounded-lg hover:bg-violet-100 transition-colors">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+                        </button>
                     </div>
 
+                    <!-- 2. TABEL DATA ABSENSI HARIAN -->
                     <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm flex-1 mb-8">
                         <div class="p-4 border-b border-slate-100 bg-slate-50 flex justify-between items-center">
                             <h3 class="font-bold text-slate-800 text-sm">Data Absensi (Harian)</h3>
@@ -259,7 +257,14 @@
                         </div>
                     </div>
 
-                    <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm flex-1">
+                    <!-- 3. INPUT REKAP BULANAN -->
+                    <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm mb-4">
+                        <p class="text-[10px] font-bold text-slate-400 uppercase">Rekap Bulanan</p>
+                        <input type="month" id="inpLeaderMonth" onchange="loadLeaderRecap()" class="mt-1 font-bold text-slate-700 outline-none border-b border-slate-200 focus:border-violet-500 bg-transparent w-full">
+                    </div>
+
+                    <!-- 4. TABEL REKAP BULANAN -->
+                    <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm flex-1 mb-8">
                         <div class="p-4 border-b border-slate-100 bg-slate-50">
                             <h3 class="font-bold text-slate-800 text-sm">Rekap Bulanan Karyawan</h3>
                         </div>
@@ -278,6 +283,22 @@
                                     <tr><td colspan="5" class="p-4 text-center text-slate-500 text-xs">Pilih bulan untuk melihat rekap</td></tr>
                                 </tbody>
                             </table>
+                        </div>
+                    </div>
+
+                    <!-- 5. CHARTS CONTAINER -->
+                    <div id="leaderChartsContainer" class="grid grid-cols-1 lg:grid-cols-3 gap-6 hidden">
+                        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col items-center">
+                            <h3 class="font-bold text-slate-800 text-sm mb-4">Total Kehadiran Keseluruhan</h3>
+                            <div class="w-full max-w-[200px] aspect-square relative">
+                                <canvas id="rekapDoughnutChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="lg:col-span-2 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col">
+                            <h3 class="font-bold text-slate-800 text-sm mb-4">Statistik Kehadiran per Karyawan</h3>
+                            <div class="w-full flex-1 relative min-h-[250px]">
+                                <canvas id="rekapBarChart"></canvas>
+                            </div>
                         </div>
                     </div>
 
@@ -403,9 +424,8 @@
         // ========================================================
 
         // USER INFO
-        const userEmail = localStorage.getItem('lkp_user_email');
+        // userEmail sudah dideklarasikan di js/common.js
         const userName = localStorage.getItem('lkp_user_name');
-        
         // STATE
         let userLocation = null;
         let stream = null;
@@ -450,17 +470,11 @@
 
             // Init
             if (navigator.permissions) {
-                try {
-                    navigator.permissions.query({ name: 'geolocation' }).then(function(result) {
-                        if (result.state === 'granted') {
-                            checkGPS(); // Auto load if permission already granted
-                        }
-                    }).catch(err => {
-                        console.warn("Permissions API query rejected:", err);
-                    });
-                } catch (err) {
-                    console.warn("Permissions API query failed synchronously:", err);
-                }
+                navigator.permissions.query({ name: 'geolocation' }).then(function(result) {
+                    if (result.state === 'granted') {
+                        checkGPS(); // Auto load if permission already granted
+                    }
+                });
             }
             loadMyHistory();
             if (isLeader) {
@@ -790,16 +804,10 @@
             const tbody = document.getElementById('myHistoryBody');
             
             const inpNama = document.getElementById('inpNamaKaryawan');
-            const finalName = (inpNama && inpNama.value) ? inpNama.value : (localStorage.getItem('lkp_karyawan_name_selected') || userName || '');
-            
-            tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-500 text-xs">Memuat data...</td></tr>`;
-
-            if (!finalName) {
-                tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-500 text-xs">Silakan pilih nama Anda untuk memuat riwayat.</td></tr>`;
-                return;
-            }
-
+            const finalName = (inpNama && inpNama.value) ? inpNama.value : (localStorage.getItem('lkp_karyawan_name_selected') || userName || "Karyawan");
             const targetEmail = finalName.toLowerCase().replace(/[^a-z0-9]/g, '') + "@lkp.com";
+
+            tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-500 text-xs">Memuat data...</td></tr>`;
 
             try {
                 // Ambil data format baru (menggunakan targetEmail dari Nama)
@@ -811,10 +819,7 @@
                 const data2 = await res2.json();
 
                 // Gabungkan data, filter HANYA untuk nama yang sedang dipilih, lalu hapus duplikat
-                let combined = [];
-                if (Array.isArray(data1)) combined.push(...data1);
-                if (Array.isArray(data2)) combined.push(...data2);
-                combined = combined.filter(d => d.nama === finalName);
+                let combined = [...data1, ...data2].filter(d => d.nama === finalName);
                 const uniqueIds = new Set();
                 let data = combined.filter(d => {
                     if (uniqueIds.has(d.id)) return false;
@@ -1014,6 +1019,7 @@
 
                 if (data.length === 0) {
                     tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-500 text-xs">Belum ada rekap di bulan ini.</td></tr>`;
+                    document.getElementById('leaderChartsContainer').classList.add('hidden');
                     return;
                 }
 
@@ -1048,6 +1054,9 @@
                         <td class="p-3 text-center font-bold text-red-600 bg-red-50/30">${d.total_alpha}</td>
                     </tr>
                 `).join('');
+
+                document.getElementById('leaderChartsContainer').classList.remove('hidden');
+                renderCharts(finalData);
 
             } catch(err) {
                 tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-red-500 text-xs">Gagal memuat rekap.</td></tr>`;
@@ -1236,6 +1245,111 @@
                 document.querySelectorAll('[id^="menu-"]').forEach(menu => menu.classList.add('hidden'));
             }
         });
+
+        // ==========================================
+        // CHARTS MODULE (LEADER)
+        // ==========================================
+        Chart.register(ChartDataLabels);
+        let doughnutChartInstance = null;
+        let barChartInstance = null;
+
+        function renderCharts(data) {
+            // Calculate totals for Doughnut
+            let totalHadir = 0, totalIzin = 0, totalSakit = 0, totalAlpha = 0;
+            const labels = [];
+            const dHadir = [], dIzin = [], dSakit = [], dAlpha = [];
+
+            data.forEach(d => {
+                totalHadir += d.total_hadir;
+                totalIzin += d.total_izin;
+                totalSakit += d.total_sakit;
+                totalAlpha += d.total_alpha;
+
+                labels.push(d.nama);
+                dHadir.push(d.total_hadir);
+                dIzin.push(d.total_izin);
+                dSakit.push(d.total_sakit);
+                dAlpha.push(d.total_alpha);
+            });
+
+            // 1. Render Doughnut Chart
+            const ctxDoughnut = document.getElementById('rekapDoughnutChart').getContext('2d');
+            if (doughnutChartInstance) doughnutChartInstance.destroy();
+            doughnutChartInstance = new Chart(ctxDoughnut, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Hadir', 'Izin', 'Sakit', 'Alpha'],
+                    datasets: [{
+                        data: [totalHadir, totalIzin, totalSakit, totalAlpha],
+                        backgroundColor: ['#16a34a', '#ca8a04', '#ea580c', '#dc2626'],
+                        borderWidth: 0,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    const value = context.raw;
+                                    const total = context.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
+                                    const percentage = total > 0 ? Math.round((value / total) * 100) + '%' : '0%';
+                                    label += value + ' sesi (' + percentage + ')';
+                                    return label;
+                                }
+                            }
+                        },
+                        datalabels: {
+                            color: '#ffffff',
+                            textStrokeColor: 'rgba(0, 0, 0, 0.7)',
+                            textStrokeWidth: 1.5,
+                            font: { weight: 'bold', size: 10 },
+                            formatter: (value, context) => {
+                                const total = context.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
+                                if (total === 0 || value === 0) return null;
+                                return Math.round((value / total) * 100) + '%';
+                            }
+                        }
+                    },
+                    cutout: '70%'
+                }
+            });
+
+            // 2. Render Bar Chart
+            const ctxBar = document.getElementById('rekapBarChart').getContext('2d');
+            if (barChartInstance) barChartInstance.destroy();
+            barChartInstance = new Chart(ctxBar, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        { label: 'Hadir', data: dHadir, backgroundColor: '#16a34a', borderRadius: 4 },
+                        { label: 'Izin', data: dIzin, backgroundColor: '#ca8a04', borderRadius: 4 },
+                        { label: 'Sakit', data: dSakit, backgroundColor: '#ea580c', borderRadius: 4 },
+                        { label: 'Alpha', data: dAlpha, backgroundColor: '#dc2626', borderRadius: 4 }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { stacked: false, grid: { display: false }, ticks: { font: { size: 10 } } },
+                        y: { stacked: false, beginAtZero: true, ticks: { stepSize: 1, font: { size: 10 } } }
+                    },
+                    plugins: {
+                        legend: { position: 'top', labels: { boxWidth: 12, font: { size: 11 } } },
+                        datalabels: { display: false }
+                    }
+                }
+            });
+        }
     </script>
 </body>
 </html>
