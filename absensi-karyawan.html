@@ -217,38 +217,18 @@
                 <!-- SECTION: LEADER (PANTAU KARYAWAN) -->
                 <div id="sectionLeader" class="hidden">
                     
-                    <div class="flex flex-col md:flex-row gap-4 mb-6">
-                        <div class="flex-1 bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
-                            <div>
-                                <p class="text-[10px] font-bold text-slate-400 uppercase">Tanggal Pantauan</p>
-                                <input type="date" id="inpLeaderDate" onchange="loadLeaderData()" class="mt-1 font-bold text-slate-700 outline-none border-b border-slate-200 focus:border-violet-500 bg-transparent">
-                            </div>
-                            <button onclick="loadLeaderData()" class="p-2 bg-violet-50 text-violet-600 rounded-lg hover:bg-violet-100 transition-colors">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
-                            </button>
+                    <!-- 1. INPUT TANGGAL PANTAUAN -->
+                    <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between mb-4">
+                        <div>
+                            <p class="text-[10px] font-bold text-slate-400 uppercase">Tanggal Pantauan</p>
+                            <input type="date" id="inpLeaderDate" onchange="loadLeaderData()" class="mt-1 font-bold text-slate-700 outline-none border-b border-slate-200 focus:border-violet-500 bg-transparent">
                         </div>
-                        <div class="flex-1 bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm">
-                            <p class="text-[10px] font-bold text-slate-400 uppercase">Rekap Bulanan</p>
-                            <input type="month" id="inpLeaderMonth" onchange="loadLeaderRecap()" class="mt-1 font-bold text-slate-700 outline-none border-b border-slate-200 focus:border-violet-500 bg-transparent w-full">
-                        </div>
+                        <button onclick="loadLeaderData()" class="p-2 bg-violet-50 text-violet-600 rounded-lg hover:bg-violet-100 transition-colors">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+                        </button>
                     </div>
 
-                    <!-- CHARTS CONTAINER -->
-                    <div id="leaderChartsContainer" class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8 hidden">
-                        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col items-center">
-                            <h3 class="font-bold text-slate-800 text-sm mb-4">Total Kehadiran Keseluruhan</h3>
-                            <div class="w-full max-w-[200px] aspect-square relative">
-                                <canvas id="rekapDoughnutChart"></canvas>
-                            </div>
-                        </div>
-                        <div class="lg:col-span-2 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col">
-                            <h3 class="font-bold text-slate-800 text-sm mb-4">Statistik Kehadiran per Karyawan</h3>
-                            <div class="w-full flex-1 relative min-h-[250px]">
-                                <canvas id="rekapBarChart"></canvas>
-                            </div>
-                        </div>
-                    </div>
-
+                    <!-- 2. TABEL DATA ABSENSI HARIAN -->
                     <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm flex-1 mb-8">
                         <div class="p-4 border-b border-slate-100 bg-slate-50 flex justify-between items-center">
                             <h3 class="font-bold text-slate-800 text-sm">Data Absensi (Harian)</h3>
@@ -277,7 +257,14 @@
                         </div>
                     </div>
 
-                    <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm flex-1">
+                    <!-- 3. INPUT REKAP BULANAN -->
+                    <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm mb-4">
+                        <p class="text-[10px] font-bold text-slate-400 uppercase">Rekap Bulanan</p>
+                        <input type="month" id="inpLeaderMonth" onchange="loadLeaderRecap()" class="mt-1 font-bold text-slate-700 outline-none border-b border-slate-200 focus:border-violet-500 bg-transparent w-full">
+                    </div>
+
+                    <!-- 4. TABEL REKAP BULANAN -->
+                    <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm flex-1 mb-8">
                         <div class="p-4 border-b border-slate-100 bg-slate-50">
                             <h3 class="font-bold text-slate-800 text-sm">Rekap Bulanan Karyawan</h3>
                         </div>
@@ -296,6 +283,22 @@
                                     <tr><td colspan="5" class="p-4 text-center text-slate-500 text-xs">Pilih bulan untuk melihat rekap</td></tr>
                                 </tbody>
                             </table>
+                        </div>
+                    </div>
+
+                    <!-- 5. CHARTS CONTAINER -->
+                    <div id="leaderChartsContainer" class="grid grid-cols-1 lg:grid-cols-3 gap-6 hidden">
+                        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col items-center">
+                            <h3 class="font-bold text-slate-800 text-sm mb-4">Total Kehadiran Keseluruhan</h3>
+                            <div class="w-full max-w-[200px] aspect-square relative">
+                                <canvas id="rekapDoughnutChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="lg:col-span-2 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col">
+                            <h3 class="font-bold text-slate-800 text-sm mb-4">Statistik Kehadiran per Karyawan</h3>
+                            <div class="w-full flex-1 relative min-h-[250px]">
+                                <canvas id="rekapBarChart"></canvas>
+                            </div>
                         </div>
                     </div>
 
