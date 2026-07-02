@@ -230,14 +230,7 @@ function injectSidebar() {
                 </a>
             </nav>
 
-            ${isAdmin ? `
-            <button onclick="window.OneSignalDeferred = window.OneSignalDeferred || []; window.OneSignalDeferred.push(async function(OneSignal) { if(Notification.permission === 'denied') { alert('PENTING: Kamu telah menolak/memblokir notifikasi sebelumnya! Silakan klik ikon gembok 🔒 di sebelah kiri URL di atas, lalu ubah izin Notifikasi menjadi Allow/Izinkan.'); } else if(Notification.permission === 'granted') { alert('Notifikasi sudah diizinkan oleh browser! Sedang mendaftarkan perangkat ke OneSignal...'); } else { await OneSignal.Notifications.requestPermission(); alert('Status Notifikasi sekarang: ' + Notification.permission); } });" class="flex items-center justify-center gap-2 w-full px-4 py-2.5 mb-3 text-white bg-indigo-600 hover:bg-indigo-700 border border-indigo-500 rounded-xl font-bold text-sm transition-colors shadow-md active:scale-[0.98]">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                </svg>
-                Aktifkan Notifikasi
-            </button>
-            ` : ''}
+
 
             <button onclick="refreshAplikasi()" class="flex items-center justify-center gap-2 w-full px-4 py-2.5 mb-3 text-violet-700 bg-violet-50 hover:bg-violet-100 border border-violet-100 rounded-xl font-bold text-sm transition-colors active:scale-[0.98]">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -336,11 +329,22 @@ function injectSidebar() {
 
     // Load Online Registration Notif count badge if admin
     if (isAdmin) {
+        // INJECT SWEETALERT2
+        const swalScript = document.createElement('script');
+        swalScript.src = "https://cdn.jsdelivr.net/npm/sweetalert2@11";
+        swalScript.defer = true;
+        document.head.appendChild(swalScript);
+
         // ============================================================================
-        // SISTEM NOTIFIKASI IN-APP (POP-UP & SUARA) TANPA PIHAK KETIGA
+        // SISTEM NOTIFIKASI IN-APP & OS NATIVE
         // ============================================================================
         
         const notifSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3');
+        
+        // Minta izin notifikasi OS (Windows/Android)
+        if ("Notification" in window && Notification.permission !== "granted" && Notification.permission !== "denied") {
+            Notification.requestPermission();
+        }
         
         async function checkNewPendaftaran() {
             try {
@@ -350,32 +354,49 @@ function injectSidebar() {
                 
                 const lastCount = localStorage.getItem('lastPendaftaranCount') || currentCount;
                 
+                // Update badge UI
                 const badgeElement = document.getElementById('badgeNotifMenu');
                 if (badgeElement) {
                     badgeElement.textContent = currentCount;
                     badgeElement.style.display = currentCount > 0 ? 'block' : 'none';
                 }
 
+                // Update App Icon Badge (Biar gak nyangkut)
+                if (currentCount > 0) {
+                    if ('setAppBadge' in navigator) navigator.setAppBadge(currentCount).catch(e => {});
+                } else {
+                    if ('clearAppBadge' in navigator) navigator.clearAppBadge().catch(e => {});
+                }
+
                 if (currentCount > lastCount) {
                     localStorage.setItem('lastPendaftaranCount', currentCount);
                     
+                    // 1. Putar Suara
                     notifSound.play().catch(e => console.log("Browser mencegah autoplay suara"));
                     
-                    Swal.fire({
-                        title: 'Pendaftaran Baru!',
-                        text: 'Ada formulir pendaftaran siswa baru yang masuk. Segera cek!',
-                        icon: 'info',
-                        toast: true,
-                        position: 'top-end',
-                        showConfirmButton: false,
-                        timer: 5000,
-                        timerProgressBar: true,
-                        didOpen: (toast) => {
-                            toast.addEventListener('mouseenter', Swal.stopTimer)
-                            toast.addEventListener('mouseleave', Swal.resumeTimer)
-                        }
-                    });
+                    // 2. Munculkan In-App Popup (SweetAlert)
+                    if (window.Swal) {
+                        Swal.fire({
+                            title: 'Pendaftaran Baru!',
+                            text: 'Ada formulir pendaftaran siswa baru yang masuk. Segera cek!',
+                            icon: 'info',
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 5000,
+                            timerProgressBar: true
+                        });
+                    }
 
+                    // 3. Munculkan Native OS Popup (PC/Mobile)
+                    if ("Notification" in window && Notification.permission === "granted") {
+                        new Notification("Pendaftaran Baru!", {
+                            body: "Ada formulir pendaftaran siswa baru yang masuk. Segera cek di Rekap Online!",
+                            icon: "image/Logo Insan Jaya.png"
+                        });
+                    }
+
+                    // 4. Refresh Tabel otomatis
                     if (window.location.pathname.includes('rekap-online.html') && typeof fetchPendaftaran === 'function') {
                         fetchPendaftaran();
                     }
@@ -387,19 +408,11 @@ function injectSidebar() {
             }
         }
 
-        checkNewPendaftaran();
-        setInterval(checkNewPendaftaran, 10000);
-        
-        window.testNotifSound = function() {
-            notifSound.play();
-            Swal.fire({
-                title: 'Notifikasi Aktif!',
-                text: 'Aplikasi akan otomatis berbunyi dan memunculkan pop-up saat ada pendaftar baru.',
-                icon: 'success',
-                timer: 3000,
-                showConfirmButton: false
-            });
-        };
+        // Jalankan saat Swall sudah siap
+        setTimeout(() => {
+            checkNewPendaftaran();
+            setInterval(checkNewPendaftaran, 10000);
+        }, 1000);
     }
 }
 
