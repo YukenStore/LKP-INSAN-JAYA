@@ -344,6 +344,14 @@ function injectSidebar() {
 
         window.OneSignalDeferred = window.OneSignalDeferred || [];
         OneSignalDeferred.push(async function(OneSignal) {
+            // Unregister old service workers to force browser to download the new merged sw.js
+            if ('serviceWorker' in navigator) {
+                const registrations = await navigator.serviceWorker.getRegistrations();
+                for (let registration of registrations) {
+                    await registration.unregister();
+                }
+            }
+
             await OneSignal.init({
                 appId: "ba38a67c-b19b-420e-8df6-fbacb19bf98e", // App ID dari OneSignal
                 serviceWorkerParam: { scope: "/LKP-INSAN-JAYA/" },
