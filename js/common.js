@@ -401,5 +401,7 @@ function injectSidebar() {
             });
         };
     }
+}
+
 // Inisialisasi layout setelah DOM termuat
 document.addEventListener('DOMContentLoaded', injectSidebar);
