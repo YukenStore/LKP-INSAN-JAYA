@@ -356,6 +356,13 @@ function injectSidebar() {
                 appId: "ba38a67c-b19b-420e-8df6-fbacb19bf98e", // App ID dari OneSignal
                 serviceWorkerParam: { scope: "/LKP-INSAN-JAYA/" },
                 serviceWorkerPath: "/LKP-INSAN-JAYA/sw.js",
+                notifyButton: {
+                    enable: true,
+                    colors: {
+                        'circle.background': 'rgb(79, 70, 229)',
+                        'circle.foreground': 'white',
+                    }
+                }
             });
             
             // Beri tag agar backend bisa memfilter notifikasi hanya untuk admin
