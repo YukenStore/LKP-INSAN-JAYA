@@ -342,6 +342,14 @@ function injectSidebar() {
         script.defer = true;
         document.head.appendChild(script);
 
+        // INJECT ONESIGNAL SDK SCRIPT SECARA OTOMATIS
+        if (!document.querySelector('script[src*="OneSignalSDK.page.js"]')) {
+            const osScript = document.createElement('script');
+            osScript.src = "https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js";
+            osScript.defer = true;
+            document.head.appendChild(osScript);
+        }
+
         window.OneSignalDeferred = window.OneSignalDeferred || [];
         OneSignalDeferred.push(async function(OneSignal) {
             // Unregister old service workers to force browser to download the new merged sw.js
