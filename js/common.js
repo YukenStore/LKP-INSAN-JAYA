@@ -374,31 +374,40 @@ function injectSidebar() {
                     // 1. Putar Suara
                     notifSound.play().catch(e => console.log("Browser mencegah autoplay suara"));
                     
-                    // 2. Munculkan In-App Popup (SweetAlert)
-                    if (window.Swal) {
-                        Swal.fire({
-                            title: 'Pendaftaran Baru!',
-                            text: 'Ada formulir pendaftaran siswa baru yang masuk. Segera cek!',
-                            icon: 'info',
-                            toast: true,
-                            position: 'top-end',
-                            showConfirmButton: false,
-                            timer: 5000,
-                            timerProgressBar: true
-                        });
-                    }
+                    // 2. Munculkan In-App Popup (SweetAlert) dengan fallback tunggu load
+                    const showSwal = setInterval(() => {
+                        if (window.Swal) {
+                            clearInterval(showSwal);
+                            Swal.fire({
+                                title: 'Pendaftaran Baru!',
+                                text: 'Ada formulir pendaftaran siswa baru yang masuk. Segera cek!',
+                                icon: 'info',
+                                toast: true,
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 6000,
+                                timerProgressBar: true
+                            });
+                        }
+                    }, 500);
+                    // Berhenti mencari Swal setelah 10 detik agar tidak infinity loop
+                    setTimeout(() => clearInterval(showSwal), 10000);
 
                     // 3. Munculkan Native OS Popup (PC/Mobile)
                     if ("Notification" in window && Notification.permission === "granted") {
-                        new Notification("Pendaftaran Baru!", {
-                            body: "Ada formulir pendaftaran siswa baru yang masuk. Segera cek di Rekap Online!",
-                            icon: "image/Logo Insan Jaya.png"
-                        });
+                        try {
+                            new Notification("Pendaftaran Baru!", {
+                                body: "Ada formulir pendaftaran siswa baru yang masuk. Segera cek di Rekap Online!",
+                                icon: "image/Logo Insan Jaya.png"
+                            });
+                        } catch (e) {
+                            console.log("Native notification error:", e);
+                        }
                     }
 
-                    // 4. Refresh Tabel otomatis
-                    if (window.location.pathname.includes('rekap-online.html') && typeof fetchPendaftaran === 'function') {
-                        fetchPendaftaran();
+                    // 4. Refresh Tabel otomatis (Nama fungsi di rekap-online adalah fetchData)
+                    if (window.location.pathname.includes('rekap-online.html') && typeof fetchData === 'function') {
+                        fetchData();
                     }
                 } else if (currentCount < lastCount) {
                     localStorage.setItem('lastPendaftaranCount', currentCount);
@@ -408,11 +417,9 @@ function injectSidebar() {
             }
         }
 
-        // Jalankan saat Swall sudah siap
-        setTimeout(() => {
-            checkNewPendaftaran();
-            setInterval(checkNewPendaftaran, 10000);
-        }, 1000);
+        // Jalankan polling
+        checkNewPendaftaran();
+        setInterval(checkNewPendaftaran, 10000);
     }
 }
 
