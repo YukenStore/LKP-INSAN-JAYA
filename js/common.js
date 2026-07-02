@@ -348,7 +348,8 @@ function injectSidebar() {
         
         async function checkNewPendaftaran() {
             try {
-                const response = await fetch(`${CONFIG.API_URL}/api/pendaftaran-online/count`);
+                // Tambahkan timestamp (t) agar browser tidak menggunakan cache lama
+                const response = await fetch(`${CONFIG.API_URL}/api/pendaftaran-online/count?t=${new Date().getTime()}`);
                 const data = await response.json();
                 const currentCount = data.count;
                 

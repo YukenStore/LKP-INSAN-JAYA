@@ -113,7 +113,8 @@
 
         async function fetchData() {
             try {
-                const res = await fetchWithAuth(`${API_URL}/api/pendaftaran-online`);
+                // Tambahkan timestamp (t) agar browser tidak menggunakan cache lama
+                const res = await fetchWithAuth(`${API_URL}/api/pendaftaran-online?t=${new Date().getTime()}`);
                 allData = await res.json();
                 renderTable();
                 updateBadge(allData.filter(d => d.status === 'Belum Lunas').length);
