@@ -337,6 +337,8 @@ function injectSidebar() {
         OneSignalDeferred.push(async function(OneSignal) {
             await OneSignal.init({
                 appId: "ba38a67c-b19b-420e-8df6-fbacb19bf98e", // App ID dari OneSignal
+                serviceWorkerParam: { scope: "/LKP-INSAN-JAYA/" },
+                serviceWorkerPath: "LKP-INSAN-JAYA/OneSignalSDKWorker.js",
                 notifyButton: {
                     enable: true,
                     colors: {
@@ -353,8 +355,8 @@ function injectSidebar() {
             OneSignal.User.addTag("role", "admin");
         });
 
-        // Tetap cek count saat web pertama dibuka untuk update badge merah di menu
-        const checkInitialCount = () => {
+        // Tetap cek count secara berkala untuk update badge merah di menu
+        const updateBadgeUI = () => {
             fetch(`${CONFIG.API_URL}/api/pendaftaran-online/count`)
                 .then(res => res.json())
                 .then(data => {
@@ -378,7 +380,11 @@ function injectSidebar() {
                 }).catch(e => console.log('Gagal ambil notifikasi'));
         };
 
-        checkInitialCount();
+        // Cek langsung saat buka web
+        updateBadgeUI();
+        
+        // Polling setiap 10 detik agar angka merah di menu tetap update tanpa perlu di refresh
+        setInterval(updateBadgeUI, 10000);
     }
 }
 
