@@ -336,6 +336,15 @@ function injectSidebar() {
                         badge.textContent = data.count;
                         badge.classList.remove('hidden');
                     }
+                    // Set app icon badge for PWA
+                    if ('setAppBadge' in navigator) {
+                        navigator.setAppBadge(data.count).catch(err => console.error('Gagal set badge:', err));
+                    }
+                } else {
+                    // Clear app icon badge if 0
+                    if ('clearAppBadge' in navigator) {
+                        navigator.clearAppBadge().catch(err => console.error('Gagal clear badge:', err));
+                    }
                 }
             }).catch(e => console.log('Gagal ambil notifikasi'));
     }
