@@ -345,6 +345,10 @@ function injectSidebar() {
                     }
                 }
             });
+            
+            // Otomatis memunculkan prompt izin notifikasi
+            OneSignal.Slidedown.promptPush();
+
             // Beri tag agar backend bisa memfilter notifikasi hanya untuk admin
             OneSignal.User.addTag("role", "admin");
         });
