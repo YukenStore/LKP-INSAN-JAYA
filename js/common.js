@@ -347,7 +347,7 @@ function injectSidebar() {
             await OneSignal.init({
                 appId: "ba38a67c-b19b-420e-8df6-fbacb19bf98e", // App ID dari OneSignal
                 serviceWorkerParam: { scope: "/LKP-INSAN-JAYA/" },
-                serviceWorkerPath: "/LKP-INSAN-JAYA/OneSignalSDKWorker.js",
+                serviceWorkerPath: "/LKP-INSAN-JAYA/sw.js",
             });
             
             // Beri tag agar backend bisa memfilter notifikasi hanya untuk admin
