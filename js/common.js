@@ -329,26 +329,15 @@ function injectSidebar() {
 
     // Load Online Registration Notif count badge if admin
     if (isAdmin) {
-        // INJECT SWEETALERT2
-        const swalScript = document.createElement('script');
-        swalScript.src = "https://cdn.jsdelivr.net/npm/sweetalert2@11";
-        document.head.appendChild(swalScript);
-
         // ============================================================================
-        // SISTEM NOTIFIKASI IN-APP & OS NATIVE
+        // SISTEM NOTIFIKASI IN-APP (POPUP UNGU) + ONESIGNAL PUSH (MOBILE)
         // ============================================================================
         console.log('[NOTIF] Sistem notifikasi dimulai untuk admin:', email);
         
         const notifSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3');
-        
-        // Minta izin notifikasi OS (Windows/Android)
-        if ("Notification" in window && Notification.permission !== "granted" && Notification.permission !== "denied") {
-            Notification.requestPermission().then(p => console.log('[NOTIF] Izin notifikasi:', p));
-        }
 
-        // Fungsi untuk menampilkan popup HTML bawaan (tidak butuh library apapun)
+        // Fungsi untuk menampilkan popup ungu (in-app notification)
         function showBuiltInPopup(title, message) {
-            // Hapus popup lama jika ada
             const old = document.getElementById('notifPopupBuiltIn');
             if (old) old.remove();
 
@@ -367,7 +356,6 @@ function injectSidebar() {
             popup.onclick = () => popup.remove();
             document.body.appendChild(popup);
 
-            // Inject animasi CSS jika belum ada
             if (!document.getElementById('notifPopupStyle')) {
                 const style = document.createElement('style');
                 style.id = 'notifPopupStyle';
@@ -375,78 +363,46 @@ function injectSidebar() {
                 document.head.appendChild(style);
             }
 
-            // Auto-hilang setelah 8 detik
             setTimeout(() => { if (popup.parentNode) popup.remove(); }, 8000);
         }
         
+        // Polling: cek jumlah pendaftar baru setiap 10 detik
         async function checkNewPendaftaran() {
             try {
                 const response = await fetch(`${CONFIG.API_URL}/api/pendaftaran-online/count?t=${Date.now()}`);
                 const data = await response.json();
                 const currentCount = parseInt(data.count) || 0;
                 
-                // PERBAIKAN BUG KRITIS: Gunakan '___BELUM_ADA___' sebagai penanda
-                // bahwa ini adalah kunjungan pertama kali
                 const storedValue = localStorage.getItem('lastPendaftaranCount');
                 const isFirstVisit = (storedValue === null);
                 const lastCount = isFirstVisit ? currentCount : parseInt(storedValue);
                 
-                console.log('[NOTIF] Cek count:', { currentCount, lastCount, isFirstVisit, storedValue });
+                console.log('[NOTIF] Cek count:', { currentCount, lastCount, isFirstVisit });
                 
-                // Simpan count saat ini untuk perbandingan berikutnya
                 localStorage.setItem('lastPendaftaranCount', currentCount);
 
-                // Update badge UI
+                // Update badge angka merah di sidebar
                 const badgeElement = document.getElementById('badgeNotifMenu');
                 if (badgeElement) {
                     badgeElement.textContent = currentCount;
                     badgeElement.style.display = currentCount > 0 ? 'block' : 'none';
                 }
 
-                // Update App Icon Badge
+                // Update App Icon Badge (PC)
                 if (currentCount > 0) {
                     if ('setAppBadge' in navigator) navigator.setAppBadge(currentCount).catch(e => {});
                 } else {
                     if ('clearAppBadge' in navigator) navigator.clearAppBadge().catch(e => {});
                 }
 
-                // Jika ini BUKAN kunjungan pertama DAN ada pendaftar baru
+                // Tampilkan popup ungu jika ada pendaftar baru
                 if (!isFirstVisit && currentCount > lastCount) {
-                    console.log('[NOTIF] ✅ ADA PENDAFTAR BARU! Menampilkan popup...');
+                    console.log('[NOTIF] ✅ ADA PENDAFTAR BARU! Menampilkan popup ungu...');
                     
-                    // 1. Putar Suara
                     notifSound.play().catch(e => console.log('[NOTIF] Browser mencegah autoplay suara'));
-                    
-                    // 2. Munculkan Popup HTML Bawaan (PASTI MUNCUL, tanpa library)
                     showBuiltInPopup('📋 Pendaftaran Baru!', 'Ada formulir pendaftaran siswa baru yang masuk. Segera cek di Rekap Online!');
 
-                    // 3. Juga coba SweetAlert jika sudah ter-load
-                    if (window.Swal) {
-                        Swal.fire({
-                            title: 'Pendaftaran Baru!',
-                            text: 'Ada formulir pendaftaran siswa baru yang masuk. Segera cek!',
-                            icon: 'info',
-                            toast: true,
-                            position: 'top-end',
-                            showConfirmButton: false,
-                            timer: 6000,
-                            timerProgressBar: true
-                        });
-                    }
-
-                    // 4. Munculkan Native OS Popup (PC/Mobile)
-                    if ("Notification" in window && Notification.permission === "granted") {
-                        try {
-                            new Notification("Pendaftaran Baru!", {
-                                body: "Ada formulir pendaftaran siswa baru yang masuk. Segera cek di Rekap Online!",
-                                icon: "image/Logo Insan Jaya.png"
-                            });
-                        } catch (e) {
-                            console.log('[NOTIF] Native notification error:', e);
-                        }
-                    }
-
-                    // 5. Refresh Tabel otomatis jika di halaman rekap-online
+                    // Refresh tabel otomatis jika di halaman rekap-online
                     if (typeof window.fetchData === 'function') {
                         window.fetchData();
                     }
@@ -456,10 +412,36 @@ function injectSidebar() {
             }
         }
 
-        // Jalankan polling setiap 10 detik
+        // Jalankan polling
         console.log('[NOTIF] Memulai polling...');
         checkNewPendaftaran();
         setInterval(checkNewPendaftaran, 10000);
+
+        // ============================================================================
+        // ONESIGNAL PUSH NOTIFICATION (untuk notifikasi di HP saat app tertutup)
+        // ============================================================================
+        // Inject OneSignal SDK
+        const osScript = document.createElement('script');
+        osScript.src = 'https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js';
+        osScript.defer = true;
+        document.head.appendChild(osScript);
+
+        osScript.onload = function() {
+            console.log('[NOTIF] OneSignal SDK ter-load, inisialisasi...');
+            window.OneSignalDeferred = window.OneSignalDeferred || [];
+            OneSignalDeferred.push(async function(OneSignal) {
+                await OneSignal.init({
+                    appId: "ba38a67c-b19b-420e-8df6-fbacb19bf98e",
+                    serviceWorkerParam: { scope: "/" },
+                    serviceWorkerPath: "sw.js",
+                    notifyButton: { enable: false }
+                });
+
+                // Tag user sebagai admin agar backend bisa kirim push ke admin saja
+                await OneSignal.User.addTag("role", "admin");
+                console.log('[NOTIF] OneSignal: User di-tag sebagai admin');
+            });
+        };
     }
 }
 
