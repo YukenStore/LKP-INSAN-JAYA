@@ -332,29 +332,70 @@ function injectSidebar() {
         // INJECT SWEETALERT2
         const swalScript = document.createElement('script');
         swalScript.src = "https://cdn.jsdelivr.net/npm/sweetalert2@11";
-        swalScript.defer = true;
         document.head.appendChild(swalScript);
 
         // ============================================================================
         // SISTEM NOTIFIKASI IN-APP & OS NATIVE
         // ============================================================================
+        console.log('[NOTIF] Sistem notifikasi dimulai untuk admin:', email);
         
         const notifSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3');
         
         // Minta izin notifikasi OS (Windows/Android)
         if ("Notification" in window && Notification.permission !== "granted" && Notification.permission !== "denied") {
-            Notification.requestPermission();
+            Notification.requestPermission().then(p => console.log('[NOTIF] Izin notifikasi:', p));
+        }
+
+        // Fungsi untuk menampilkan popup HTML bawaan (tidak butuh library apapun)
+        function showBuiltInPopup(title, message) {
+            // Hapus popup lama jika ada
+            const old = document.getElementById('notifPopupBuiltIn');
+            if (old) old.remove();
+
+            const popup = document.createElement('div');
+            popup.id = 'notifPopupBuiltIn';
+            popup.style.cssText = 'position:fixed;top:20px;right:20px;z-index:99999;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:16px 24px;border-radius:16px;box-shadow:0 10px 40px rgba(0,0,0,0.3);font-family:sans-serif;max-width:350px;animation:slideInNotif 0.5s ease;cursor:pointer;';
+            popup.innerHTML = `
+                <div style="display:flex;align-items:flex-start;gap:12px;">
+                    <div style="font-size:28px;flex-shrink:0;">🔔</div>
+                    <div>
+                        <div style="font-weight:bold;font-size:15px;margin-bottom:4px;">${title}</div>
+                        <div style="font-size:13px;opacity:0.9;">${message}</div>
+                    </div>
+                </div>
+            `;
+            popup.onclick = () => popup.remove();
+            document.body.appendChild(popup);
+
+            // Inject animasi CSS jika belum ada
+            if (!document.getElementById('notifPopupStyle')) {
+                const style = document.createElement('style');
+                style.id = 'notifPopupStyle';
+                style.textContent = '@keyframes slideInNotif{from{transform:translateX(120%);opacity:0}to{transform:translateX(0);opacity:1}}';
+                document.head.appendChild(style);
+            }
+
+            // Auto-hilang setelah 8 detik
+            setTimeout(() => { if (popup.parentNode) popup.remove(); }, 8000);
         }
         
         async function checkNewPendaftaran() {
             try {
-                // Tambahkan timestamp (t) agar browser tidak menggunakan cache lama
-                const response = await fetch(`${CONFIG.API_URL}/api/pendaftaran-online/count?t=${new Date().getTime()}`);
+                const response = await fetch(`${CONFIG.API_URL}/api/pendaftaran-online/count?t=${Date.now()}`);
                 const data = await response.json();
-                const currentCount = data.count;
+                const currentCount = parseInt(data.count) || 0;
                 
-                const lastCount = localStorage.getItem('lastPendaftaranCount') || currentCount;
+                // PERBAIKAN BUG KRITIS: Gunakan '___BELUM_ADA___' sebagai penanda
+                // bahwa ini adalah kunjungan pertama kali
+                const storedValue = localStorage.getItem('lastPendaftaranCount');
+                const isFirstVisit = (storedValue === null);
+                const lastCount = isFirstVisit ? currentCount : parseInt(storedValue);
                 
+                console.log('[NOTIF] Cek count:', { currentCount, lastCount, isFirstVisit, storedValue });
+                
+                // Simpan count saat ini untuk perbandingan berikutnya
+                localStorage.setItem('lastPendaftaranCount', currentCount);
+
                 // Update badge UI
                 const badgeElement = document.getElementById('badgeNotifMenu');
                 if (badgeElement) {
@@ -362,39 +403,38 @@ function injectSidebar() {
                     badgeElement.style.display = currentCount > 0 ? 'block' : 'none';
                 }
 
-                // Update App Icon Badge (Biar gak nyangkut)
+                // Update App Icon Badge
                 if (currentCount > 0) {
                     if ('setAppBadge' in navigator) navigator.setAppBadge(currentCount).catch(e => {});
                 } else {
                     if ('clearAppBadge' in navigator) navigator.clearAppBadge().catch(e => {});
                 }
 
-                if (currentCount > lastCount) {
-                    localStorage.setItem('lastPendaftaranCount', currentCount);
+                // Jika ini BUKAN kunjungan pertama DAN ada pendaftar baru
+                if (!isFirstVisit && currentCount > lastCount) {
+                    console.log('[NOTIF] ✅ ADA PENDAFTAR BARU! Menampilkan popup...');
                     
                     // 1. Putar Suara
-                    notifSound.play().catch(e => console.log("Browser mencegah autoplay suara"));
+                    notifSound.play().catch(e => console.log('[NOTIF] Browser mencegah autoplay suara'));
                     
-                    // 2. Munculkan In-App Popup (SweetAlert) dengan fallback tunggu load
-                    const showSwal = setInterval(() => {
-                        if (window.Swal) {
-                            clearInterval(showSwal);
-                            Swal.fire({
-                                title: 'Pendaftaran Baru!',
-                                text: 'Ada formulir pendaftaran siswa baru yang masuk. Segera cek!',
-                                icon: 'info',
-                                toast: true,
-                                position: 'top-end',
-                                showConfirmButton: false,
-                                timer: 6000,
-                                timerProgressBar: true
-                            });
-                        }
-                    }, 500);
-                    // Berhenti mencari Swal setelah 10 detik agar tidak infinity loop
-                    setTimeout(() => clearInterval(showSwal), 10000);
+                    // 2. Munculkan Popup HTML Bawaan (PASTI MUNCUL, tanpa library)
+                    showBuiltInPopup('📋 Pendaftaran Baru!', 'Ada formulir pendaftaran siswa baru yang masuk. Segera cek di Rekap Online!');
 
-                    // 3. Munculkan Native OS Popup (PC/Mobile)
+                    // 3. Juga coba SweetAlert jika sudah ter-load
+                    if (window.Swal) {
+                        Swal.fire({
+                            title: 'Pendaftaran Baru!',
+                            text: 'Ada formulir pendaftaran siswa baru yang masuk. Segera cek!',
+                            icon: 'info',
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 6000,
+                            timerProgressBar: true
+                        });
+                    }
+
+                    // 4. Munculkan Native OS Popup (PC/Mobile)
                     if ("Notification" in window && Notification.permission === "granted") {
                         try {
                             new Notification("Pendaftaran Baru!", {
@@ -402,23 +442,22 @@ function injectSidebar() {
                                 icon: "image/Logo Insan Jaya.png"
                             });
                         } catch (e) {
-                            console.log("Native notification error:", e);
+                            console.log('[NOTIF] Native notification error:', e);
                         }
                     }
 
-                    // 4. Refresh Tabel otomatis (Nama fungsi di rekap-online adalah fetchData)
-                    if (window.location.pathname.includes('rekap-online.html') && typeof fetchData === 'function') {
-                        fetchData();
+                    // 5. Refresh Tabel otomatis jika di halaman rekap-online
+                    if (typeof window.fetchData === 'function') {
+                        window.fetchData();
                     }
-                } else if (currentCount < lastCount) {
-                    localStorage.setItem('lastPendaftaranCount', currentCount);
                 }
             } catch (error) {
-                console.error("Gagal mengecek notifikasi:", error);
+                console.error('[NOTIF] Gagal mengecek notifikasi:', error);
             }
         }
 
-        // Jalankan polling
+        // Jalankan polling setiap 10 detik
+        console.log('[NOTIF] Memulai polling...');
         checkNewPendaftaran();
         setInterval(checkNewPendaftaran, 10000);
     }
