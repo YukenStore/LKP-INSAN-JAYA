@@ -325,28 +325,60 @@ function injectSidebar() {
         if (iosInstallHint) iosInstallHint.style.display = 'block';
     }
 
-    // Load Online Registration Notif count badge if admin
+    // Load Online Registration Notif count badge if admin (Polling & Push Notification)
     if (isAdmin) {
-        fetch(`${CONFIG.API_URL}/api/pendaftaran-online/count`)
-            .then(res => res.json())
-            .then(data => {
-                if (data.count > 0) {
+        let previousCount = -1; // -1 untuk deteksi load pertama kali
+
+        // Minta izin notifikasi pop-up (jika belum diberikan)
+        if ('Notification' in window && Notification.permission === 'default') {
+            Notification.requestPermission();
+        }
+
+        const checkNotifications = () => {
+            fetch(`${CONFIG.API_URL}/api/pendaftaran-online/count`)
+                .then(res => res.json())
+                .then(data => {
                     const badge = document.getElementById('badgeNotifMenu');
-                    if (badge) {
-                        badge.textContent = data.count;
-                        badge.classList.remove('hidden');
+                    if (data.count > 0) {
+                        if (badge) {
+                            badge.textContent = data.count;
+                            badge.classList.remove('hidden');
+                        }
+                        // Set app icon badge for PWA
+                        if ('setAppBadge' in navigator) {
+                            navigator.setAppBadge(data.count).catch(err => console.error('Gagal set badge:', err));
+                        }
+
+                        // Munculkan pop-up notifikasi jika ada pendaftaran baru (bukan saat pertama buka web)
+                        if (previousCount !== -1 && data.count > previousCount) {
+                            if ('Notification' in window && Notification.permission === 'granted') {
+                                const notif = new Notification('Pendaftaran Baru LKP', {
+                                    body: `Ada formulir pendaftaran baru yang masuk! (Total: ${data.count})`,
+                                    icon: 'image/Logo Insan Jaya.png',
+                                    badge: 'image/Logo Insan Jaya.png'
+                                });
+                                notif.onclick = function() {
+                                    window.focus();
+                                    window.location.href = 'rekap-online.html';
+                                };
+                            }
+                        }
+                    } else {
+                        if (badge) badge.classList.add('hidden');
+                        // Clear app icon badge if 0
+                        if ('clearAppBadge' in navigator) {
+                            navigator.clearAppBadge().catch(err => console.error('Gagal clear badge:', err));
+                        }
                     }
-                    // Set app icon badge for PWA
-                    if ('setAppBadge' in navigator) {
-                        navigator.setAppBadge(data.count).catch(err => console.error('Gagal set badge:', err));
-                    }
-                } else {
-                    // Clear app icon badge if 0
-                    if ('clearAppBadge' in navigator) {
-                        navigator.clearAppBadge().catch(err => console.error('Gagal clear badge:', err));
-                    }
-                }
-            }).catch(e => console.log('Gagal ambil notifikasi'));
+                    previousCount = data.count;
+                }).catch(e => console.log('Gagal ambil notifikasi'));
+        };
+
+        // Cek notifikasi saat web pertama dibuka
+        checkNotifications();
+        
+        // Cek secara otomatis setiap 10 detik tanpa perlu refresh
+        setInterval(checkNotifications, 10000);
     }
 }
 
