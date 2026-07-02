@@ -478,6 +478,33 @@ export default {
           throw dbError;
         }
 
+        // TRIGGER ONESIGNAL PUSH NOTIFICATION
+        try {
+            const ONE_SIGNAL_APP_ID = "ba38a67c-b19b-420e-8df6-fbacb19bf98e"; // App ID dari OneSignal
+            // API Key diambil dari Environment Variables (Secrets) di Cloudflare Dashboard agar aman
+            const ONE_SIGNAL_REST_API_KEY = env.ONE_SIGNAL_REST_API_KEY; 
+            
+            if (ONE_SIGNAL_REST_API_KEY) {
+                await fetch('https://onesignal.com/api/v1/notifications', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json; charset=utf-8',
+                        'Authorization': `Basic ${ONE_SIGNAL_REST_API_KEY}`
+                    },
+                    body: JSON.stringify({
+                        app_id: ONE_SIGNAL_APP_ID,
+                        headings: { "en": "Pendaftaran Baru LKP", "id": "Pendaftaran Baru LKP" },
+                        contents: { "en": "Ada formulir pendaftaran baru yang masuk, segera cek di Rekap Online!", "id": "Ada formulir pendaftaran baru yang masuk, segera cek di Rekap Online!" },
+                        filters: [
+                            {"field": "tag", "key": "role", "relation": "=", "value": "admin"}
+                        ]
+                    })
+                });
+            }
+        } catch (pushErr) {
+            console.log("Gagal mengirim push notification OneSignal:", pushErr);
+        }
+
         return Response.json({ success: true, message: "Pendaftaran berhasil dikirim!" }, { headers: corsHeaders });
       }
 

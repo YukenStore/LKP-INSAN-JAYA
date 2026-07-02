@@ -325,16 +325,32 @@ function injectSidebar() {
         if (iosInstallHint) iosInstallHint.style.display = 'block';
     }
 
-    // Load Online Registration Notif count badge if admin (Polling & Push Notification)
+    // Load Online Registration Notif count badge if admin (And OneSignal Init)
     if (isAdmin) {
-        let previousCount = -1; // -1 untuk deteksi load pertama kali
+        // Init OneSignal for Background Push Notifications
+        const script = document.createElement('script');
+        script.src = "https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js";
+        script.defer = true;
+        document.head.appendChild(script);
 
-        // Minta izin notifikasi pop-up (jika belum diberikan)
-        if ('Notification' in window && Notification.permission === 'default') {
-            Notification.requestPermission();
-        }
+        window.OneSignalDeferred = window.OneSignalDeferred || [];
+        OneSignalDeferred.push(async function(OneSignal) {
+            await OneSignal.init({
+                appId: "ba38a67c-b19b-420e-8df6-fbacb19bf98e", // App ID dari OneSignal
+                notifyButton: {
+                    enable: true,
+                    colors: {
+                        'circle.background': 'rgb(79, 70, 229)',
+                        'circle.foreground': 'white',
+                    }
+                }
+            });
+            // Beri tag agar backend bisa memfilter notifikasi hanya untuk admin
+            OneSignal.User.addTag("role", "admin");
+        });
 
-        const checkNotifications = () => {
+        // Tetap cek count saat web pertama dibuka untuk update badge merah di menu
+        const checkInitialCount = () => {
             fetch(`${CONFIG.API_URL}/api/pendaftaran-online/count`)
                 .then(res => res.json())
                 .then(data => {
@@ -348,21 +364,6 @@ function injectSidebar() {
                         if ('setAppBadge' in navigator) {
                             navigator.setAppBadge(data.count).catch(err => console.error('Gagal set badge:', err));
                         }
-
-                        // Munculkan pop-up notifikasi jika ada pendaftaran baru (bukan saat pertama buka web)
-                        if (previousCount !== -1 && data.count > previousCount) {
-                            if ('Notification' in window && Notification.permission === 'granted') {
-                                const notif = new Notification('Pendaftaran Baru LKP', {
-                                    body: `Ada formulir pendaftaran baru yang masuk! (Total: ${data.count})`,
-                                    icon: 'image/Logo Insan Jaya.png',
-                                    badge: 'image/Logo Insan Jaya.png'
-                                });
-                                notif.onclick = function() {
-                                    window.focus();
-                                    window.location.href = 'rekap-online.html';
-                                };
-                            }
-                        }
                     } else {
                         if (badge) badge.classList.add('hidden');
                         // Clear app icon badge if 0
@@ -370,15 +371,10 @@ function injectSidebar() {
                             navigator.clearAppBadge().catch(err => console.error('Gagal clear badge:', err));
                         }
                     }
-                    previousCount = data.count;
                 }).catch(e => console.log('Gagal ambil notifikasi'));
         };
 
-        // Cek notifikasi saat web pertama dibuka
-        checkNotifications();
-        
-        // Cek secara otomatis setiap 10 detik tanpa perlu refresh
-        setInterval(checkNotifications, 10000);
+        checkInitialCount();
     }
 }
 
