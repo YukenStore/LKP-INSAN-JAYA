@@ -348,6 +348,8 @@ export default {
         
         // Coba tambahkan kolom baru jika belum ada (ignore error jika sudah ada)
         try { await env.DB.prepare(`ALTER TABLE pendaftaran_online ADD COLUMN kelas TEXT`).run(); } catch(e) {}
+        try { await env.DB.prepare(`ALTER TABLE pendaftaran_online ADD COLUMN pas_foto_key TEXT`).run(); } catch(e) {}
+        try { await env.DB.prepare(`ALTER TABLE pendaftaran_online ADD COLUMN kartu_keluarga_key TEXT`).run(); } catch(e) {}
         try { await env.DB.prepare(`ALTER TABLE absensi ADD COLUMN status_spp TEXT DEFAULT 'Belum Lunas'`).run(); } catch(e) {}
         try { await env.DB.prepare(`ALTER TABLE absensi ADD COLUMN format_absen INTEGER DEFAULT 12`).run(); } catch(e) {}
         try { await env.DB.prepare(`ALTER TABLE absensi_detail ADD COLUMN tanggal TEXT`).run(); } catch(e) {}
@@ -416,22 +418,66 @@ export default {
 
       // ✅ 13. POST PENDAFTARAN ONLINE (PUBLIK)
       if (request.method === "POST" && url.pathname === "/api/pendaftaran-online") {
-        const data = await request.json();
-        await env.DB.prepare(`
-          INSERT INTO pendaftaran_online (
-            nama_lengkap, jenis_kelamin, nisn, nik, tempat_lahir, tanggal_lahir, agama, alamat, kewarganegaraan, 
-            penerima_kps, no_kps, nama_ibu, pekerjaan_ibu, penghasilan_ibu, tahun_lahir_ibu, nama_ayah, 
-            pekerjaan_ayah, penghasilan_ayah, tahun_lahir_ayah, nama_wali, pekerjaan_wali, penghasilan_wali, 
-            tahun_lahir_wali, program, kelas, waktu_belajar, no_handphone, status, waktu_daftar
-          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Belum Lunas', datetime('now', '+7 hours'))
-        `).bind(
-          data.nama_lengkap || "", data.jenis_kelamin || "", data.nisn || "", data.nik || "", data.tempat_lahir || "",
-          data.tanggal_lahir || "", data.agama || "", data.alamat || "", data.kewarganegaraan || "", data.penerima_kps || "",
-          data.no_kps || "", data.nama_ibu || "", data.pekerjaan_ibu || "", data.penghasilan_ibu || "", data.tahun_lahir_ibu || "",
-          data.nama_ayah || "", data.pekerjaan_ayah || "", data.penghasilan_ayah || "", data.tahun_lahir_ayah || "",
-          data.nama_wali || "", data.pekerjaan_wali || "", data.penghasilan_wali || "", data.tahun_lahir_wali || "",
-          data.program || "", data.kelas || "", data.waktu_belajar || "", data.no_handphone || ""
-        ).run();
+        const contentType = request.headers.get("content-type") || "";
+        let dataObj = {};
+        let pasFotoKey = null;
+        let kkKey = null;
+
+        if (contentType.includes("multipart/form-data")) {
+            const formData = await request.formData();
+            
+            const pasFotoFile = formData.get("pas_foto") || formData.get("foto_siswa") || formData.get("foto");
+            if (pasFotoFile && pasFotoFile.size > 0) {
+                const ext = (pasFotoFile.name || "").split('.').pop() || "jpg";
+                pasFotoKey = `pasfoto-${Date.now()}-${Math.random().toString(36).substring(7)}.${ext}`;
+                await env.BUCKET.put(pasFotoKey, await pasFotoFile.arrayBuffer(), {
+                  httpMetadata: { contentType: pasFotoFile.type || "image/jpeg" }
+                });
+            }
+
+            const kkFile = formData.get("kartu_keluarga") || formData.get("foto_kk") || formData.get("kk");
+            if (kkFile && kkFile.size > 0) {
+                const ext = (kkFile.name || "").split('.').pop() || "jpg";
+                kkKey = `kk-${Date.now()}-${Math.random().toString(36).substring(7)}.${ext}`;
+                await env.BUCKET.put(kkKey, await kkFile.arrayBuffer(), {
+                  httpMetadata: { contentType: kkFile.type || "image/jpeg" }
+                });
+            }
+
+            for (const [key, value] of formData.entries()) {
+                if (typeof value === 'string') {
+                    dataObj[key] = value;
+                }
+            }
+        } else {
+            dataObj = await request.json();
+        }
+
+        try {
+          await env.DB.prepare(`
+            INSERT INTO pendaftaran_online (
+              nama_lengkap, jenis_kelamin, nisn, nik, tempat_lahir, tanggal_lahir, agama, alamat, kewarganegaraan, 
+              penerima_kps, no_kps, nama_ibu, pekerjaan_ibu, penghasilan_ibu, tahun_lahir_ibu, nama_ayah, 
+              pekerjaan_ayah, penghasilan_ayah, tahun_lahir_ayah, nama_wali, pekerjaan_wali, penghasilan_wali, 
+              tahun_lahir_wali, program, kelas, waktu_belajar, no_handphone, status, waktu_daftar, pas_foto_key, kartu_keluarga_key
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Belum Lunas', datetime('now', '+7 hours'), ?, ?)
+          `).bind(
+            dataObj.nama_lengkap || "", dataObj.jenis_kelamin || "", dataObj.nisn || "", dataObj.nik || "", dataObj.tempat_lahir || "",
+            dataObj.tanggal_lahir || "", dataObj.agama || "", dataObj.alamat || "", dataObj.kewarganegaraan || "", dataObj.penerima_kps || "",
+            dataObj.no_kps || "", dataObj.nama_ibu || "", dataObj.pekerjaan_ibu || "", dataObj.penghasilan_ibu || "", dataObj.tahun_lahir_ibu || "",
+            dataObj.nama_ayah || "", dataObj.pekerjaan_ayah || "", dataObj.penghasilan_ayah || "", dataObj.tahun_lahir_ayah || "",
+            dataObj.nama_wali || "", dataObj.pekerjaan_wali || "", dataObj.penghasilan_wali || "", dataObj.tahun_lahir_wali || "",
+            dataObj.program || "", dataObj.kelas || "", dataObj.waktu_belajar || "", dataObj.no_handphone || "",
+            pasFotoKey, kkKey
+          ).run();
+        } catch (dbError) {
+          // If the columns don't exist yet, we can catch it here and give a helpful message
+          if (dbError.message && dbError.message.includes('has no column')) {
+             return Response.json({ success: false, error: "Database belum diupdate! Silakan jalankan /api/setup-db dari browser Anda terlebih dahulu." }, { status: 500, headers: corsHeaders });
+          }
+          throw dbError;
+        }
+
         return Response.json({ success: true, message: "Pendaftaran berhasil dikirim!" }, { headers: corsHeaders });
       }
 
@@ -444,7 +490,12 @@ export default {
       // ✅ 15. GET SEMUA PENDAFTARAN ONLINE (ADMIN)
       if (request.method === "GET" && url.pathname === "/api/pendaftaran-online") {
         const { results } = await env.DB.prepare(`SELECT * FROM pendaftaran_online ORDER BY waktu_daftar DESC`).all();
-        return Response.json(results, { headers: corsHeaders });
+        const mappedResults = results.map(r => ({
+          ...r,
+          foto_siswa: r.pas_foto_key,
+          foto_kk: r.kartu_keluarga_key
+        }));
+        return Response.json(mappedResults, { headers: corsHeaders });
       }
 
       // ✅ 16. UPDATE STATUS PENDAFTARAN ONLINE (ADMIN)
@@ -564,7 +615,7 @@ export default {
       }
 
       // ✅ 23. GET FOTO DARI R2 (Opsional, untuk menampilkan foto)
-      if (request.method === "GET" && url.pathname.startsWith("/api/foto-absensi/")) {
+      if (request.method === "GET" && (url.pathname.startsWith("/api/foto-absensi/") || url.pathname.startsWith("/uploads/"))) {
         const key = url.pathname.split("/").pop();
         const object = await env.BUCKET.get(key);
 
@@ -813,7 +864,12 @@ export default {
       }
 
     } catch (e) {
-      return Response.json({ error: e.message }, { status: 500, headers: corsHeaders });
+      // Return 400 (Bad Request) agar response text lebih mudah ditangkap oleh frontend jika 500 diblok
+      return Response.json({ 
+        success: false, 
+        error: e.message, 
+        stack: e.stack 
+      }, { status: 400, headers: corsHeaders });
     }
   }
 };
