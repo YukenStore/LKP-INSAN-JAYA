@@ -334,81 +334,72 @@ function injectSidebar() {
         if (iosInstallHint) iosInstallHint.style.display = 'block';
     }
 
-    // Load Online Registration Notif count badge if admin (And OneSignal Init)
+    // Load Online Registration Notif count badge if admin
     if (isAdmin) {
-        // Init OneSignal for Background Push Notifications
-        const script = document.createElement('script');
-        script.src = "https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js";
-        script.defer = true;
-        document.head.appendChild(script);
+        // ============================================================================
+        // SISTEM NOTIFIKASI IN-APP (POP-UP & SUARA) TANPA PIHAK KETIGA
+        // ============================================================================
+        
+        const notifSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3');
+        
+        async function checkNewPendaftaran() {
+            try {
+                const response = await fetch(`${CONFIG.API_URL}/api/pendaftaran-online/count`);
+                const data = await response.json();
+                const currentCount = data.count;
+                
+                const lastCount = localStorage.getItem('lastPendaftaranCount') || currentCount;
+                
+                const badgeElement = document.getElementById('badgeNotifMenu');
+                if (badgeElement) {
+                    badgeElement.textContent = currentCount;
+                    badgeElement.style.display = currentCount > 0 ? 'block' : 'none';
+                }
 
-        // INJECT ONESIGNAL SDK SCRIPT SECARA OTOMATIS
-        if (!document.querySelector('script[src*="OneSignalSDK.page.js"]')) {
-            const osScript = document.createElement('script');
-            osScript.src = "https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js";
-            osScript.defer = true;
-            document.head.appendChild(osScript);
+                if (currentCount > lastCount) {
+                    localStorage.setItem('lastPendaftaranCount', currentCount);
+                    
+                    notifSound.play().catch(e => console.log("Browser mencegah autoplay suara"));
+                    
+                    Swal.fire({
+                        title: 'Pendaftaran Baru!',
+                        text: 'Ada formulir pendaftaran siswa baru yang masuk. Segera cek!',
+                        icon: 'info',
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 5000,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    });
+
+                    if (window.location.pathname.includes('rekap-online.html') && typeof fetchPendaftaran === 'function') {
+                        fetchPendaftaran();
+                    }
+                } else if (currentCount < lastCount) {
+                    localStorage.setItem('lastPendaftaranCount', currentCount);
+                }
+            } catch (error) {
+                console.error("Gagal mengecek notifikasi:", error);
+            }
         }
 
-        window.OneSignalDeferred = window.OneSignalDeferred || [];
-        OneSignalDeferred.push(async function(OneSignal) {
-            // Unregister old service workers to force browser to download the new merged sw.js
-            if ('serviceWorker' in navigator) {
-                const registrations = await navigator.serviceWorker.getRegistrations();
-                for (let registration of registrations) {
-                    await registration.unregister();
-                }
-            }
-
-            await OneSignal.init({
-                appId: "ba38a67c-b19b-420e-8df6-fbacb19bf98e", // App ID dari OneSignal
-                serviceWorkerParam: { scope: "/LKP-INSAN-JAYA/" },
-                serviceWorkerPath: "/LKP-INSAN-JAYA/sw.js",
-                notifyButton: {
-                    enable: true,
-                    colors: {
-                        'circle.background': 'rgb(79, 70, 229)',
-                        'circle.foreground': 'white',
-                    }
-                }
-            });
-            
-            // Beri tag agar backend bisa memfilter notifikasi hanya untuk admin
-            OneSignal.User.addTag("role", "admin");
-        });
-
-        // Tetap cek count secara berkala untuk update badge merah di menu
-        const updateBadgeUI = () => {
-            fetch(`${CONFIG.API_URL}/api/pendaftaran-online/count`)
-                .then(res => res.json())
-                .then(data => {
-                    const badge = document.getElementById('badgeNotifMenu');
-                    if (data.count > 0) {
-                        if (badge) {
-                            badge.textContent = data.count;
-                            badge.classList.remove('hidden');
-                        }
-                        // Set app icon badge for PWA
-                        if ('setAppBadge' in navigator) {
-                            navigator.setAppBadge(data.count).catch(err => console.error('Gagal set badge:', err));
-                        }
-                    } else {
-                        if (badge) badge.classList.add('hidden');
-                        // Clear app icon badge if 0
-                        if ('clearAppBadge' in navigator) {
-                            navigator.clearAppBadge().catch(err => console.error('Gagal clear badge:', err));
-                        }
-                    }
-                }).catch(e => console.log('Gagal ambil notifikasi'));
-        };
-
-        // Cek langsung saat buka web
-        updateBadgeUI();
+        checkNewPendaftaran();
+        setInterval(checkNewPendaftaran, 10000);
         
-        // Polling setiap 10 detik agar angka merah di menu tetap update tanpa perlu di refresh
-        setInterval(updateBadgeUI, 10000);
+        window.testNotifSound = function() {
+            notifSound.play();
+            Swal.fire({
+                title: 'Notifikasi Aktif!',
+                text: 'Aplikasi akan otomatis berbunyi dan memunculkan pop-up saat ada pendaftar baru.',
+                icon: 'success',
+                timer: 3000,
+                showConfirmButton: false
+            });
+        };
     }
-}
-
 // Inisialisasi layout setelah DOM termuat
 document.addEventListener('DOMContentLoaded', injectSidebar);
