@@ -138,13 +138,13 @@
                 <!-- Filter & Pencarian Tabel -->
                 <div class="flex flex-col md:flex-row justify-between md:items-center gap-4 mb-4">
                     <h3 class="font-bricolage font-bold text-xl text-slate-800">Riwayat Transaksi</h3>
-                    <div class="flex flex-wrap gap-2 w-full md:w-auto">
-                        <input type="month" id="filterBulanTabel" title="Pilih Bulan"
-                            class="flex-1 md:flex-none px-4 py-2 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-violet-500 outline-none bg-white font-medium text-slate-600">
+                    <div class="grid grid-cols-2 md:flex gap-2 w-full md:w-auto">
                         <input type="text" id="searchInput" placeholder="Cari keterangan..."
-                            class="flex-1 md:flex-none px-4 py-2 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-violet-500 outline-none w-full md:w-48">
+                            class="col-span-2 md:col-span-1 w-full md:w-48 px-4 py-2 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-violet-500 outline-none">
+                        <input type="month" id="filterBulanTabel" title="Pilih Bulan"
+                            class="w-full md:w-auto px-4 py-2 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-violet-500 outline-none bg-white font-medium text-slate-600">
                         <select id="filterJenis"
-                            class="px-4 py-2 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-violet-500 outline-none bg-white">
+                            class="w-full md:w-auto px-4 py-2 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-violet-500 outline-none bg-white">
                             <option value="all">Semua Jenis</option>
                             <option value="debit">Pemasukan</option>
                             <option value="kredit">Pengeluaran</option>
@@ -154,30 +154,34 @@
 
                 <!-- Desktop Table -->
                 <div class="hidden md:flex flex-col bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden h-[450px]">
-                    <div class="overflow-hidden bg-slate-50 border-b border-slate-200 flex-shrink-0 pr-[6px]">
-                        <table class="w-full text-left border-collapse">
-                            <thead>
-                                <tr class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
-                                    <th class="p-4 w-40">Tanggal</th>
-                                    <th class="p-4">Keterangan</th>
-                                    <th class="p-4 text-right w-40">Debit (Masuk)</th>
-                                    <th class="p-4 text-right w-40">Kredit (Keluar)</th>
-                                    <th class="p-4 text-center w-24">Aksi</th>
-                                </tr>
-                            </thead>
-                        </table>
-                    </div>
-                    <div class="overflow-y-auto custom-scrollbar flex-1">
-                        <table class="w-full text-left border-collapse">
-                            <tbody id="tableBody" class="text-sm divide-y divide-slate-100">
-                                <!-- Data akan dimuat disini -->
-                            </tbody>
-                        </table>
+                    <div class="overflow-x-auto w-full h-full flex flex-col">
+                        <div class="min-w-[750px] flex flex-col h-full">
+                            <div class="overflow-hidden bg-slate-50 border-b border-slate-200 flex-shrink-0 pr-[6px]">
+                                <table class="w-full text-left border-collapse">
+                                    <thead>
+                                        <tr class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+                                            <th class="p-4 w-40">Tanggal</th>
+                                            <th class="p-4">Keterangan</th>
+                                            <th class="p-4 text-right w-40">Debit (Masuk)</th>
+                                            <th class="p-4 text-right w-40">Kredit (Keluar)</th>
+                                            <th class="p-4 text-center w-24">Aksi</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                            <div class="overflow-y-auto custom-scrollbar flex-1">
+                                <table class="w-full text-left border-collapse">
+                                    <tbody id="tableBody" class="text-sm divide-y divide-slate-100">
+                                        <!-- Data akan dimuat disini -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Mobile List -->
-                <div id="mobileList" class="md:hidden space-y-3 max-h-[450px] overflow-y-auto custom-scrollbar p-1">
+                <div id="mobileList" class="md:hidden space-y-3 h-[450px] overflow-y-auto custom-scrollbar p-1.5 bg-slate-50 rounded-2xl border border-slate-200 shadow-inner">
                     <!-- Data akan dimuat disini -->
                 </div>
 
@@ -492,10 +496,17 @@
                     <td class="p-4 align-top font-semibold text-slate-800">${d.keterangan}</td>
                     <td class="p-4 align-top text-right text-emerald-600 font-bold w-40">${d.jenis === 'debit' ? formatRp(d.nominal) : '-'}</td>
                     <td class="p-4 align-top text-right text-red-600 font-bold w-40">${d.jenis === 'kredit' ? formatRp(d.nominal) : '-'}</td>
-                    <td class="p-4 align-top text-center w-24">
-                        <div class="flex items-center justify-center gap-2">
-                            <button onclick="editData(${d.id})" class="text-slate-400 hover:text-violet-600 transition-colors p-1" title="Edit">✏️</button>
-                            <button onclick="hapusData(${d.id})" class="text-slate-400 hover:text-red-600 transition-colors p-1" title="Hapus">🗑️</button>
+                    <td class="p-4 align-top text-center relative w-24">
+                        <button onclick="toggleMenu(${d.id}, event)" class="w-8 h-8 rounded-lg hover:bg-slate-200 flex items-center justify-center mx-auto transition-colors">
+                            ⋮
+                        </button>
+                        <div id="menu-${d.id}" class="hidden fixed bg-white border border-slate-200 rounded-xl shadow-xl z-[9999] min-w-[150px] overflow-hidden text-left">
+                            <button onclick="editData(${d.id})" class="w-full text-left px-4 py-2.5 hover:bg-slate-50 text-slate-700 font-medium text-sm border-b border-slate-100">
+                                ✏️ Edit
+                            </button>
+                            <button onclick="hapusData(${d.id})" class="w-full text-left px-4 py-2.5 hover:bg-red-50 text-red-600 font-medium text-sm">
+                                🗑️ Hapus
+                            </button>
                         </div>
                     </td>
                 </tr>
@@ -513,10 +524,6 @@
                             </div>
                             <p class="font-bold text-slate-800">${d.keterangan}</p>
                         </div>
-                        <div class="flex items-center gap-1">
-                            <button onclick="editData(${d.id})" class="p-1.5 text-slate-400 bg-slate-50 rounded-md">✏️</button>
-                            <button onclick="hapusData(${d.id})" class="p-1.5 text-slate-400 bg-red-50 rounded-md">🗑️</button>
-                        </div>
                     </div>
                     <div class="pl-2 mt-3 flex justify-between items-end border-t border-slate-100 pt-3">
                         <span class="text-xs font-bold ${d.jenis === 'debit' ? 'text-emerald-500 bg-emerald-50' : 'text-red-500 bg-red-50'} px-2 py-1 rounded-md uppercase">
@@ -525,6 +532,14 @@
                         <span class="font-bricolage font-bold text-lg ${d.jenis === 'debit' ? 'text-emerald-600' : 'text-red-600'}">
                             ${formatRp(d.nominal)}
                         </span>
+                    </div>
+                    <div class="pl-2 mt-3 flex gap-2">
+                        <button onclick="editData(${d.id})" class="flex-1 flex justify-center items-center gap-2 text-slate-700 font-bold text-sm bg-slate-100 hover:bg-slate-200 py-2.5 rounded-xl transition-colors">
+                            ✏️ Edit
+                        </button>
+                        <button onclick="hapusData(${d.id})" class="flex-1 flex justify-center items-center gap-2 text-red-600 font-bold text-sm bg-red-50 hover:bg-red-100 py-2.5 rounded-xl transition-colors">
+                            🗑️ Hapus
+                        </button>
                     </div>
                 </div>
             `).join('');
@@ -788,6 +803,36 @@
 
             input.value = rupiah;
         }
+
+        window.toggleMenu = function(id, event) {
+            document.querySelectorAll('[id^="menu-"]').forEach(menu => {
+                if (menu.id !== `menu-${id}`) menu.classList.add('hidden');
+            });
+
+            const menu = document.getElementById(`menu-${id}`);
+            const button = event.currentTarget;
+            const rect = button.getBoundingClientRect();
+
+            menu.classList.toggle('hidden');
+
+            if (!menu.classList.contains('hidden')) {
+                const menuHeight = menu.offsetHeight;
+                const spaceBelow = window.innerHeight - rect.bottom;
+
+                if (spaceBelow < (menuHeight + 20)) {
+                    menu.style.top = `${rect.top - menuHeight - 5}px`;
+                } else {
+                    menu.style.top = `${rect.bottom + 5}px`;
+                }
+                menu.style.left = `${rect.left - 110}px`;
+            }
+        };
+
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('[onclick^="toggleMenu"]') && !e.target.closest('[id^="menu-"]')) {
+                document.querySelectorAll('[id^="menu-"]').forEach(menu => menu.classList.add('hidden'));
+            }
+        });
 
         // Event Listeners Filter
         document.getElementById('searchInput').addEventListener('input', renderData);
