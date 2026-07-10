@@ -158,10 +158,12 @@ function injectSidebar() {
         return `${baseClass} text-slate-600 hover:bg-slate-50 hover:text-slate-900 font-medium`;
     };
 
+    const isSidebarOpen = sessionStorage.getItem('mobile_sidebar_open') === 'true';
+
     placeholder.outerHTML = `
-        <div id="sidebarOverlay" class="fixed inset-0 bg-slate-900/50 z-40 hidden transition-opacity opacity-0 md:hidden"></div>
+        <div id="sidebarOverlay" class="fixed inset-0 bg-slate-900/50 z-40 ${isSidebarOpen ? '' : 'hidden'} transition-opacity ${isSidebarOpen ? 'opacity-100' : 'opacity-0'} md:hidden"></div>
         
-        <aside id="sidebar" class="fixed inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col w-64 h-full bg-white border-r border-slate-200 z-50 flex-shrink-0 shadow-2xl md:shadow-none">
+        <aside id="sidebar" class="fixed inset-y-0 left-0 transform ${isSidebarOpen ? '' : '-translate-x-full'} md:relative md:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col w-64 h-full bg-white border-r border-slate-200 z-50 flex-shrink-0 shadow-2xl md:shadow-none">
             <div class="h-16 flex items-center justify-between px-6 border-b border-slate-100">
                 <div class="flex items-center gap-1">
                     <div class="w-12 h-12 rounded-xl bg-white flex items-center justify-center overflow-hidden">
@@ -279,11 +281,17 @@ function injectSidebar() {
         if (isClosed) {
             sidebar.classList.remove('-translate-x-full');
             overlay.classList.remove('hidden');
-            setTimeout(() => overlay.classList.remove('opacity-0'), 10);
+            setTimeout(() => {
+                overlay.classList.remove('opacity-0');
+                overlay.classList.add('opacity-100');
+            }, 10);
+            sessionStorage.setItem('mobile_sidebar_open', 'true');
         } else {
             sidebar.classList.add('-translate-x-full');
+            overlay.classList.remove('opacity-100');
             overlay.classList.add('opacity-0');
             setTimeout(() => overlay.classList.add('hidden'), 300);
+            sessionStorage.setItem('mobile_sidebar_open', 'false');
         }
     }
 
