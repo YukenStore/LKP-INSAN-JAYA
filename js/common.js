@@ -13,7 +13,7 @@ if (isLoginPage) {
         window.location.href = 'index.html';
     } else {
         // Protect pages based on Admin/Staff role
-        const adminOnlyPages = ['rekap-online.html', 'pendaftaran.html'];
+        const adminOnlyPages = ['rekap-online.html', 'pendaftaran.html', 'rekap-keuangan.html'];
         const isPageAdminOnly = adminOnlyPages.includes(currentPage);
         const isAdmin = CONFIG.ADMIN_EMAILS.includes(userEmail);
         
@@ -195,6 +195,12 @@ function injectSidebar() {
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                     </svg>
                     Pendaftaran Baru
+                </a>
+                <a href="rekap-keuangan.html" class="${getLinkClass('rekap-keuangan.html')}">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    Rekap Keuangan
                 </a>
                 ` : ''}
                 
@@ -453,5 +459,37 @@ function injectSidebar() {
     }
 }
 
-// Inisialisasi layout setelah DOM termuat
-document.addEventListener('DOMContentLoaded', injectSidebar);
+// Inisialisasi layout dan style global setelah DOM termuat
+function injectGlobalStyles() {
+    if (!document.getElementById('lkpGlobalStyles')) {
+        const style = document.createElement('style');
+        style.id = 'lkpGlobalStyles';
+        style.textContent = `
+            /* Aesthetic Global Scrollbar */
+            * {
+                scrollbar-width: thin;
+                scrollbar-color: #c4b5fd transparent;
+            }
+            ::-webkit-scrollbar {
+                width: 5px;
+                height: 5px;
+            }
+            ::-webkit-scrollbar-track {
+                background: transparent;
+            }
+            ::-webkit-scrollbar-thumb {
+                background-color: #c4b5fd;
+                border-radius: 10px;
+            }
+            ::-webkit-scrollbar-thumb:hover {
+                background-color: #8b5cf6;
+            }
+        `;
+        document.head.appendChild(style);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    injectSidebar();
+    injectGlobalStyles();
+});

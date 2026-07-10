@@ -413,6 +413,19 @@ export default {
           )
         `).run();
 
+        // Tabel Rekap Keuangan
+        await env.DB.prepare(`
+          CREATE TABLE IF NOT EXISTS rekap_keuangan (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            tanggal TEXT NOT NULL,
+            keterangan TEXT NOT NULL,
+            jenis TEXT NOT NULL,
+            nominal INTEGER NOT NULL,
+            email_penginput TEXT,
+            waktu_input DATETIME DEFAULT (datetime('now', '+7 hours'))
+          )
+        `).run();
+
         return Response.json({ success: true, message: "Semua tabel berhasil disiapkan!" }, { headers: corsHeaders });
       }
 
@@ -887,6 +900,57 @@ export default {
       if (request.method === "POST" && url.pathname === "/api/latihan-soal/delete") {
         const { id } = await request.json();
         await env.DB.prepare(`DELETE FROM latihan_soal WHERE id = ?`).bind(id).run();
+        return Response.json({ success: true }, { headers: corsHeaders });
+      }
+
+      // ==========================================
+      // FITUR REKAP KEUANGAN
+      // ==========================================
+
+      // ✅ 36. GET REKAP KEUANGAN - HANYA ADMIN
+      if (request.method === "GET" && url.pathname === "/api/rekap-keuangan") {
+        // Validasi KTP sudah ada di satpam global untuk method GET non-public?
+        // Wait, endpoint GET non-public tidak dilindungi oleh satpam global jika dia GET!
+        // Jadi harus cek manual jika ini sensitif.
+        const userEmail = request.headers.get("X-Admin-Email");
+        if (!userEmail || !ADMIN_EMAILS.includes(userEmail)) {
+           return Response.json({ success: false, error: "Akses Ditolak!" }, { status: 403, headers: corsHeaders });
+        }
+
+        const { results } = await env.DB.prepare(`
+          SELECT * FROM rekap_keuangan ORDER BY waktu_input DESC
+        `).all();
+        
+        return Response.json(results, { headers: corsHeaders });
+      }
+
+      // ✅ 37. POST REKAP KEUANGAN (TAMBAH/EDIT) - HANYA ADMIN
+      if (request.method === "POST" && url.pathname === "/api/rekap-keuangan") {
+        const data = await request.json();
+        const userEmail = request.headers.get("X-Admin-Email");
+
+        if (data.id) {
+          await env.DB.prepare(`
+            UPDATE rekap_keuangan 
+            SET tanggal = ?, keterangan = ?, jenis = ?, nominal = ?
+            WHERE id = ?
+          `).bind(data.tanggal, data.keterangan, data.jenis, data.nominal, data.id).run();
+          
+          return Response.json({ success: true, message: "Transaksi diperbarui" }, { headers: corsHeaders });
+        } else {
+          const info = await env.DB.prepare(`
+            INSERT INTO rekap_keuangan (tanggal, keterangan, jenis, nominal, email_penginput, waktu_input)
+            VALUES (?, ?, ?, ?, ?, datetime('now', '+7 hours'))
+          `).bind(data.tanggal, data.keterangan, data.jenis, data.nominal, userEmail).run();
+          
+          return Response.json({ success: true, id: info.lastRowId }, { headers: corsHeaders });
+        }
+      }
+
+      // ✅ 38. DELETE REKAP KEUANGAN - HANYA ADMIN
+      if (request.method === "POST" && url.pathname === "/api/rekap-keuangan/delete") {
+        const { id } = await request.json();
+        await env.DB.prepare(`DELETE FROM rekap_keuangan WHERE id = ?`).bind(id).run();
         return Response.json({ success: true }, { headers: corsHeaders });
       }
 
