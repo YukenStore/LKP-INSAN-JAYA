@@ -27,7 +27,7 @@ const CONFIG = {
         "menggambar & mewarnai": ["Gambar + Warna"]
     },
     GURU_BY_PROGRAM: {
-        "bimbel": ["Muhammad Khalid", "Shinta Deslianty, S.Pd"],
+        "bimbel": ["Muhammad Khalid", "Shinta Deslianty, S.Pd", "Usniatun Sudiarsih, SH"],
         "bahasa inggris": ["Ranti Agustini, S.Pd", "Tri Zahara, S.Pd"],
         "calistung": ["Usniatun Sudiarsih, SH"],
         "bahasa arab": ["Ayu Nurhasanah, S.Sos"],
