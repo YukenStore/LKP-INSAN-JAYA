@@ -421,10 +421,14 @@ export default {
             keterangan TEXT NOT NULL,
             jenis TEXT NOT NULL,
             nominal INTEGER NOT NULL,
+            metode TEXT DEFAULT 'cash',
             email_penginput TEXT,
             waktu_input DATETIME DEFAULT (datetime('now', '+7 hours'))
           )
         `).run();
+
+        // Tambah kolom metode jika belum ada (untuk database yang sudah ada)
+        try { await env.DB.prepare(`ALTER TABLE rekap_keuangan ADD COLUMN metode TEXT DEFAULT 'cash'`).run(); } catch(e) {}
 
         return Response.json({ success: true, message: "Semua tabel berhasil disiapkan!" }, { headers: corsHeaders });
       }
@@ -932,16 +936,16 @@ export default {
         if (data.id) {
           await env.DB.prepare(`
             UPDATE rekap_keuangan 
-            SET tanggal = ?, keterangan = ?, jenis = ?, nominal = ?
+            SET tanggal = ?, keterangan = ?, jenis = ?, nominal = ?, metode = ?
             WHERE id = ?
-          `).bind(data.tanggal, data.keterangan, data.jenis, data.nominal, data.id).run();
+          `).bind(data.tanggal, data.keterangan, data.jenis, data.nominal, data.metode || 'cash', data.id).run();
           
           return Response.json({ success: true, message: "Transaksi diperbarui" }, { headers: corsHeaders });
         } else {
           const info = await env.DB.prepare(`
-            INSERT INTO rekap_keuangan (tanggal, keterangan, jenis, nominal, email_penginput, waktu_input)
-            VALUES (?, ?, ?, ?, ?, datetime('now', '+7 hours'))
-          `).bind(data.tanggal, data.keterangan, data.jenis, data.nominal, userEmail).run();
+            INSERT INTO rekap_keuangan (tanggal, keterangan, jenis, nominal, metode, email_penginput, waktu_input)
+            VALUES (?, ?, ?, ?, ?, ?, datetime('now', '+7 hours'))
+          `).bind(data.tanggal, data.keterangan, data.jenis, data.nominal, data.metode || 'cash', userEmail).run();
           
           return Response.json({ success: true, id: info.lastRowId }, { headers: corsHeaders });
         }

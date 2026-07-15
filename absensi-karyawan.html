@@ -609,19 +609,7 @@
                 return;
             }
 
-            const status = document.getElementById('inpStatusKehadiran').value;
-            const ket = document.getElementById('inpKeterangan').value;
-            
-            if (status === 'Hadir' && !isWithinRadius) {
-                alert("Anda tidak dapat absen Hadir karena berada di luar area LKP (Maks 50m). Silakan pilih Izin/Sakit atau mendekat ke lokasi.");
-                return;
-            }
-
-            if ((status === 'Izin' || status === 'Sakit') && !ket && action === 'Masuk') {
-                alert("Keterangan wajib diisi untuk status Izin/Sakit saat absen masuk!");
-                return;
-            }
-
+            // Absen Pulang: langsung proses tanpa cek lokasi
             if (action === 'Pulang') {
                 if (!confirm("Apakah Anda yakin ingin melakukan Absen Pulang sekarang?")) return;
                 
@@ -634,6 +622,19 @@
                 
                 btnPulang.innerHTML = oriText;
                 btnPulang.disabled = false;
+                return;
+            }
+
+            const status = document.getElementById('inpStatusKehadiran').value;
+            const ket = document.getElementById('inpKeterangan').value;
+            
+            if (status === 'Hadir' && !isWithinRadius) {
+                alert("Anda tidak dapat absen Hadir karena berada di luar area LKP (Maks 50m). Silakan pilih Izin/Sakit atau mendekat ke lokasi.");
+                return;
+            }
+
+            if ((status === 'Izin' || status === 'Sakit') && !ket && action === 'Masuk') {
+                alert("Keterangan wajib diisi untuk status Izin/Sakit saat absen masuk!");
                 return;
             }
 
@@ -752,8 +753,8 @@
                 } else {
                     payload.jam_pulang = jam;
                     payload.foto_pulang_key = fotoKey;
-                    payload.lat_pulang = userLocation.lat;
-                    payload.lng_pulang = userLocation.lng;
+                    payload.lat_pulang = userLocation ? userLocation.lat : 0;
+                    payload.lng_pulang = userLocation ? userLocation.lng : 0;
                 }
 
                 const res = await fetchWithAuth(`${API_URL}/api/absensi-karyawan`, {
