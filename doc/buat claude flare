@@ -14,7 +14,9 @@ const ADMIN_EMAILS = [
   'rantiagustini@gmail.com',
   'elsasidamawarniut@gmail.com',
   'zilisaje@gmail.com',
-  'calonmaou@gmail.com'
+  'calonmaou@gmail.com',
+  'komaladewi284@gmail.com',
+  'marselinpaniriski@gmail.com'
 ];
 
 // Email pimpinan (bisa edit absensi karyawan lain)
