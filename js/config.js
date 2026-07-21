@@ -10,15 +10,14 @@ const CONFIG = {
         'tzaharasyaputri@gmail.com',
         'usniatun25@gmail.com',
         'ayunurhasanah1707@gmail.com',
-        'edwinhamidihamidi@gmail.com',
         'shintadeslianty@gmail.com',
-        'rantiagustini@gmail.com',
         'uthiuthi1130@gmail.com',
         'elsasidamawarniut@gmail.com',
         'zilisaje@gmail.com',
         'calonmaou@gmail.com',
         'marselinpaniriski@gmail.com',
-        'komaladewi284@gmail.com'
+        'komaladewi284@gmail.com',
+        'novadamayanti850@gmail.com'
     ],
     CLASSES_BY_PROGRAM: {
         "bimbel": ["Kelas 1", "Kelas 2", "Kelas 3", "Kelas 4", "Kelas 5", "Kelas 6"],
@@ -30,10 +29,10 @@ const CONFIG = {
     },
     GURU_BY_PROGRAM: {
         "bimbel": ["Muhammad Khalid", "Shinta Deslianty, S.Pd", "Usniatun Sudiarsih, SH", "Pani Riski Marselin"],
-        "bahasa inggris": ["Ranti Agustini, S.Pd", "Tri Zahara, S.Pd", "Komala Dewi"],
+        "bahasa inggris": ["Tri Zahara, S.Pd", "Komala Dewi"],
         "calistung": ["Usniatun Sudiarsih, SH"],
         "bahasa arab": ["Ayu Nurhasanah, S.Sos"],
-        "komputer": ["Normas Sari"],
+        "komputer": ["Nova Damayanti"],
         "menggambar & mewarnai": ["Futria Tamasari S.Hum"]
     }
 };
