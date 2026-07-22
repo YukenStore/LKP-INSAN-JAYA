@@ -1,7 +1,25 @@
 // ======================================================================
-// DAFTAR EMAIL ADMIN (Bisa ditambahin kapan aja)
+// DAFTAR EMAIL (Disesuaikan dengan config.js di Frontend)
 // ======================================================================
+
+// Super Admin - Akses penuh
+const SUPER_ADMIN_EMAILS = [
+  'lpkinsanjaya@gmail.com',
+  'yumenoboken@gmail.com',
+  'calonmaou@gmail.com'
+];
+
+// Admin / Pimpinan - Bisa akses halaman admin (Rekap Keuangan, Pendaftaran, Rekap Online)
 const ADMIN_EMAILS = [
+  'lpkinsanjaya@gmail.com',
+  'yumenoboken@gmail.com',
+  'elsasidamawarniut@gmail.com',
+  'zilisaje@gmail.com',
+  'calonmaou@gmail.com'
+];
+
+// Guru / Semua Staff - Bisa operasi dasar (tambah siswa, absensi, dll)
+const GURU_EMAILS = [
   'lpkinsanjaya@gmail.com',
   'yumenoboken@gmail.com',
   'mlbb080106@gmail.com',
@@ -16,15 +34,6 @@ const ADMIN_EMAILS = [
   'komaladewi284@gmail.com',
   'marselinpaniriski@gmail.com',
   'novadamayanti850@gmail.com'
-];
-
-// Email pimpinan (bisa edit absensi karyawan lain)
-const LEADER_EMAILS = [
-  'elsasidamawarniut@gmail.com',
-  'zilisaje@gmail.com',
-  'yumenoboken@gmail.com',
-  'lpkinsanjaya@gmail.com',
-  'calonmaou@gmail.com'
 ];
 
 export default {
@@ -59,8 +68,8 @@ export default {
       // Tangkap KTP (Email) dari header request
       const userEmail = request.headers.get("X-Admin-Email");
 
-      // Kalau KTP ga ada, atau emailnya bukan admin -> TENDANG DENGAN 403!
-      if (!userEmail || !ADMIN_EMAILS.includes(userEmail)) {
+      // Kalau KTP ga ada, atau emailnya bukan guru/staff -> TENDANG DENGAN 403!
+      if (!userEmail || !GURU_EMAILS.includes(userEmail)) {
         return new Response(JSON.stringify({
           success: false,
           error: "Akses Ditolak!",
@@ -789,7 +798,7 @@ export default {
       // ✅ 28. PUT (EDIT) ABSENSI (PIMPINAN & ADMIN)
       if (request.method === "PUT" && url.pathname.startsWith("/api/absensi-karyawan/")) {
         const userEmail = request.headers.get("X-Admin-Email");
-        if (!LEADER_EMAILS.includes(userEmail) && !ADMIN_EMAILS.includes(userEmail)) {
+        if (!ADMIN_EMAILS.includes(userEmail)) {
           return Response.json({ success: false, error: "Akses Ditolak!", message: "Hanya Admin & Pimpinan yang bisa mengedit absensi!" }, { status: 403, headers: corsHeaders });
         }
 
@@ -808,7 +817,7 @@ export default {
       // ✅ 29. DELETE ABSENSI (PIMPINAN & ADMIN)
       if (request.method === "DELETE" && url.pathname.startsWith("/api/absensi-karyawan/")) {
         const userEmail = request.headers.get("X-Admin-Email");
-        if (!LEADER_EMAILS.includes(userEmail) && !ADMIN_EMAILS.includes(userEmail)) {
+        if (!ADMIN_EMAILS.includes(userEmail)) {
           return Response.json({ success: false, error: "Akses Ditolak!", message: "Hanya Admin & Pimpinan yang bisa menghapus absensi!" }, { status: 403, headers: corsHeaders });
         }
 
