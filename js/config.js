@@ -23,12 +23,12 @@ const CONFIG = {
         "bimbel": ["Kelas 1", "Kelas 2", "Kelas 3", "Kelas 4", "Kelas 5", "Kelas 6"],
         "bahasa inggris": ["Beginner", "Intermediate", "Upper Intermediate", "Advanced"],
         "bahasa arab": ["Iqra + B Arab Dasar"],
-        "komputer": ["MS Office"],
+        "komputer": ["SD", "SMP", "SMA"],
         "calistung": ["Baca + Tulis + Hitung"],
         "menggambar & mewarnai": ["Gambar + Warna"]
     },
     GURU_BY_PROGRAM: {
-        "bimbel": ["Muhammad Khalid", "Shinta Deslianty, S.Pd", "Usniatun Sudiarsih, SH", "Pani Riski Marselin"],
+        "bimbel": ["Shinta Deslianty, S.Pd", "Usniatun Sudiarsih, SH", "Pani Riski Marselin"],
         "bahasa inggris": ["Tri Zahara, S.Pd", "Komala Dewi"],
         "calistung": ["Usniatun Sudiarsih, SH"],
         "bahasa arab": ["Ayu Nurhasanah, S.Sos"],
