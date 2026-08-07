@@ -35,6 +35,7 @@ const GURU_EMAILS = [
   'marselinpaniriski@gmail.com',
   'novadamayanti850@gmail.com',
   'salwamansyur@gmail.com',
+  'ildanazila15@gmail.com',
 ];
 
 export default {
