@@ -31,11 +31,10 @@ const GURU_EMAILS = [
   'elsasidamawarniut@gmail.com',
   'zilisaje@gmail.com',
   'calonmaou@gmail.com',
-  'komaladewi284@gmail.com',
-  'marselinpaniriski@gmail.com',
   'novadamayanti850@gmail.com',
   'salwamansyur@gmail.com',
   'ildanazila15@gmail.com',
+  'gustianimeli970@gmail.com',
 ];
 
 export default {
