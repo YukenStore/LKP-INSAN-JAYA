@@ -579,8 +579,12 @@ export default {
           UPDATE absensi SET status_spp = ?, format_absen = ? WHERE id = ?
         `).bind(data.status_spp || 'Belum Lunas', data.format_absen || 12, data.siswa_id).run();
 
-        // 2. Upsert setiap pertemuan (AMAN, tidak menghapus data lama)
-        if (data.pertemuan && data.pertemuan.length > 0) {
+        // 2. Cek apakah ini RESET (pertemuan kosong = admin sengaja reset)
+        if (!data.pertemuan || data.pertemuan.length === 0) {
+          // Reset: hapus semua detail absensi siswa ini
+          await env.DB.prepare(`DELETE FROM absensi_detail WHERE siswa_id = ?`).bind(data.siswa_id).run();
+        } else {
+          // Upsert setiap pertemuan (AMAN, tidak menghapus data lama)
           const stmtUpsert = env.DB.prepare(`
             INSERT INTO absensi_detail (siswa_id, pertemuan_ke, status, tanggal)
             VALUES (?, ?, ?, ?)
@@ -591,13 +595,13 @@ export default {
           for (const p of data.pertemuan) {
             await stmtUpsert.bind(data.siswa_id, p.ke, p.status || '', p.tanggal || '').run();
           }
-        }
 
-        // 3. Hapus pertemuan di luar format (misal: format=8, hapus pertemuan 9-12)
-        const maxPertemuan = data.format_absen || 12;
-        await env.DB.prepare(`
-          DELETE FROM absensi_detail WHERE siswa_id = ? AND pertemuan_ke > ?
-        `).bind(data.siswa_id, maxPertemuan).run();
+          // Hapus pertemuan di luar format (misal: format=8, hapus pertemuan 9-12)
+          const maxPertemuan = data.format_absen || 12;
+          await env.DB.prepare(`
+            DELETE FROM absensi_detail WHERE siswa_id = ? AND pertemuan_ke > ?
+          `).bind(data.siswa_id, maxPertemuan).run();
+        }
         
         return Response.json({ success: true, message: "Absensi berhasil disimpan ke Server!" }, { headers: corsHeaders });
       }
