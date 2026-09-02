@@ -365,6 +365,9 @@ export default {
         try { await env.DB.prepare(`ALTER TABLE absensi ADD COLUMN format_absen INTEGER DEFAULT 12`).run(); } catch(e) {}
         try { await env.DB.prepare(`ALTER TABLE absensi_detail ADD COLUMN tanggal TEXT`).run(); } catch(e) {}
 
+        // UNIQUE index untuk mendukung UPSERT pada absensi_detail (mencegah data hilang)
+        try { await env.DB.prepare(`CREATE UNIQUE INDEX IF NOT EXISTS idx_absensi_detail_unique ON absensi_detail(siswa_id, pertemuan_ke)`).run(); } catch(e) {}
+
         await env.DB.prepare(`
           CREATE TABLE IF NOT EXISTS laporan_draft (
             siswa_id TEXT,
@@ -567,7 +570,7 @@ export default {
         return Response.json({ success: true }, { headers: corsHeaders });
       }
 
-      // ✅ 18. SIMPAN ABSENSI SISWA LENGKAP (API BARU)
+      // ✅ 18. SIMPAN ABSENSI SISWA LENGKAP (API BARU - UPSERT STRATEGY)
       if (request.method === "POST" && url.pathname === "/api/save-absensi-siswa") {
         const data = await request.json();
         
@@ -576,18 +579,25 @@ export default {
           UPDATE absensi SET status_spp = ?, format_absen = ? WHERE id = ?
         `).bind(data.status_spp || 'Belum Lunas', data.format_absen || 12, data.siswa_id).run();
 
-        // 2. Hapus detail lama
-        await env.DB.prepare(`DELETE FROM absensi_detail WHERE siswa_id = ?`).bind(data.siswa_id).run();
-
-        // 3. Masukkan pertemuan baru
+        // 2. Upsert setiap pertemuan (AMAN, tidak menghapus data lama)
         if (data.pertemuan && data.pertemuan.length > 0) {
-          const stmtInsert = env.DB.prepare(`
-            INSERT INTO absensi_detail (siswa_id, pertemuan_ke, status, tanggal) VALUES (?, ?, ?, ?)
+          const stmtUpsert = env.DB.prepare(`
+            INSERT INTO absensi_detail (siswa_id, pertemuan_ke, status, tanggal)
+            VALUES (?, ?, ?, ?)
+            ON CONFLICT(siswa_id, pertemuan_ke) DO UPDATE SET
+              status = excluded.status,
+              tanggal = excluded.tanggal
           `);
           for (const p of data.pertemuan) {
-            await stmtInsert.bind(data.siswa_id, p.ke, p.status || '', p.tanggal || '').run();
+            await stmtUpsert.bind(data.siswa_id, p.ke, p.status || '', p.tanggal || '').run();
           }
         }
+
+        // 3. Hapus pertemuan di luar format (misal: format=8, hapus pertemuan 9-12)
+        const maxPertemuan = data.format_absen || 12;
+        await env.DB.prepare(`
+          DELETE FROM absensi_detail WHERE siswa_id = ? AND pertemuan_ke > ?
+        `).bind(data.siswa_id, maxPertemuan).run();
         
         return Response.json({ success: true, message: "Absensi berhasil disimpan ke Server!" }, { headers: corsHeaders });
       }

@@ -306,8 +306,8 @@
                     });
                 }
                 
-                // Hapus data lokal jika ada, agar bersih
-                localStorage.removeItem(`lkp_absensi_siswa_${siswaId}`);
+                // Simpan data server ke localStorage sebagai backup recovery
+                localStorage.setItem(`lkp_absensi_siswa_${siswaId}`, JSON.stringify(data));
                 
                 renderTabelAbsensi(pertemuanObj);
             } catch (error) {
