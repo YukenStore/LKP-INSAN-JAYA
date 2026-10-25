@@ -10,7 +10,7 @@ const CONFIG = {
         'tzaharasyaputri@gmail.com',
         'usniatun25@gmail.com',
         'ayunurhasanah1707@gmail.com',
-        'shintadeslianty@gmail.com',
+        'agunikhsan114@gmail.com',
         'uthiuthi1130@gmail.com',
         'elsasidamawarniut@gmail.com',
         'zilisaje@gmail.com',
@@ -29,7 +29,7 @@ const CONFIG = {
         "menggambar & mewarnai": ["Gambar + Warna"]
     },
     GURU_BY_PROGRAM: {
-        "bimbel": ["Shinta Deslianty, S.Pd", "Usniatun Sudiarsih, SH", "Meli Gustiani", "Ildatun Nazila S.E"],
+        "bimbel": ["Agun Ikhsan Ramadhan", "Usniatun Sudiarsih, SH", "Meli Gustiani", "Ildatun Nazila S.E"],
         "bahasa inggris": ["Tri Zahara, S.Pd", "Wasaluwa"],
         "calistung": ["Usniatun Sudiarsih, SH"],
         "bahasa arab": ["Ayu Nurhasanah, S.Sos"],
