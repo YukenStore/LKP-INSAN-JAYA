@@ -32,7 +32,7 @@ const CONFIG = {
         "bimbel": ["Agun Ikhsan Ramadhan", "Usniatun Sudiarsih, SH", "Meli Gustiani", "Ildatun Nazila S.E"],
         "bahasa inggris": ["Tri Zahara, S.Pd", "Wasaluwa"],
         "calistung": ["Usniatun Sudiarsih, SH"],
-        "bahasa arab": ["Ayu Nurhasanah, S.Sos"],
+        "bahasa arab": ["Ayu Nurhasanah, S.Sos","Agun Ikhsan Ramadhan"],
         "komputer": ["Nova Damayanti"],
         "menggambar & mewarnai": ["Futria Tamasari S.Hum"]
     }
