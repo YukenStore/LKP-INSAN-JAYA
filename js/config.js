@@ -19,6 +19,10 @@ const CONFIG = {
         'salwamansyur@gmail.com',
         'ildanazila15@gmail.com',
         'gustianimeli970@gmail.com',
+        'natasyaawulandarii2@gmail.com',
+    ],
+    KARYAWAN_NON_GURU: [
+        "Natasya Wulandari"
     ],
     CLASSES_BY_PROGRAM: {
         "bimbel": ["Kelas 1", "Kelas 2", "Kelas 3", "Kelas 4", "Kelas 5", "Kelas 6", "Kelas 7", "Kelas 8", "Kelas 9"],
